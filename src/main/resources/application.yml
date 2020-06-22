@@ -1,5 +1,10 @@
 server:
   port: 8080
+#  error:
+#    include_exception: false # 응답에 exception 내용 포함 여부
+#    include-stacktrace: never # Stacktrace 내용 포함 여부
+#    path: '/error' # 에러 처리 경로
+#    whitelabel.enabled: true # 에러 발생 시 기본 페이지 생성 여부
 
 spring:
   profiles:
