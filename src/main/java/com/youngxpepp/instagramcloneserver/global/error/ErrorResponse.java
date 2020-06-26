@@ -4,6 +4,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.method.annotation.MethodArgumentTypeMismatchException;
 
@@ -46,6 +47,10 @@ public class ErrorResponse {
         this(ErrorCode.INVALID_TYPE_VALUE);
         String value = e.getValue() == null ? "" : e.getValue().toString();
         this.fieldErrors.addAll(FieldError.of(e.getName(), value, e.getErrorCode()));
+    }
+
+    public ResponseEntity<ErrorResponse> responseEntity() {
+        return new ResponseEntity<>(this, HttpStatus.resolve(this.status));
     }
 
     @NoArgsConstructor(access = AccessLevel.PROTECTED)
