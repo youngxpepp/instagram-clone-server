@@ -17,7 +17,8 @@ public enum ErrorCode {
 
 //    Authentication
     AUTHENTICATION_FAILED(2000, HttpStatus.BAD_REQUEST, "Authentication is failed"),
-    JWT_EXPIRED(2001, HttpStatus.BAD_REQUEST, "JsonWebToken is expired");
+    JWT_EXPIRED(2001, HttpStatus.BAD_REQUEST, "JsonWebToken is expired"),
+    JWT_PREFIX_NOT_FOUND(2002, HttpStatus.BAD_REQUEST, "JsonWebToken must have a prefix Bearer");
 
     private final HttpStatus httpStatus;
     private final int code;

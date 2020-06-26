@@ -1,10 +1,9 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import io.jsonwebtoken.Jwts;
+import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
+import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
+import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -37,7 +36,7 @@ public class JwtUtil {
 
     public Jws<Claims> verifyAccessToken(String bearerAccessToken) {
         if(bearerAccessToken.indexOf(JwtUtil.TOKEN_PREFIX) != 0) {
-            throw new JwtException("");
+            throw new BusinessException(ErrorCode.JWT_PREFIX_NOT_FOUND);
         }
 
         String accessToken = bearerAccessToken.substring(JwtUtil.TOKEN_PREFIX.length());
@@ -50,6 +49,15 @@ public class JwtUtil {
                 .parseClaimsJws(accessToken);
 
         return jws;
+    }
+
+    public boolean isValidAccessToken(String bearerAccessToken) {
+        try {
+            this.verifyAccessToken(bearerAccessToken);
+        } catch (Exception e) {
+            return false;
+        }
+        return true;
     }
 
     public Date getAccessTokenExpirationByDate() {
