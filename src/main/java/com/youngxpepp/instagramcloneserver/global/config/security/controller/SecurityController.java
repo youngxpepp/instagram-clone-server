@@ -6,6 +6,8 @@ import com.youngxpepp.instagramcloneserver.global.config.security.dto.LoginReque
 import com.youngxpepp.instagramcloneserver.global.config.security.dto.LoginResponseDto;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtil;
+import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
+import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -25,7 +27,7 @@ public class SecurityController {
 
     @PostMapping("/api/v1/login")
     public LoginResponseDto login(@Valid @RequestBody LoginRequestDto dto) {
-        Member member = memberRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new RuntimeException());
+        Member member = memberRepository.findByEmail(dto.getEmail()).orElseThrow(() -> new BusinessException(ErrorCode.AUTHENTICATION_FAILED));
 
         if(passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
             AccessTokenClaims claims = AccessTokenClaims.builder()
@@ -38,6 +40,6 @@ public class SecurityController {
                     .build();
         }
 
-        throw new RuntimeException();
+        throw new BusinessException(ErrorCode.AUTHENTICATION_FAILED);
     }
 }

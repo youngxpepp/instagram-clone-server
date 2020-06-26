@@ -22,7 +22,7 @@ public class ErrorResponse {
     private String error;
     private String message;
     private List<FieldError> fieldErrors;
-    private String code;
+    private int code;
 
     public ErrorResponse(ErrorCode errorCode) {
         this.timestamp = LocalDateTime.now();
