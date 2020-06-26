@@ -1,4 +1,4 @@
-package com.youngxpepp.instagramcloneserver.global.common;
+package com.youngxpepp.instagramcloneserver.test;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.youngxpepp.instagramcloneserver.Application;
