@@ -10,6 +10,7 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
+import javax.rmi.ssl.SslRMIClientSocketFactory;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;
@@ -37,10 +38,9 @@ public class JwtUtilTest extends MockTest {
                 .roles(Arrays.asList(MemberRole.MEMBER))
                 .build();
         String accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
-        String bearerAccessToken = JwtUtil.TOKEN_PREFIX + accessToken;
 
 //        when
-        Jws<Claims> jws = jwtUtil.verifyAccessToken(bearerAccessToken);
+        Jws<Claims> jws = jwtUtil.verifyAccessToken(accessToken);
 
 //        then
         assertThat(jws.getBody().get("email"))

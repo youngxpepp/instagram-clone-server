@@ -16,7 +16,7 @@ import java.util.Date;
 public class JwtUtil {
 
     @Autowired
-    JwtProperties jwtProperties;
+    private JwtProperties jwtProperties;
 
     public static final String TOKEN_PREFIX = "Bearer ";
 
