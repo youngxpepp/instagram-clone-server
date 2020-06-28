@@ -1,6 +1,8 @@
 package com.youngxpepp.instagramcloneserver.global.error;
 
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
+import com.youngxpepp.instagramcloneserver.global.error.type.BindingErrorType;
+import com.youngxpepp.instagramcloneserver.global.error.type.DefaultErrorType;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.MalformedJwtException;
 import lombok.extern.slf4j.Slf4j;
@@ -15,19 +17,22 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(MethodArgumentNotValidException e) {
-        return new ErrorResponse(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult())
-                .responseEntity();
+        DefaultErrorType errorType = new BindingErrorType(ErrorCode.INVALID_INPUT_VALUE, e.getBindingResult());
+
+        return new ErrorResponse(errorType).responseEntity();
     }
 
     @ExceptionHandler(ExpiredJwtException.class)
     public ResponseEntity<ErrorResponse> handleExpiredJwtException(ExpiredJwtException e) {
-        return new ErrorResponse(ErrorCode.JWT_EXPIRED)
+        DefaultErrorType errorType = new DefaultErrorType(ErrorCode.JWT_EXPIRED);
+        return new ErrorResponse(errorType)
                 .responseEntity();
     }
 
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleBusinessException(BusinessException e) {
-        return new ErrorResponse(e.getErrorCode())
+        DefaultErrorType errorType = new DefaultErrorType(e.getErrorCode());
+        return new ErrorResponse(errorType)
                 .responseEntity();
     }
 }
