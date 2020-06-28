@@ -3,6 +3,7 @@ package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
+import com.youngxpepp.instagramcloneserver.global.error.exception.NoPrefixJwtException;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import io.jsonwebtoken.security.SignatureException;
@@ -35,9 +36,10 @@ public class JwtUtil {
         return JwtUtil.TOKEN_PREFIX + accessToken;
     }
 
-    public Jws<Claims> verifyAccessToken(String bearerAccessToken) throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException {
+    public Jws<Claims> verifyAccessToken(String bearerAccessToken)
+            throws ExpiredJwtException, UnsupportedJwtException, MalformedJwtException, SignatureException, IllegalArgumentException, NoPrefixJwtException {
         if(bearerAccessToken.indexOf(JwtUtil.TOKEN_PREFIX) != 0) {
-            throw new BusinessException(ErrorCode.JWT_PREFIX_NOT_FOUND);
+            throw new NoPrefixJwtException(bearerAccessToken);
         }
 
         String accessToken = bearerAccessToken.substring(JwtUtil.TOKEN_PREFIX.length());

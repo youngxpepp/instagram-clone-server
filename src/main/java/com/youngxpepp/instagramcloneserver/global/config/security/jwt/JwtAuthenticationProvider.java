@@ -22,7 +22,8 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
     JwtUtil jwtUtil;
 
     @Override
-    public Authentication authenticate(Authentication authentication) throws AuthenticationException {
+    public Authentication authenticate(Authentication authentication)
+            throws AuthenticationException, JwtException {
         PreJwtAuthenticationToken preJwtAuthenticationToken = (PreJwtAuthenticationToken) authentication;
         String accessToken = preJwtAuthenticationToken.getAccessToken();
 
