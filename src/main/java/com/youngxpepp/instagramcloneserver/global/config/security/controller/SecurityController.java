@@ -10,6 +10,7 @@ import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
@@ -41,5 +42,10 @@ public class SecurityController {
         }
 
         throw new BusinessException(ErrorCode.AUTHENTICATION_FAILED);
+    }
+
+    @GetMapping("/api/v1/test")
+    public String getTest() {
+        return "test";
     }
 }
