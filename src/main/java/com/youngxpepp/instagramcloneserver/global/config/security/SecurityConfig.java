@@ -63,7 +63,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 //    필터가 두 번 등록되는 것을 방지
     @Bean
     FilterRegistrationBean filterRegistrationBean(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        FilterRegistrationBean filterRegistrationBean = new FilterRegistrationBean(jwtAuthenticationFilter);
+        FilterRegistrationBean<JwtAuthenticationFilter> filterRegistrationBean = new FilterRegistrationBean<>(jwtAuthenticationFilter);
         filterRegistrationBean.setEnabled(false);
         return filterRegistrationBean;
     }
