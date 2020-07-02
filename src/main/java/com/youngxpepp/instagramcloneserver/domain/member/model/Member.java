@@ -1,5 +1,6 @@
 package com.youngxpepp.instagramcloneserver.domain.member.model;
 
+import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -7,6 +8,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity(name = "member")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -32,6 +35,12 @@ public class Member extends AbstractBaseTimeEntity {
     @Column(name = "role")
     @Enumerated(EnumType.STRING)
     private MemberRole role;
+
+    @OneToMany(mappedBy = "toMember")
+    private List<Follow> followers = new ArrayList<>();
+
+    @OneToMany(mappedBy = "fromMember")
+    private List<Follow> followings = new ArrayList<>();
 
     @Builder
     public Member(String nickname, String name, String email, String password, MemberRole role) {

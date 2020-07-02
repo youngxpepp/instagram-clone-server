@@ -14,6 +14,7 @@ public class PostJwtAuthenticationToken extends AbstractAuthenticationToken {
 
     public PostJwtAuthenticationToken(List<SimpleGrantedAuthority> authorities, Member member) {
         super(authorities);
+        super.setAuthenticated(true);
         this.member = member;
     }
 

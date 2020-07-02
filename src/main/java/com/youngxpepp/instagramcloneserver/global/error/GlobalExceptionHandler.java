@@ -76,4 +76,11 @@ public class GlobalExceptionHandler {
         return new ErrorResponse(errorType)
                 .responseEntity();
     }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ErrorResponse> handleJwtException(JwtException e) {
+        DefaultErrorType errorType = new DefaultErrorType(ErrorCode.JWT_EXCEPTION);
+        return new ErrorResponse(errorType)
+                .responseEntity();
+    }
 }
