@@ -21,8 +21,8 @@ public class AccessTokenClaims {
     public List<String> getRolesByString() {
         return this.roles
                 .stream()
-                    .map(role -> role.getName())
-                        .collect(Collectors.toList());
+                .map(role -> role.getName())
+                .collect(Collectors.toList());
     }
 
     public Map<String, Object> getClaimsByMap() {

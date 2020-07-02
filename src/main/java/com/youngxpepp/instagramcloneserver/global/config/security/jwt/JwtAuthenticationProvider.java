@@ -1,8 +1,13 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
+import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
+import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.JwtException;
+import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.security.authentication.AuthenticationProvider;
@@ -16,14 +21,15 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Component
+@AllArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-    @Autowired
-    JwtUtil jwtUtil;
+    private JwtUtil jwtUtil;
+    private MemberRepository memberRepository;
 
     @Override
     public Authentication authenticate(Authentication authentication)
-            throws AuthenticationException, JwtException {
+            throws AuthenticationException, JwtException, BusinessException {
         PreJwtAuthenticationToken preJwtAuthenticationToken = (PreJwtAuthenticationToken) authentication;
         String accessToken = preJwtAuthenticationToken.getAccessToken();
 
@@ -34,7 +40,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
                 .map(role -> new SimpleGrantedAuthority(role))
                 .collect(Collectors.toList());
 
-        return new PostJwtAuthenticationToken(authorities, email);
+        Member member = memberRepository.findByEmail(email).orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        return new PostJwtAuthenticationToken(authorities, member);
     }
 
     @Override
