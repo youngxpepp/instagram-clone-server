@@ -1,5 +1,6 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
+import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import com.youngxpepp.instagramcloneserver.global.error.exception.NoAuthorizationException;
 import io.jsonwebtoken.JwtException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,13 +60,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
             }
         }
 //        Spring 내부에서 예외를 처리하기 위함
-        catch (JwtException e) {
-            SecurityContextHolder.clearContext();
-            handlerExceptionResolver.resolveException(request, response, null, e);
-
-            return;
-        }
-        catch (AuthenticationException e) {
+        catch (JwtException | AuthenticationException | BusinessException e) {
             SecurityContextHolder.clearContext();
             handlerExceptionResolver.resolveException(request, response, null, e);
 

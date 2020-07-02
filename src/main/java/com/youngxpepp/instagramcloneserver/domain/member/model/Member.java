@@ -1,4 +1,4 @@
-package com.youngxpepp.instagramcloneserver.domain.member;
+package com.youngxpepp.instagramcloneserver.domain.member.model;
 
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 import lombok.AccessLevel;

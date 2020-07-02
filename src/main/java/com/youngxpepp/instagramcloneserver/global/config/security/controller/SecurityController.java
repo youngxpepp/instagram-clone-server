@@ -1,7 +1,7 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.controller;
 
-import com.youngxpepp.instagramcloneserver.domain.member.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.MemberRepository;
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.dto.LoginRequestDto;
 import com.youngxpepp.instagramcloneserver.global.config.security.dto.LoginResponseDto;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;

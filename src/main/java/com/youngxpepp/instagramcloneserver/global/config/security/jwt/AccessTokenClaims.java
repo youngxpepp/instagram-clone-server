@@ -1,6 +1,6 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
-import com.youngxpepp.instagramcloneserver.domain.member.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -21,8 +21,8 @@ public class AccessTokenClaims {
     public List<String> getRolesByString() {
         return this.roles
                 .stream()
-                    .map(role -> role.getName())
-                        .collect(Collectors.toList());
+                .map(role -> role.getName())
+                .collect(Collectors.toList());
     }
 
     public Map<String, Object> getClaimsByMap() {
