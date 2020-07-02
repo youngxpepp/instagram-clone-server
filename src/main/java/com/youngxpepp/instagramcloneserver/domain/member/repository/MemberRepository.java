@@ -1,5 +1,6 @@
-package com.youngxpepp.instagramcloneserver.domain.member;
+package com.youngxpepp.instagramcloneserver.domain.member.repository;
 
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.Optional;

@@ -1,6 +1,6 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
-import com.youngxpepp.instagramcloneserver.domain.member.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.test.MockTest;
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
 import io.jsonwebtoken.Claims;
@@ -10,7 +10,6 @@ import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 
-import javax.rmi.ssl.SslRMIClientSocketFactory;
 import java.util.Arrays;
 
 import static org.assertj.core.api.Assertions.*;

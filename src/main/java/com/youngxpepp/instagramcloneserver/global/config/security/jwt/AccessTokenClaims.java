@@ -1,6 +1,6 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
-import com.youngxpepp.instagramcloneserver.domain.member.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
