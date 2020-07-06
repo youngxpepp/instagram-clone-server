@@ -14,6 +14,7 @@ public enum ErrorCode {
     INTERNAL_SERVER_ERROR(1003, HttpStatus.INTERNAL_SERVER_ERROR, "Internal server error"),
     INVALID_TYPE_VALUE(1004, HttpStatus.BAD_REQUEST, "Invalid type value"),
     HANDLE_ACCESS_DENIED(1005, HttpStatus.FORBIDDEN, "Access is denied"),
+    ENTITY_ALREADY_EXIST(1006, HttpStatus.BAD_REQUEST, "Entity already exists"),
 
 //    Authentication
     AUTHENTICATION_FAILED(2000, HttpStatus.BAD_REQUEST, "Authentication is failed"),
@@ -22,7 +23,8 @@ public enum ErrorCode {
     JWT_NO_PREFIX(2004, HttpStatus.BAD_REQUEST, "No prefix in jwt"),
     JWT_MALFORMED(2005, HttpStatus.BAD_REQUEST, "JsonWebToken is malformed"),
     JWT_SIG_INVALID(2006, HttpStatus.BAD_REQUEST, "JsonWebToken signature is invalid"),
-    JWT_UNSUPPORTED(2007, HttpStatus.BAD_REQUEST, "JsonWebToken format is unsupported");
+    JWT_UNSUPPORTED(2007, HttpStatus.BAD_REQUEST, "JsonWebToken format is unsupported"),
+    JWT_EXCEPTION(2008, HttpStatus.BAD_REQUEST, "JsonWebToken has a problem");
 
     private final HttpStatus httpStatus;
     private final int code;

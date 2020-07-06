@@ -3,6 +3,7 @@ package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import com.youngxpepp.instagramcloneserver.global.error.exception.NoAuthorizationException;
 import io.jsonwebtoken.JwtException;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.InternalAuthenticationServiceException;
 import org.springframework.security.core.Authentication;
@@ -14,6 +15,7 @@ import org.springframework.security.web.authentication.AuthenticationFailureHand
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
+import sun.util.resources.th.CalendarData_th;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;
@@ -33,41 +35,19 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
     }
 
     @Override
-    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain)
-            throws IOException, ServletException {
-
+    public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws IOException, ServletException {
         HttpServletRequest request = (HttpServletRequest) req;
         HttpServletResponse response = (HttpServletResponse) res;
 
-        if (!requiresAuthentication(request, response)) {
-            chain.doFilter(request, response);
-
-            return;
-        }
-
-        if (logger.isDebugEnabled()) {
-            logger.debug("Request is to process authentication");
-        }
-
-        Authentication authResult;
         try {
-            authResult = attemptAuthentication(request, response);
-
-            if (authResult == null) {
-                // return immediately as subclass has indicated that it hasn't completed
-                // authentication
-                return;
-            }
-        }
-//        Spring 내부에서 예외를 처리하기 위함
-        catch (JwtException | AuthenticationException | BusinessException e) {
+            super.doFilter(req, res, chain);
+            return;
+        } catch (JwtException | AuthenticationException | BusinessException e) {
             SecurityContextHolder.clearContext();
             handlerExceptionResolver.resolveException(request, response, null, e);
 
             return;
         }
-
-        successfulAuthentication(request, response, chain, authResult);
     }
 
     @Override
@@ -89,5 +69,7 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
         SecurityContext context = SecurityContextHolder.createEmptyContext();
         context.setAuthentication(authResult);
         SecurityContextHolder.setContext(context);
+
+        chain.doFilter(request, response);
     }
 }

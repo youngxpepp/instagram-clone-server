@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.method.configuration.EnableGlobalMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 
 @Configuration
 @EnableWebSecurity
+@EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     @Autowired
@@ -46,7 +48,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         List<String> patterns = new ArrayList<>();
 
 //        Jwt 인증 필터가 적용될 경로
-        patterns.add("/test/path");
+        patterns.add("/api/v1/follows");
 
         List<RequestMatcher> requestMatchers = patterns
                 .stream()
@@ -74,9 +76,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
         http.httpBasic().disable();
 
+        http.formLogin().disable();
+
         http.headers().frameOptions().disable();
 
         http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+        http
+                .authorizeRequests()
+                    .antMatchers("/api/v1/follows").hasRole("MEMBER")
+                    .antMatchers("/api/v1/login").permitAll();
 
         http
                 .addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
