@@ -11,7 +11,7 @@ import javax.validation.constraints.NotNull;
 @Builder
 @Getter
 @Setter
-public class FollowRequestDto {
+public class UnfollowRequestDto {
 
     @JsonProperty("member_nickname")
     @NotNull

@@ -1,6 +1,8 @@
 package com.youngxpepp.instagramcloneserver.domain.follow.controller;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.follow.dto.UnfollowRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
@@ -19,8 +21,10 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
@@ -47,18 +51,18 @@ public class FollowControllerTest extends IntegrationTest {
                 .password("123123")
                 .role(MemberRole.MEMBER)
                 .build();
-        principal = memberRepository.save(principal);
+        memberRepository.save(principal);
 
         AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
                 .email(principal.getEmail())
                 .roles(Arrays.asList(principal.getRole()))
                 .build();
-        this.accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
+        accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
     }
 
     @AfterEach
     public void tearDown() {
-        memberRepository.deleteAll();
+//        memberRepository.deleteAll();
     }
 
     @Test
@@ -71,13 +75,13 @@ public class FollowControllerTest extends IntegrationTest {
                 .password("123123")
                 .role(MemberRole.MEMBER)
                 .build();
-        opponent = memberRepository.save(opponent);
+        memberRepository.save(opponent);
 
 //        when
         FollowRequestDto dto = FollowRequestDto.builder()
                 .memberNickname(opponent.getNickname())
                 .build();
-        ResultActions resultActions = this.requestFollow(dto);
+        ResultActions resultActions = requestFollow(dto);
 
         Follow follow = followRepository.findByFromMemberIdAndToMemberId(principal.getId(), opponent.getId())
                 .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
@@ -86,14 +90,50 @@ public class FollowControllerTest extends IntegrationTest {
         resultActions
                 .andExpect(status().isOk());
         assertThat(follow.getFromMember().getId())
-                .isEqualTo(this.principal.getId());
+                .isEqualTo(principal.getId());
         assertThat(follow.getToMember().getId())
                 .isEqualTo(opponent.getId());
     }
 
+    @Test
+    public void Given_서로팔로우_When_언팔로우_Then_200ok_팔로삭제확인() throws Exception {
+//        given
+        Member opponent = Member.builder()
+                .name("opponentName")
+                .nickname("opponentNickname")
+                .email("opponent@gmail.com")
+                .password("123123")
+                .build();
+        memberRepository.save(opponent);
+
+        Follow follow = Follow.builder()
+                .fromMember(principal)
+                .toMember(opponent)
+                .build();
+        followRepository.save(follow);
+
+//        when
+        UnfollowRequestDto dto = UnfollowRequestDto.builder()
+                .memberNickname(opponent.getNickname())
+                .build();
+        ResultActions resultActions = requestUnfollow(dto);
+        Optional<Follow> resultFollow = followRepository.findByFromMemberIdAndToMemberId(principal.getId(), opponent.getId());
+
+//        then
+        resultActions.andExpect(status().isOk());
+        assertThat(resultFollow).isEqualTo(Optional.empty());
+    }
+
     private ResultActions requestFollow(FollowRequestDto dto) throws Exception {
         return mockMvc.perform(post("/api/v1/follows")
-                .header("Authorization", this.accessToken)
+                .header("Authorization", accessToken)
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(dto)));
+    }
+
+    private ResultActions requestUnfollow(UnfollowRequestDto dto) throws Exception {
+        return mockMvc.perform(delete("/api/v1/follows")
+                .header("Authorization", accessToken)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(objectMapper.writeValueAsString(dto)));
     }

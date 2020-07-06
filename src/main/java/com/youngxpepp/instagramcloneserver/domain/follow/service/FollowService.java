@@ -1,6 +1,7 @@
 package com.youngxpepp.instagramcloneserver.domain.follow.service;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.follow.dto.UnfollowRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
@@ -34,5 +35,16 @@ public class FollowService {
                 .build();
 
         followRepository.save(follow);
+    }
+
+    @Transactional
+    public void unfollow(Member fromMember, UnfollowRequestDto dto) {
+        Member toMember = memberRepository.findByNickname(dto.getMemberNickname())
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        Follow follow = followRepository.findByFromMemberIdAndToMemberId(fromMember.getId(), toMember.getId())
+                .orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+        followRepository.delete(follow);
     }
 }
