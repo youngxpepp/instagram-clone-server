@@ -1,7 +1,9 @@
 package com.youngxpepp.instagramcloneserver.global.config.security;
 
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthenticationFilter;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthenticationProvider;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -20,80 +22,80 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.stream.Collectors;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthenticationFilter;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthenticationProvider;
 
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-    @Autowired
-    private JwtAuthenticationProvider jwtAuthenticationProvider;
+	@Autowired
+	private JwtAuthenticationProvider jwtAuthenticationProvider;
 
-    @Bean
-    public PasswordEncoder passwordEncoder() {
-        return new BCryptPasswordEncoder();
-    }
+	@Bean
+	public PasswordEncoder passwordEncoder() {
+		return new BCryptPasswordEncoder();
+	}
 
-    @Bean
-    @Override
-    public AuthenticationManager authenticationManagerBean() throws Exception {
-        return super.authenticationManagerBean();
-    }
+	@Bean
+	@Override
+	public AuthenticationManager authenticationManagerBean() throws Exception {
+		return super.authenticationManagerBean();
+	}
 
-    @Bean
-    JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-        List<String> patterns = new ArrayList<>();
+	@Bean
+	JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+		List<String> patterns = new ArrayList<>();
 
-//        Jwt 인증 필터가 적용될 경로
-        patterns.add("/api/v1/follows");
+		//        Jwt 인증 필터가 적용될 경로
+		patterns.add("/api/v1/follows");
 
-        List<RequestMatcher> requestMatchers = patterns
-                .stream()
-                .map(pattern -> new AntPathRequestMatcher(pattern))
-                .collect(Collectors.toList());
+		List<RequestMatcher> requestMatchers = patterns
+			.stream()
+			.map(pattern -> new AntPathRequestMatcher(pattern))
+			.collect(Collectors.toList());
 
-        RequestMatcher requestMatcher = new OrRequestMatcher(requestMatchers);
+		RequestMatcher requestMatcher = new OrRequestMatcher(requestMatchers);
 
-        JwtAuthenticationFilter filter = new JwtAuthenticationFilter(requestMatcher);
-        filter.setAuthenticationManager(this.authenticationManagerBean());
-        return filter;
-    }
+		JwtAuthenticationFilter filter = new JwtAuthenticationFilter(requestMatcher);
+		filter.setAuthenticationManager(this.authenticationManagerBean());
+		return filter;
+	}
 
-//    필터가 두 번 등록되는 것을 방지
-    @Bean
-    FilterRegistrationBean filterRegistrationBean(JwtAuthenticationFilter jwtAuthenticationFilter) {
-        FilterRegistrationBean<JwtAuthenticationFilter> filterRegistrationBean = new FilterRegistrationBean<>(jwtAuthenticationFilter);
-        filterRegistrationBean.setEnabled(false);
-        return filterRegistrationBean;
-    }
+	//    필터가 두 번 등록되는 것을 방지
+	@Bean
+	FilterRegistrationBean filterRegistrationBean(JwtAuthenticationFilter jwtAuthenticationFilter) {
+		FilterRegistrationBean<JwtAuthenticationFilter> filterRegistrationBean = new FilterRegistrationBean<>(
+			jwtAuthenticationFilter);
+		filterRegistrationBean.setEnabled(false);
+		return filterRegistrationBean;
+	}
 
-    @Override
-    protected void configure(HttpSecurity http) throws Exception {
-        http.csrf().disable();
+	@Override
+	protected void configure(HttpSecurity http) throws Exception {
+		http.csrf().disable();
 
-        http.httpBasic().disable();
+		http.httpBasic().disable();
 
-        http.formLogin().disable();
+		http.formLogin().disable();
 
-        http.headers().frameOptions().disable();
+		http.headers().frameOptions().disable();
 
-        http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
-        http
-                .authorizeRequests()
-                    .antMatchers("/api/v1/follows").hasRole("MEMBER")
-                    .antMatchers("/api/v1/login").permitAll();
+		http
+			.authorizeRequests()
+			.antMatchers("/api/v1/follows").hasRole("MEMBER")
+			.antMatchers("/api/v1/login").permitAll();
 
-        http
-                .addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
-    }
+		http
+			.addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
+	}
 
-    @Override
-    protected void configure(AuthenticationManagerBuilder auth) throws Exception {
-        auth
-                .authenticationProvider(this.jwtAuthenticationProvider);
-    }
+	@Override
+	protected void configure(AuthenticationManagerBuilder auth) throws Exception {
+		auth
+			.authenticationProvider(this.jwtAuthenticationProvider);
+	}
 }

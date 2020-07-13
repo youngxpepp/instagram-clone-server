@@ -1,10 +1,14 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.dto;
 
-import lombok.*;
-
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @AllArgsConstructor
 @NoArgsConstructor
@@ -13,10 +17,10 @@ import javax.validation.constraints.NotNull;
 @Setter
 public class LoginRequestDto {
 
-    @Email
-    private String email;
+	@Email
+	private String email;
 
-    @NotNull
-    @NotEmpty
-    private String password;
+	@NotNull
+	@NotEmpty
+	private String password;
 }

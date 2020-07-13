@@ -4,7 +4,7 @@ import org.springframework.security.core.AuthenticationException;
 
 public class NoAuthorizationException extends AuthenticationException {
 
-    public NoAuthorizationException(String message) {
-        super(message);
-    }
+	public NoAuthorizationException(String message) {
+		super(message);
+	}
 }
