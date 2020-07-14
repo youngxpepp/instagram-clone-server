@@ -5,21 +5,21 @@ import org.springframework.security.authentication.AbstractAuthenticationToken;
 
 public class PreJwtAuthenticationToken extends AbstractAuthenticationToken {
 
-    @Getter
-    private String accessToken;
+	@Getter
+	private String accessToken;
 
-    public PreJwtAuthenticationToken(String accessToken) {
-        super(null);
-        this.accessToken = accessToken;
-    }
+	public PreJwtAuthenticationToken(String accessToken) {
+		super(null);
+		this.accessToken = accessToken;
+	}
 
-    @Override
-    public Object getCredentials() {
-        return null;
-    }
+	@Override
+	public Object getCredentials() {
+		return null;
+	}
 
-    @Override
-    public Object getPrincipal() {
-        return null;
-    }
+	@Override
+	public Object getPrincipal() {
+		return null;
+	}
 }

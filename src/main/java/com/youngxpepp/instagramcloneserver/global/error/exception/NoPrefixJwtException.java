@@ -4,7 +4,7 @@ import io.jsonwebtoken.JwtException;
 
 public class NoPrefixJwtException extends JwtException {
 
-    public NoPrefixJwtException(String message) {
-        super(message);
-    }
+	public NoPrefixJwtException(String message) {
+		super(message);
+	}
 }

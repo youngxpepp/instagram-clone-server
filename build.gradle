@@ -2,6 +2,17 @@ plugins {
 	id 'org.springframework.boot' version '2.3.0.RELEASE'
 	id 'io.spring.dependency-management' version '1.0.9.RELEASE'
 	id 'java'
+	id 'checkstyle'
+}
+
+compileJava.options.encoding = 'UTF-8'
+compileTestJava.options.encoding = 'UTF-8'
+
+checkstyle {
+	configFile = file("${rootDir}/checkstyle.xml")
+	configProperties = ["suppressionFile": "${rootDir}/suppressions.xml"]
+	maxWarnings = 0
+	toolVersion = '8.34'
 }
 
 group = 'com.youngxpepp'
@@ -26,6 +37,8 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
 	implementation 'com.querydsl:querydsl-core:4.2.2'
 	implementation 'com.querydsl:querydsl-jpa:4.2.2'
 	annotationProcessor 'com.querydsl:querydsl-apt:4.2.2:jpa'
@@ -34,15 +47,15 @@ dependencies {
 
 	implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
 	runtime 'io.jsonwebtoken:jjwt-impl:0.11.2',
+			// Uncomment the next line if you want to use RSASSA-PSS (PS256, PS384, PS512) algorithms:
+			//'org.bouncycastle:bcprov-jdk15on:1.60',
 			'io.jsonwebtoken:jjwt-jackson:0.11.2'
-
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-
-	runtimeOnly 'com.h2database:h2'
-	runtimeOnly 'mysql:mysql-connector-java'
 
 	compileOnly 'org.projectlombok:lombok'
 	annotationProcessor 'org.projectlombok:lombok'
+
+	runtimeOnly 'com.h2database:h2'
+	runtimeOnly 'mysql:mysql-connector-java'
 
 	testImplementation('org.springframework.boot:spring-boot-starter-test') {
 		exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
