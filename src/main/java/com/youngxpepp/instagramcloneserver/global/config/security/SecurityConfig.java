@@ -49,7 +49,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		List<String> patterns = new ArrayList<>();
 
 		//        Jwt 인증 필터가 적용될 경로
-		patterns.add("/api/v1/follows");
+		patterns.add("/api/v1/follows/**");
 
 		List<RequestMatcher> requestMatchers = patterns
 			.stream()
@@ -86,7 +86,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http
 			.authorizeRequests()
-			.antMatchers("/api/v1/follows").hasRole("MEMBER")
+			.antMatchers("/api/v1/follows/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/login").permitAll();
 
 		http

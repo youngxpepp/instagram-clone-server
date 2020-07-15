@@ -1,5 +1,7 @@
 package com.youngxpepp.instagramcloneserver.domain.follow.service;
 
+import javax.validation.Valid;
+
 import lombok.AllArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -39,7 +41,7 @@ public class FollowService {
 	}
 
 	@Transactional
-	public void unfollow(Member fromMember, UnfollowRequestDto dto) {
+	public void unfollow(Member fromMember, @Valid UnfollowRequestDto dto) {
 		Member toMember = memberRepository.findByNickname(dto.getMemberNickname())
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
