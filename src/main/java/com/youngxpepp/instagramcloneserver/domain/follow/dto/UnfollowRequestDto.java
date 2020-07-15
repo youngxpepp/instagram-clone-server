@@ -17,7 +17,6 @@ import lombok.Setter;
 @Setter
 public class UnfollowRequestDto {
 
-	@JsonProperty("member_nickname")
 	@NotNull
 	@NotEmpty
 	private String memberNickname;

@@ -134,9 +134,7 @@ public class FollowControllerTest extends IntegrationTest {
 	}
 
 	private ResultActions requestUnfollow(UnfollowRequestDto dto) throws Exception {
-		return mockMvc.perform(delete("/api/v1/follows")
-			.header("Authorization", accessToken)
-			.contentType(MediaType.APPLICATION_JSON)
-			.content(objectMapper.writeValueAsString(dto)));
+		return mockMvc.perform(delete("/api/v1/follows/{memberNickname}", dto.getMemberNickname())
+			.header("Authorization", accessToken));
 	}
 }
