@@ -40,4 +40,9 @@ public class Post extends AbstractBaseTimeEntity {
 	@ManyToOne
 	@JoinColumn(name = "modified_by")
 	private Member modifiedBy;
+
+	public void modify(PostServiceDto.ModifyServiceRequestDto modifyServiceRequestDto) {
+		this.content = modifyServiceRequestDto.getContent();
+		this.modifiedBy = modifyServiceRequestDto.getModifiedBy();
+	}
 }

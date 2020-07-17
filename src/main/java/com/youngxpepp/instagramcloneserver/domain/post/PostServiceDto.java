@@ -38,7 +38,7 @@ public class PostServiceDto {
 		private Long id;
 		private String content;
 		private MemberResponseDto createdBy;
-		private MemberResponseDto updatedBy;
+		private MemberResponseDto modifiedBy;
 		private LocalDateTime createdAt;
 		private LocalDateTime modifiedAt;
 
@@ -49,8 +49,22 @@ public class PostServiceDto {
 				.createdAt(post.getCreatedAt())
 				.modifiedAt(post.getModifiedAt())
 				.createdBy(MemberResponseDto.of(post.getCreatedBy()))
-				.updatedBy(MemberResponseDto.of(post.getModifiedBy()))
+				.modifiedBy(MemberResponseDto.of(post.getModifiedBy()))
 				.build();
+		}
+	}
+
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class ModifyServiceRequestDto {
+		private Long id;
+		private String content;
+		private Member modifiedBy;
+
+		public Post toEntity() {
+			return ModelMapperUtil.mapClass(this, Post.class);
 		}
 	}
 }
