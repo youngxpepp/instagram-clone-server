@@ -3,6 +3,8 @@ package com.youngxpepp.instagramcloneserver.domain.post;
 import static org.assertj.core.api.Assertions.*;
 import static org.junit.jupiter.api.Assertions.*;
 
+import java.util.Optional;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +22,9 @@ class PostServiceTest extends IntegrationTest {
 
 	@Autowired
 	private MemberRepository memberRepository;
+
+	@Autowired
+	private PostRepository postRepository;
 
 	@Autowired
 	private PostService postService;
@@ -48,25 +53,32 @@ class PostServiceTest extends IntegrationTest {
 		principal2 = memberRepository.save(principal2);
 	}
 
-	private PostServiceDto.CreateServiceRequestDto makePostCreateDto(Member creator, String content) {
-		return PostServiceDto.CreateServiceRequestDto.builder()
+	private PostServiceDto.CreateRequestDto makePostCreateDto(Member creator, String content) {
+		return PostServiceDto.CreateRequestDto.builder()
 			.createdBy(creator)
 			.content(content)
 			.build();
 	}
 
-	private PostServiceDto.ModifyServiceRequestDto makePostModifyDto(Member modifier, String content, Long postId) {
-		return PostServiceDto.ModifyServiceRequestDto.builder()
+	private PostServiceDto.ModifyRequestDto makePostModifyDto(Member modifier, String content, Long postId) {
+		return PostServiceDto.ModifyRequestDto.builder()
 			.content(content)
 			.modifiedBy(modifier)
 			.id(postId)
 			.build();
 	}
 
+	private void testPostContent(Long postId, String content) {
+		Optional<Post> byId = postRepository.findById(postId);
+		Post post = byId.orElse(null);
+		assertThat(post).isNotNull();
+		assertThat(post.getContent()).isEqualTo(content);
+	}
+
 	@Test
 	void Given_가입유저_When_게시물생성_Then_게시물정상생성() {
 		// given
-		PostServiceDto.CreateServiceRequestDto post = makePostCreateDto(principal, "1");
+		PostServiceDto.CreateRequestDto post = makePostCreateDto(principal, "1");
 
 		MemberResponseDto memberResponseDto = MemberResponseDto.of(principal);
 
@@ -74,20 +86,23 @@ class PostServiceTest extends IntegrationTest {
 		PostServiceDto.ServiceResponseDto postResponse = postService.createPost(post);
 
 		// then
-		assertThat(postResponse.getId()).isEqualTo(1);
+		Optional<Post> byId = postRepository.findById(postResponse.getId());
+		assertThat(byId).isPresent();
+
 		assertThat(postResponse.getContent()).isEqualTo("1");
-		assertThat(postResponse.getCreatedBy().getId()).isEqualTo(memberResponseDto.getId());
+		assertThat(postResponse.getCreatedBy().getId())
+			.isEqualTo(memberResponseDto.getId());
 	}
 
 	@Test
 	void Given_글생성유저_When_게시물수정_Then_수정성공() {
 		// given
 		Member creator = principal;
-		PostServiceDto.CreateServiceRequestDto post = makePostCreateDto(creator, "1");
+		PostServiceDto.CreateRequestDto post = makePostCreateDto(creator, "1");
 		PostServiceDto.ServiceResponseDto postCreateResponse = postService.createPost(post);
 
 		String modifyContent = "2";
-		PostServiceDto.ModifyServiceRequestDto modifyPostRequest =
+		PostServiceDto.ModifyRequestDto modifyPostRequest =
 			makePostModifyDto(creator, modifyContent, postCreateResponse.getId());
 
 		// when
@@ -103,12 +118,13 @@ class PostServiceTest extends IntegrationTest {
 	void Given_다른유저_When_게시물수정_Then_수정실패() {
 		// given
 		Member creator = principal;
-		PostServiceDto.CreateServiceRequestDto post = makePostCreateDto(creator, "1");
-		PostServiceDto.ServiceResponseDto postCreateResponse = postService.createPost(post);
+		String originalContent = "1";
+		PostServiceDto.CreateRequestDto postDto = makePostCreateDto(creator, originalContent);
+		PostServiceDto.ServiceResponseDto postCreateResponse = postService.createPost(postDto);
 
 		String modifyContent = "2";
 		Member modifier = principal2;
-		PostServiceDto.ModifyServiceRequestDto modifyPostRequest =
+		PostServiceDto.ModifyRequestDto modifyPostRequest =
 			makePostModifyDto(modifier, modifyContent, postCreateResponse.getId());
 
 		// when
@@ -119,15 +135,17 @@ class PostServiceTest extends IntegrationTest {
 		// then
 		assertThat(errorCode.getHttpStatus()).isEqualTo(HttpStatus.FORBIDDEN);
 		assertThat(errorCode.getCode()).isEqualTo(1005);
+
+		testPostContent(postCreateResponse.getId(), originalContent);
 	}
 
 	@Test
-	void Givne_없는포스트_When_게시물수정_Then_접근실패() {
+	void Given_없는포스트_When_게시물수정_Then_접근실패() {
 		// given
 		String modifyContent = "2";
 		Member modifier = principal;
 		Long wrongPostId = 999L;
-		PostServiceDto.ModifyServiceRequestDto modifyPostRequest =
+		PostServiceDto.ModifyRequestDto modifyPostRequest =
 			makePostModifyDto(modifier, modifyContent, wrongPostId);
 
 		// when
@@ -138,5 +156,75 @@ class PostServiceTest extends IntegrationTest {
 		// then
 		assertThat(errorCode.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
 		assertThat(errorCode.getCode()).isEqualTo(1002);
+	}
+
+	@Test
+	void Given_글생성유저_When_게시물삭제_Then_삭제성공() {
+		// given
+		Post post = Post.builder()
+			.content("1")
+			.createdBy(principal)
+			.build();
+		post = postRepository.save(post);
+
+		PostServiceDto.DeleteRequestDto deleteRequestDto = PostServiceDto.DeleteRequestDto.builder()
+			.id(post.getId())
+			.requestBy(principal)
+			.build();
+
+		// when
+		postService.deletePost(deleteRequestDto);
+
+		// then
+		Optional<Post> postOptional = postRepository.findById(post.getId());
+		assertThat(postOptional).isNotPresent();
+	}
+
+	@Test
+	void Given_다른유저_When_게시물삭제_Then_삭제실패() {
+		// given
+		Post post = Post.builder()
+			.content("1")
+			.createdBy(principal)
+			.build();
+		post = postRepository.save(post);
+
+		PostServiceDto.DeleteRequestDto deleteRequestDto = PostServiceDto.DeleteRequestDto.builder()
+			.id(post.getId())
+			.requestBy(principal2)
+			.build();
+
+		// when
+		BusinessException businessException = assertThrows(BusinessException.class,
+			() -> postService.deletePost(deleteRequestDto));
+		ErrorCode errorCode = businessException.getErrorCode();
+
+		// then
+		assertThat(errorCode.getCode()).isEqualTo(1005);
+		assertThat(errorCode.getHttpStatus()).isEqualTo(HttpStatus.FORBIDDEN);
+
+		Optional<Post> byId = postRepository.findById(post.getId());
+		assertThat(byId).isPresent();
+	}
+
+	@Test
+	void Given_없는게시물_When_게시물삭제_Then_삭제실패() {
+		Long postId = 999L;
+		PostServiceDto.DeleteRequestDto deleteRequestDto = PostServiceDto.DeleteRequestDto.builder()
+			.id(999L)
+			.requestBy(principal)
+			.build();
+
+		// when
+		BusinessException businessException = assertThrows(BusinessException.class,
+			() -> postService.deletePost(deleteRequestDto));
+		ErrorCode errorCode = businessException.getErrorCode();
+
+		// then
+		assertThat(errorCode.getCode()).isEqualTo(1002);
+		assertThat(errorCode.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+
+		Optional<Post> byId = postRepository.findById(999L);
+		assertThat(byId).isNotPresent();
 	}
 }

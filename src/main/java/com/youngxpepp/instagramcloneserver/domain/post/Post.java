@@ -7,14 +7,15 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
 @Entity
 @NoArgsConstructor
@@ -41,8 +42,8 @@ public class Post extends AbstractBaseTimeEntity {
 	@JoinColumn(name = "modified_by")
 	private Member modifiedBy;
 
-	public void modify(PostServiceDto.ModifyServiceRequestDto modifyServiceRequestDto) {
-		this.content = modifyServiceRequestDto.getContent();
-		this.modifiedBy = modifyServiceRequestDto.getModifiedBy();
+	public void modify(PostServiceDto.ModifyRequestDto modifyRequestDto) {
+		this.content = modifyRequestDto.getContent();
+		this.modifiedBy = modifyRequestDto.getModifiedBy();
 	}
 }

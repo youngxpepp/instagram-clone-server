@@ -21,7 +21,7 @@ public class PostServiceDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	public static class CreateServiceRequestDto {
+	public static class CreateRequestDto {
 		private String content;
 		private Member createdBy;
 
@@ -58,7 +58,7 @@ public class PostServiceDto {
 	@NoArgsConstructor
 	@AllArgsConstructor
 	@Getter
-	public static class ModifyServiceRequestDto {
+	public static class ModifyRequestDto {
 		private Long id;
 		private String content;
 		private Member modifiedBy;
@@ -67,4 +67,14 @@ public class PostServiceDto {
 			return ModelMapperUtil.mapClass(this, Post.class);
 		}
 	}
+
+	@Builder
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Getter
+	public static class DeleteRequestDto {
+		private Long id;
+		private Member requestBy;
+	}
+
 }

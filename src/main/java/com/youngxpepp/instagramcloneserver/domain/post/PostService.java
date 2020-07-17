@@ -11,27 +11,39 @@ import lombok.RequiredArgsConstructor;
 public class PostService {
 	private final PostRepository postRepository;
 
-	public PostServiceDto.ServiceResponseDto createPost(PostServiceDto.CreateServiceRequestDto createRequestDto) {
+	public PostServiceDto.ServiceResponseDto createPost(PostServiceDto.CreateRequestDto createRequestDto) {
 		Post post = createRequestDto.toEntity();
 		post = postRepository.save(post);
 		return PostServiceDto.ServiceResponseDto.of(post);
 	}
 
-	public PostServiceDto.ServiceResponseDto modifyPost(
-		PostServiceDto.ModifyServiceRequestDto modifyServiceRequestDto) {
-		Long postId = modifyServiceRequestDto.getId();
+	public PostServiceDto.ServiceResponseDto modifyPost(PostServiceDto.ModifyRequestDto modifyRequestDto) {
+		Long postId = modifyRequestDto.getId();
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-		if (!post.getCreatedBy().getId().equals(modifyServiceRequestDto.getModifiedBy().getId())) {
+		if (!post.getCreatedBy().getId().equals(modifyRequestDto.getModifiedBy().getId())) {
 			throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
 		}
 		// TODO
 		// 수정 권한 검사
 
-		post.modify(modifyServiceRequestDto);
+		post.modify(modifyRequestDto);
 		post = postRepository.save(post);
 		return PostServiceDto.ServiceResponseDto.of(post);
 	}
 
+	public void deletePost(PostServiceDto.DeleteRequestDto deleteRequestDto) {
+		Long postId = deleteRequestDto.getId();
+		Post post = postRepository.findById(postId)
+			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+		if (!post.getCreatedBy().getId().equals(deleteRequestDto.getRequestBy().getId())) {
+			throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
+		}
+		// TODO
+		// 삭제 권한 검사
+
+		postRepository.deleteById(postId);
+	}
 }
