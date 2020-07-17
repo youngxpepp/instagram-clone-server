@@ -1,10 +1,10 @@
 package com.youngxpepp.instagramcloneserver.domain.post;
 
 import org.springframework.stereotype.Service;
+import lombok.RequiredArgsConstructor;
 
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
-import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -33,7 +33,7 @@ public class PostService {
 		return PostServiceDto.ServiceResponseDto.of(post);
 	}
 
-	public void deletePost(PostServiceDto.DeleteRequestDto deleteRequestDto) {
+	public PostServiceDto.DeleteResponseDto deletePost(PostServiceDto.DeleteRequestDto deleteRequestDto) {
 		Long postId = deleteRequestDto.getId();
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
@@ -45,5 +45,8 @@ public class PostService {
 		// 삭제 권한 검사
 
 		postRepository.deleteById(postId);
+		return PostServiceDto.DeleteResponseDto.builder()
+			.id(postId)
+			.build();
 	}
 }

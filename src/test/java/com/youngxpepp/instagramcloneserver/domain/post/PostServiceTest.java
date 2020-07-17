@@ -173,10 +173,10 @@ class PostServiceTest extends IntegrationTest {
 			.build();
 
 		// when
-		postService.deletePost(deleteRequestDto);
+		PostServiceDto.DeleteResponseDto deleteResponseDto = postService.deletePost(deleteRequestDto);
 
 		// then
-		Optional<Post> postOptional = postRepository.findById(post.getId());
+		Optional<Post> postOptional = postRepository.findById(deleteResponseDto.getId());
 		assertThat(postOptional).isNotPresent();
 	}
 

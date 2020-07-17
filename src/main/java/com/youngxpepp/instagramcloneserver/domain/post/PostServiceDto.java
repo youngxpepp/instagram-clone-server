@@ -2,13 +2,14 @@ package com.youngxpepp.instagramcloneserver.domain.post;
 
 import java.time.LocalDateTime;
 
-import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberResponseDto;
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.global.common.domain.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+
+import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberResponseDto;
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.global.common.domain.ModelMapperUtil;
 
 // TODO image
 public class PostServiceDto {
@@ -77,4 +78,11 @@ public class PostServiceDto {
 		private Member requestBy;
 	}
 
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class DeleteResponseDto {
+		private Long id;
+	}
 }

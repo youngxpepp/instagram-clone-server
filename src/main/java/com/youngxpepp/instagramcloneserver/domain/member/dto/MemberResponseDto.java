@@ -1,12 +1,13 @@
 package com.youngxpepp.instagramcloneserver.domain.member.dto;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.global.common.domain.ModelMapperUtil;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.global.common.domain.ModelMapperUtil;
 
 @Getter
 @NoArgsConstructor
