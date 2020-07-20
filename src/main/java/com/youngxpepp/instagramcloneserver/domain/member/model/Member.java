@@ -2,10 +2,12 @@ package com.youngxpepp.instagramcloneserver.domain.member.model;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -44,10 +46,10 @@ public class Member extends AbstractBaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	@OneToMany(mappedBy = "toMember")
+	@OneToMany(mappedBy = "toMember", fetch = FetchType.EAGER)
 	private List<Follow> followers = new ArrayList<>();
 
-	@OneToMany(mappedBy = "fromMember")
+	@OneToMany(mappedBy = "fromMember", fetch = FetchType.EAGER)
 	private List<Follow> followings = new ArrayList<>();
 
 	@Builder
@@ -57,5 +59,13 @@ public class Member extends AbstractBaseTimeEntity {
 		this.email = email;
 		this.password = password;
 		this.role = role;
+	}
+
+	public int getFollowersSize() {
+		return this.followers.size();
+	}
+
+	public int getFollowingsSize() {
+		return this.followings.size();
 	}
 }
