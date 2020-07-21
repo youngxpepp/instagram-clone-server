@@ -92,7 +92,7 @@ class MemberControllerTest extends IntegrationTest {
 			.andExpect(jsonPath("member_nickname").value(memberA.getNickname()))
 			.andExpect(jsonPath("member_name").value(memberA.getName()))
 			.andExpect(jsonPath("member_email").value(memberA.getEmail()))
-			.andExpect(jsonPath("follower_count").value(2))
-			.andExpect(jsonPath("following_count").value(2));
+			.andExpect(jsonPath("follower_count").value(2L))
+			.andExpect(jsonPath("following_count").value(2L));
 	}
 }

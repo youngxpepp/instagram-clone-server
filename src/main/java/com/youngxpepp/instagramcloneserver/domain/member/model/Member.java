@@ -46,10 +46,10 @@ public class Member extends AbstractBaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	@OneToMany(mappedBy = "toMember", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "toMember")
 	private List<Follow> followers = new ArrayList<>();
 
-	@OneToMany(mappedBy = "fromMember", fetch = FetchType.EAGER)
+	@OneToMany(mappedBy = "fromMember")
 	private List<Follow> followings = new ArrayList<>();
 
 	@Builder
@@ -59,13 +59,5 @@ public class Member extends AbstractBaseTimeEntity {
 		this.email = email;
 		this.password = password;
 		this.role = role;
-	}
-
-	public int getFollowersSize() {
-		return this.followers.size();
-	}
-
-	public int getFollowingsSize() {
-		return this.followings.size();
 	}
 }

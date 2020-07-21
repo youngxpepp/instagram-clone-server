@@ -26,9 +26,9 @@ public class MemberControllerDto {
 		private String memberEmail;
 
 		@JsonProperty("follower_count")
-		private Integer followerCount;
+		private Long followerCount;
 
 		@JsonProperty("following_count")
-		private Integer followingCount;
+		private Long followingCount;
 	}
 }
