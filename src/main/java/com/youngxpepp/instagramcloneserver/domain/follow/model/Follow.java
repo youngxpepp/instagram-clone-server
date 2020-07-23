@@ -39,5 +39,7 @@ public class Follow extends AbstractBaseTimeEntity {
 	public Follow(Member fromMember, Member toMember) {
 		this.fromMember = fromMember;
 		this.toMember = toMember;
+		fromMember.getFollowings().add(this);
+		toMember.getFollowers().add(this);
 	}
 }
