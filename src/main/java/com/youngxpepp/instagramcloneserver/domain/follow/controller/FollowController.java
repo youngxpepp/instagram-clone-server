@@ -7,6 +7,7 @@ import javax.validation.constraints.NotEmpty;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -19,6 +20,7 @@ import org.springframework.web.bind.annotation.RestController;
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.UnfollowRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.service.FollowService;
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.PostJwtAuthenticationToken;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
@@ -33,21 +35,24 @@ public class FollowController {
 	private Validator validator;
 
 	@PostMapping
-	public void follow(@RequestBody @Valid FollowRequestDto dto) throws BusinessException {
-		PostJwtAuthenticationToken postJwtAuthenticationToken =
-			(PostJwtAuthenticationToken)SecurityContextHolder.getContext()
-				.getAuthentication();
-		followService.follow(postJwtAuthenticationToken.getMember(), dto);
+	public void follow(
+		@RequestBody @Valid FollowRequestDto dto,
+		@AuthenticationPrincipal Member principal
+	)
+		throws BusinessException {
+
+		followService.follow(principal, dto);
 	}
 
 	@DeleteMapping("/{memberNickname}")
-	public void unfollow(@PathVariable("memberNickname") String memberNickname) {
-		PostJwtAuthenticationToken postJwtAuthenticationToken =
-			(PostJwtAuthenticationToken)SecurityContextHolder.getContext()
-				.getAuthentication();
+	public void unfollow(
+		@PathVariable("memberNickname") String memberNickname,
+		@AuthenticationPrincipal Member principal
+	) {
+
 		UnfollowRequestDto dto = UnfollowRequestDto.builder()
 			.memberNickname(memberNickname)
 			.build();
-		followService.unfollow(postJwtAuthenticationToken.getMember(), dto);
+		followService.unfollow(principal, dto);
 	}
 }
