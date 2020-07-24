@@ -10,13 +10,12 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 
 public class PostJwtAuthenticationToken extends AbstractAuthenticationToken {
 
-	@Getter
-	private Member member;
+	private Member principal;
 
 	public PostJwtAuthenticationToken(List<SimpleGrantedAuthority> authorities, Member member) {
 		super(authorities);
 		super.setAuthenticated(true);
-		this.member = member;
+		this.principal = member;
 	}
 
 	@Override
@@ -26,6 +25,6 @@ public class PostJwtAuthenticationToken extends AbstractAuthenticationToken {
 
 	@Override
 	public Object getPrincipal() {
-		return null;
+		return this.principal;
 	}
 }

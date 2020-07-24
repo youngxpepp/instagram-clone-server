@@ -37,15 +37,29 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		HttpServletRequest request = (HttpServletRequest)req;
 		HttpServletResponse response = (HttpServletResponse)res;
 
-		try {
-			super.doFilter(req, res, chain);
-			return;
-		} catch (JwtException | AuthenticationException | BusinessException e) {
-			SecurityContextHolder.clearContext();
-			handlerExceptionResolver.resolveException(request, response, null, e);
+		if (!requiresAuthentication(request, response)) {
+			chain.doFilter(request, response);
 
 			return;
 		}
+
+		Authentication authResult;
+
+		try {
+			authResult = attemptAuthentication(request, response);
+			if (authResult == null) {
+				// return immediately as subclass has indicated that it hasn't completed
+				// authentication
+				return;
+			}
+		} catch (AuthenticationException | BusinessException | JwtException failed) {
+			SecurityContextHolder.clearContext();
+			handlerExceptionResolver.resolveException(request, response, null, failed);
+
+			return;
+		}
+
+		successfulAuthentication(request, response, chain, authResult);
 	}
 
 	@Override
