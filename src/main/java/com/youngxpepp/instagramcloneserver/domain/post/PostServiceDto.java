@@ -2,6 +2,7 @@ package com.youngxpepp.instagramcloneserver.domain.post;
 
 import java.time.LocalDateTime;
 
+import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,12 +12,8 @@ import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.common.domain.ModelMapperUtil;
 
-// TODO image
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class PostServiceDto {
-
-	private PostServiceDto() {
-		// blank
-	}
 
 	@Builder
 	@NoArgsConstructor
@@ -84,5 +81,38 @@ public class PostServiceDto {
 	@AllArgsConstructor
 	public static class DeleteResponseDto {
 		private Long id;
+	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class ReadOnePostRequestDto {
+		private Long id;
+		private Member requestBy;
+	}
+
+	@Builder
+	@Getter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	public static class ReadOnePostResponseDto {
+		private Long id;
+		private String content;
+		private LocalDateTime createdAt;
+		private LocalDateTime modifiedAt;
+		private MemberResponseDto createdBy;
+		private MemberResponseDto modifiedBy;
+
+		public static ReadOnePostResponseDto of(Post post) {
+			return ReadOnePostResponseDto.builder()
+				.id(post.getId())
+				.content(post.getContent())
+				.createdAt(post.getCreatedAt())
+				.createdBy(MemberResponseDto.of(post.getCreatedBy()))
+				.modifiedAt(post.getModifiedAt())
+				.modifiedBy(MemberResponseDto.of(post.getModifiedBy()))
+				.build();
+		}
 	}
 }

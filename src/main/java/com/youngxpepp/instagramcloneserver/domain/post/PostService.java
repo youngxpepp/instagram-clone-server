@@ -49,4 +49,12 @@ public class PostService {
 			.id(postId)
 			.build();
 	}
+
+	public PostServiceDto.ReadOnePostResponseDto readPost(PostServiceDto.ReadOnePostRequestDto readOnePostRequestDto) {
+		Long postId = readOnePostRequestDto.getId();
+		// TODO 읽기권한 검사
+		Post post = postRepository.findById(postId)
+			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+		return PostServiceDto.ReadOnePostResponseDto.of(post);
+	}
 }

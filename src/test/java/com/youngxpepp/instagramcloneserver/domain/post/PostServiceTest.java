@@ -209,6 +209,7 @@ class PostServiceTest extends IntegrationTest {
 
 	@Test
 	void Given_없는게시물_When_게시물삭제_Then_삭제실패() {
+		// given
 		Long postId = 999L;
 		PostServiceDto.DeleteRequestDto deleteRequestDto = PostServiceDto.DeleteRequestDto.builder()
 			.id(999L)
@@ -218,6 +219,49 @@ class PostServiceTest extends IntegrationTest {
 		// when
 		BusinessException businessException = assertThrows(BusinessException.class,
 			() -> postService.deletePost(deleteRequestDto));
+		ErrorCode errorCode = businessException.getErrorCode();
+
+		// then
+		assertThat(errorCode.getCode()).isEqualTo(1002);
+		assertThat(errorCode.getHttpStatus()).isEqualTo(HttpStatus.NOT_FOUND);
+
+		Optional<Post> byId = postRepository.findById(999L);
+		assertThat(byId).isNotPresent();
+	}
+
+	@Test
+	void Given_정상게시물_When_게시물읽기_then_읽기성공() {
+		// given
+		PostServiceDto.CreateRequestDto postCreateDto = makePostCreateDto(principal, "1");
+
+		PostServiceDto.ServiceResponseDto post = postService.createPost(postCreateDto);
+
+		PostServiceDto.ReadOnePostRequestDto readOnePostRequestDto =
+			PostServiceDto.ReadOnePostRequestDto.builder()
+				.id(post.getId())
+				.build();
+
+		// when
+		PostServiceDto.ReadOnePostResponseDto readOnePostResponseDto = postService.readPost(readOnePostRequestDto);
+
+		// then
+		assertThat(readOnePostResponseDto.getId()).isEqualTo(post.getId());
+		assertThat(readOnePostResponseDto.getContent()).isEqualTo(post.getContent());
+		assertThat(readOnePostResponseDto.getCreatedBy().getId()).isEqualTo(post.getCreatedBy().getId());
+		assertThat(readOnePostResponseDto.getCreatedAt()).isEqualTo(post.getCreatedAt());
+	}
+
+	@Test
+	void Given_없는게시물_When_게시물읽기_Then_읽기실패() {
+		// given
+		Long postId = 999L;
+		PostServiceDto.ReadOnePostRequestDto postRequestDto = PostServiceDto.ReadOnePostRequestDto.builder()
+			.id(postId)
+			.build();
+
+		// when
+		BusinessException businessException = assertThrows(BusinessException.class,
+			() -> postService.readPost(postRequestDto));
 		ErrorCode errorCode = businessException.getErrorCode();
 
 		// then

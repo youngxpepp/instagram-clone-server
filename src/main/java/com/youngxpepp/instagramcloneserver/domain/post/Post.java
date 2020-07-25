@@ -33,7 +33,10 @@ public class Post extends AbstractBaseTimeEntity {
 
 	// TODO
 	// image
-
+	// like
+	// comment
+	// public/private
+	// comment able?
 	@ManyToOne
 	@JoinColumn(name = "created_by")
 	private Member createdBy;
