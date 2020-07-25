@@ -102,4 +102,17 @@ public class PostControllerDto {
 			return ModelMapperUtil.mapClass(modifyResponseDto, ModifyResponseDto.class);
 		}
 	}
+
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	public static class DeleteResponseDto {
+		private Long id;
+
+		public static DeleteResponseDto of(PostServiceDto.DeleteResponseDto deleteResponseDto) {
+			return ModelMapperUtil.mapClass(deleteResponseDto, DeleteResponseDto.class);
+		}
+	}
 }

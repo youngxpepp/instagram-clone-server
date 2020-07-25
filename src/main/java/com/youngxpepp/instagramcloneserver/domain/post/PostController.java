@@ -4,6 +4,7 @@ import javax.validation.constraints.NotNull;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -50,11 +51,25 @@ public class PostController {
 		@PathVariable @NotNull Long postId,
 		@RequestBody PostControllerDto.ModifyRequestDto updateRequestDto,
 		@AuthenticationPrincipal Member principal) {
-		
+
 		PostServiceDto.ModifyRequestDto modifyRequestDto = updateRequestDto.toServiceDto(postId, principal);
 
 		PostServiceDto.ModifyResponseDto serviceResponseDto = postService.modifyPost(modifyRequestDto);
 
 		return ResponseEntity.ok(PostControllerDto.ModifyResponseDto.of(serviceResponseDto));
+	}
+
+	@DeleteMapping("/{postId}")
+	public ResponseEntity<PostControllerDto.DeleteResponseDto> deletePost(
+		@PathVariable @NotNull Long postId,
+		@AuthenticationPrincipal Member principal) {
+		PostServiceDto.DeleteRequestDto requestDto = PostServiceDto.DeleteRequestDto.builder()
+			.requestBy(principal)
+			.id(postId)
+			.build();
+
+		PostServiceDto.DeleteResponseDto deleteResponseDto = postService.deletePost(requestDto);
+
+		return ResponseEntity.ok(PostControllerDto.DeleteResponseDto.of(deleteResponseDto));
 	}
 }

@@ -278,4 +278,34 @@ class PostControllerTest extends IntegrationTest {
 			.andExpect(status().isNotFound())
 			.andExpect(jsonPath("$.error.code").value(1002));
 	}
+
+	@Test
+	void Given_게시물생성유저_When_게시물삭제_Then_게시물삭제성공() throws Exception {
+		// given
+		Long id = post.getId();
+
+		// when
+		ResultActions resultActions = mockMvc.perform(delete("/api/v1/post/" + id)
+			.header("Authorization", accessToken)
+			.contentType(MediaType.APPLICATION_JSON));
+
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(id));
+	}
+
+	@Test
+	void Given_다른유저_When_게시물삭제_Then_게시물삭제실패() throws Exception {
+		// given
+		Long id = post.getId();
+
+		// when
+		ResultActions resultActions = mockMvc.perform(delete("/api/v1/post/" + id)
+			.header("Authorization", accessToken2)
+			.contentType(MediaType.APPLICATION_JSON));
+
+		resultActions
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("$.error.code").value(1005));
+	}
 }
