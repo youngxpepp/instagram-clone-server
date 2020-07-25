@@ -11,13 +11,13 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 public class PostService {
 	private final PostRepository postRepository;
 
-	public PostServiceDto.ServiceResponseDto createPost(PostServiceDto.CreateRequestDto createRequestDto) {
+	public PostServiceDto.CreateResponseDto createPost(PostServiceDto.CreateRequestDto createRequestDto) {
 		Post post = createRequestDto.toEntity();
 		post = postRepository.save(post);
-		return PostServiceDto.ServiceResponseDto.of(post);
+		return PostServiceDto.CreateResponseDto.of(post);
 	}
 
-	public PostServiceDto.ServiceResponseDto modifyPost(PostServiceDto.ModifyRequestDto modifyRequestDto) {
+	public PostServiceDto.ModifyResponseDto modifyPost(PostServiceDto.ModifyRequestDto modifyRequestDto) {
 		Long postId = modifyRequestDto.getId();
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
@@ -30,7 +30,7 @@ public class PostService {
 
 		post.modify(modifyRequestDto);
 		post = postRepository.save(post);
-		return PostServiceDto.ServiceResponseDto.of(post);
+		return PostServiceDto.ModifyResponseDto.of(post);
 	}
 
 	public PostServiceDto.DeleteResponseDto deletePost(PostServiceDto.DeleteRequestDto deleteRequestDto) {

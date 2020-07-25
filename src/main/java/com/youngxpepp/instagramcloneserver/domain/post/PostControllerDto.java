@@ -47,7 +47,7 @@ public class PostControllerDto {
 		private LocalDateTime modifiedAt;
 		private MemberResponseDto modifiedBy;
 
-		public static CreateResponseDto of(PostServiceDto.ServiceResponseDto postDto) {
+		public static CreateResponseDto of(PostServiceDto.CreateResponseDto postDto) {
 			return ModelMapperUtil.mapClass(postDto, CreateResponseDto.class);
 		}
 	}
@@ -60,11 +60,46 @@ public class PostControllerDto {
 	public static class CreateRequestDto {
 		private String content;
 
-		public PostServiceDto.CreateRequestDto toServiceDto(Member memeber) {
+		public PostServiceDto.CreateRequestDto toServiceDto(Member member) {
 			return PostServiceDto.CreateRequestDto.builder()
 				.content(this.content)
-				.createdBy(memeber)
+				.createdBy(member)
 				.build();
+		}
+	}
+
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	public static class ModifyRequestDto {
+		private String content;
+
+		public PostServiceDto.ModifyRequestDto toServiceDto(Long id, Member member) {
+			return PostServiceDto.ModifyRequestDto.builder()
+				.content(content)
+				.id(id)
+				.modifiedBy(member)
+				.build();
+		}
+	}
+
+	@Getter
+	@Setter
+	@NoArgsConstructor
+	@AllArgsConstructor
+	@Builder
+	public static class ModifyResponseDto {
+		private Long id;
+		private String content;
+		private LocalDateTime createdAt;
+		private MemberResponseDto createdBy;
+		private LocalDateTime modifiedAt;
+		private MemberResponseDto modifiedBy;
+
+		public static ModifyResponseDto of(PostServiceDto.ModifyResponseDto modifyResponseDto) {
+			return ModelMapperUtil.mapClass(modifyResponseDto, ModifyResponseDto.class);
 		}
 	}
 }

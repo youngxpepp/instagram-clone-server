@@ -83,7 +83,7 @@ class PostServiceTest extends IntegrationTest {
 		MemberResponseDto memberResponseDto = MemberResponseDto.of(principal);
 
 		// when
-		PostServiceDto.ServiceResponseDto postResponse = postService.createPost(post);
+		PostServiceDto.CreateResponseDto postResponse = postService.createPost(post);
 
 		// then
 		Optional<Post> byId = postRepository.findById(postResponse.getId());
@@ -99,14 +99,14 @@ class PostServiceTest extends IntegrationTest {
 		// given
 		Member creator = principal;
 		PostServiceDto.CreateRequestDto post = makePostCreateDto(creator, "1");
-		PostServiceDto.ServiceResponseDto postCreateResponse = postService.createPost(post);
+		PostServiceDto.CreateResponseDto postCreateResponse = postService.createPost(post);
 
 		String modifyContent = "2";
 		PostServiceDto.ModifyRequestDto modifyPostRequest =
 			makePostModifyDto(creator, modifyContent, postCreateResponse.getId());
 
 		// when
-		PostServiceDto.ServiceResponseDto postModifyResponse = postService.modifyPost(modifyPostRequest);
+		PostServiceDto.ModifyResponseDto postModifyResponse = postService.modifyPost(modifyPostRequest);
 
 		// then
 		assertThat(postModifyResponse.getId()).isEqualTo(postCreateResponse.getId());
@@ -120,7 +120,7 @@ class PostServiceTest extends IntegrationTest {
 		Member creator = principal;
 		String originalContent = "1";
 		PostServiceDto.CreateRequestDto postDto = makePostCreateDto(creator, originalContent);
-		PostServiceDto.ServiceResponseDto postCreateResponse = postService.createPost(postDto);
+		PostServiceDto.CreateResponseDto postCreateResponse = postService.createPost(postDto);
 
 		String modifyContent = "2";
 		Member modifier = principal2;
@@ -234,7 +234,7 @@ class PostServiceTest extends IntegrationTest {
 		// given
 		PostServiceDto.CreateRequestDto postCreateDto = makePostCreateDto(principal, "1");
 
-		PostServiceDto.ServiceResponseDto post = postService.createPost(postCreateDto);
+		PostServiceDto.CreateResponseDto post = postService.createPost(postCreateDto);
 
 		PostServiceDto.ReadOnePostRequestDto readOnePostRequestDto =
 			PostServiceDto.ReadOnePostRequestDto.builder()

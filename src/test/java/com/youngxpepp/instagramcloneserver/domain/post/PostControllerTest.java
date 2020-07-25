@@ -20,7 +20,9 @@ import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
 class PostControllerTest extends IntegrationTest {
 
 	private Member principal;
+
 	private String accessToken;
+	private String accessToken2;
 	Post post;
 
 	@Autowired
@@ -49,6 +51,21 @@ class PostControllerTest extends IntegrationTest {
 			.build();
 		accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
 
+		Member principal2 = Member.builder()
+			.name("principalName2")
+			.nickname("principalNickname2")
+			.email("principal2@gmail.com")
+			.password("123123")
+			.role(MemberRole.MEMBER)
+			.build();
+		memberRepository.save(principal2);
+
+		AccessTokenClaims accessTokenClaims2 = AccessTokenClaims.builder()
+			.email(principal2.getEmail())
+			.roles(ImmutableList.of(principal2.getRole()))
+			.build();
+		accessToken2 = jwtUtil.generateAccessToken(accessTokenClaims2);
+
 		Post test = Post.builder()
 			.createdBy(principal)
 			.content("test")
@@ -74,6 +91,25 @@ class PostControllerTest extends IntegrationTest {
 
 		return mockMvc.perform(get(url.toString())
 			.header("Authorization", token)
+			.contentType(MediaType.APPLICATION_JSON));
+	}
+
+	private ResultActions requestModify(Long id, String token, PostControllerDto.ModifyRequestDto requestDto) throws
+		Exception {
+		StringBuilder url = new StringBuilder("/api/v1/post/");
+		if (id != null) {
+			url.append(id);
+		}
+
+		if (principal == null) {
+			return mockMvc.perform(patch(url.toString())
+				.content(objectMapper.writeValueAsString(requestDto))
+				.contentType(MediaType.APPLICATION_JSON));
+		}
+
+		return mockMvc.perform(patch(url.toString())
+			.header("Authorization", token)
+			.content(objectMapper.writeValueAsString(requestDto))
 			.contentType(MediaType.APPLICATION_JSON));
 	}
 
@@ -137,7 +173,7 @@ class PostControllerTest extends IntegrationTest {
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").exists())
 			.andExpect(jsonPath("$.content").value(content))
-			.andExpect(jsonPath("$.createdBy.id").value(principal.getId()));
+			.andExpect(jsonPath("$.created_by.id").value(principal.getId()));
 	}
 
 	@Test
@@ -156,7 +192,7 @@ class PostControllerTest extends IntegrationTest {
 		resultActions
 			.andExpect(status().isCreated())
 			.andExpect(jsonPath("$.id").exists())
-			.andExpect(jsonPath("$.createdBy.id").value(principal.getId()));
+			.andExpect(jsonPath("$.created_by.id").value(principal.getId()));
 	}
 
 	@Test
@@ -190,4 +226,56 @@ class PostControllerTest extends IntegrationTest {
 			.andExpect(status().isBadRequest());
 	}
 
+	@Test
+	void Given_게시물생성유저_When_게시물수정_Then_게시물수정성공() throws Exception {
+		// given
+		String modifiedString = "test2";
+		PostControllerDto.ModifyRequestDto requestDto = PostControllerDto.ModifyRequestDto.builder()
+			.content(modifiedString)
+			.build();
+
+		// when
+		ResultActions resultActions = requestModify(post.getId(), accessToken, requestDto);
+
+		// then
+		resultActions
+			.andExpect(status().isOk())
+			.andExpect(jsonPath("$.id").value(post.getId()))
+			.andExpect(jsonPath("$.content").value(modifiedString))
+			.andExpect(jsonPath("$.modified_by.id").value(principal.getId()));
+	}
+
+	@Test
+	void Given_다른유저_When_게시물수정_Then_게시물수정실패() throws Exception {
+		// given
+		String modifiedString = "test2";
+		PostControllerDto.ModifyRequestDto requestDto = PostControllerDto.ModifyRequestDto.builder()
+			.content(modifiedString)
+			.build();
+
+		// when
+		ResultActions resultActions = requestModify(post.getId(), accessToken2, requestDto);
+
+		// then
+		resultActions
+			.andExpect(status().isForbidden())
+			.andExpect(jsonPath("$.error.code").value(1005));
+	}
+
+	@Test
+	void Given_없는게시물_When_게시물수정_Then_게시물수정실패() throws Exception {
+		// given
+		String modifiedString = "test2";
+		PostControllerDto.ModifyRequestDto requestDto = PostControllerDto.ModifyRequestDto.builder()
+			.content(modifiedString)
+			.build();
+
+		// when
+		ResultActions resultActions = requestModify(999L, accessToken, requestDto);
+
+		// then
+		resultActions
+			.andExpect(status().isNotFound())
+			.andExpect(jsonPath("$.error.code").value(1002));
+	}
 }

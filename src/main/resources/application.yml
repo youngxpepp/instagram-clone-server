@@ -10,6 +10,9 @@ spring:
   profiles:
     active: local
 
+  jackson:
+    property-naming-strategy: SNAKE_CASE
+
 jwt:
   issuer: instagram-clone
   access-token-expiration: 1800
