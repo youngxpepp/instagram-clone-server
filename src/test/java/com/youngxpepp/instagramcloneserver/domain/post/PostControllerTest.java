@@ -104,17 +104,90 @@ class PostControllerTest extends IntegrationTest {
 			.andExpect(jsonPath("$.error.code").value(1002));
 	}
 
+	// @Test
+	// void Given_없는유저_When_게시물읽기_Then_읽기성공() throws Exception {
+	// 	// given
+	// 	Long id = post.getId();
+	//
+	// 	// when
+	// 	ResultActions perform = requestRead(id, null);
+	//
+	// 	// then
+	// 	perform
+	// 		.andExpect(status().isOk())
+	// 		.andExpect(jsonPath("$.id").value(id));
+	// }
+
 	@Test
-	void Given_없는유저_When_게시물읽기_Then_읽기성공() throws Exception {
+	void Given_정상유저_and_컨텐츠_When_게시물생성_Then_게시물생성성공() throws Exception {
 		// given
-		Long id = post.getId();
+		String content = "test";
+		PostControllerDto.CreateRequestDto createRequestDto = PostControllerDto.CreateRequestDto.builder()
+			.content(content)
+			.build();
 
 		// when
-		ResultActions perform = requestRead(id, null);
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/post")
+			.header("Authorization", accessToken)
+			.content(objectMapper.writeValueAsString(createRequestDto))
+			.contentType(MediaType.APPLICATION_JSON));
 
 		// then
-		perform
-			.andExpect(status().isOk())
-			.andExpect(jsonPath("$.id").value(id));
+		resultActions
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.id").exists())
+			.andExpect(jsonPath("$.content").value(content))
+			.andExpect(jsonPath("$.createdBy.id").value(principal.getId()));
 	}
+
+	@Test
+	void Given_정상유저_and_빈컨텐츠_When_게시물생성_Then_게시물생성성공() throws Exception {
+		// given
+		PostControllerDto.CreateRequestDto createRequestDto = PostControllerDto.CreateRequestDto.builder()
+			.build();
+
+		// when
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/post")
+			.header("Authorization", accessToken)
+			.content(objectMapper.writeValueAsString(createRequestDto))
+			.contentType(MediaType.APPLICATION_JSON));
+
+		// then
+		resultActions
+			.andExpect(status().isCreated())
+			.andExpect(jsonPath("$.id").exists())
+			.andExpect(jsonPath("$.createdBy.id").value(principal.getId()));
+	}
+
+	@Test
+	void Given_요청자없음_When_게시물생성_Then_권한없음() throws Exception {
+		// given
+		PostControllerDto.CreateRequestDto createRequestDto = PostControllerDto.CreateRequestDto.builder()
+			.build();
+
+		// when
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/post")
+			.content(objectMapper.writeValueAsString(createRequestDto))
+			.contentType(MediaType.APPLICATION_JSON));
+
+		// then
+		resultActions
+			.andExpect(status().isBadRequest())
+			.andExpect(jsonPath("$.error.code").value(2003));
+	}
+
+	@Test
+	void Given_정상유저_and_request_없음_When_게시물생성_Then_게시물생성성공() throws Exception {
+		// given
+
+		// when
+		ResultActions resultActions = mockMvc.perform(post("/api/v1/post")
+			.header("Authorization", accessToken)
+			.contentType(MediaType.APPLICATION_JSON));
+
+		// then
+		resultActions
+			.andExpect(status().isBadRequest());
+	}
+
 }
