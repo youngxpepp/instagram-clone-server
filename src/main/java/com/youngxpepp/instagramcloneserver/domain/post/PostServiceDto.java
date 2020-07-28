@@ -36,7 +36,6 @@ public class PostServiceDto {
 		private Long id;
 		private String content;
 		private MemberResponseDto createdBy;
-		private MemberResponseDto modifiedBy;
 		private LocalDateTime createdAt;
 		private LocalDateTime modifiedAt;
 
@@ -47,7 +46,6 @@ public class PostServiceDto {
 				.createdAt(post.getCreatedAt())
 				.modifiedAt(post.getModifiedAt())
 				.createdBy(MemberResponseDto.of(post.getCreatedBy()))
-				.modifiedBy(MemberResponseDto.of(post.getModifiedBy()))
 				.build();
 		}
 	}
@@ -74,7 +72,6 @@ public class PostServiceDto {
 		private Long id;
 		private String content;
 		private MemberResponseDto createdBy;
-		private MemberResponseDto modifiedBy;
 		private LocalDateTime createdAt;
 		private LocalDateTime modifiedAt;
 
@@ -85,7 +82,6 @@ public class PostServiceDto {
 				.createdAt(post.getCreatedAt())
 				.modifiedAt(post.getModifiedAt())
 				.createdBy(MemberResponseDto.of(post.getCreatedBy()))
-				.modifiedBy(MemberResponseDto.of(post.getModifiedBy()))
 				.build();
 		}
 	}
@@ -126,7 +122,6 @@ public class PostServiceDto {
 		private LocalDateTime createdAt;
 		private LocalDateTime modifiedAt;
 		private MemberResponseDto createdBy;
-		private MemberResponseDto modifiedBy;
 
 		public static ReadOnePostResponseDto of(Post post) {
 			return ReadOnePostResponseDto.builder()
@@ -135,7 +130,6 @@ public class PostServiceDto {
 				.createdAt(post.getCreatedAt())
 				.createdBy(MemberResponseDto.of(post.getCreatedBy()))
 				.modifiedAt(post.getModifiedAt())
-				.modifiedBy(MemberResponseDto.of(post.getModifiedBy()))
 				.build();
 		}
 	}

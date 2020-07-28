@@ -9,15 +9,18 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 @Service
 @RequiredArgsConstructor
 public class PostService {
+
 	private final PostRepository postRepository;
 
-	public PostServiceDto.CreateResponseDto createPost(PostServiceDto.CreateRequestDto createRequestDto) {
+	public PostServiceDto.CreateResponseDto createPost(
+		PostServiceDto.CreateRequestDto createRequestDto) {
 		Post post = createRequestDto.toEntity();
 		post = postRepository.save(post);
 		return PostServiceDto.CreateResponseDto.of(post);
 	}
 
-	public PostServiceDto.ModifyResponseDto modifyPost(PostServiceDto.ModifyRequestDto modifyRequestDto) {
+	public PostServiceDto.ModifyResponseDto modifyPost(
+		PostServiceDto.ModifyRequestDto modifyRequestDto) {
 		Long postId = modifyRequestDto.getId();
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
@@ -25,15 +28,15 @@ public class PostService {
 		if (!post.getCreatedBy().getId().equals(modifyRequestDto.getModifiedBy().getId())) {
 			throw new BusinessException(ErrorCode.HANDLE_ACCESS_DENIED);
 		}
-		// TODO
-		// 수정 권한 검사
 
-		post.modify(modifyRequestDto);
+		Post modifiedPost = modifyRequestDto.toEntity();
+		post.modify(modifiedPost);
 		post = postRepository.save(post);
 		return PostServiceDto.ModifyResponseDto.of(post);
 	}
 
-	public PostServiceDto.DeleteResponseDto deletePost(PostServiceDto.DeleteRequestDto deleteRequestDto) {
+	public PostServiceDto.DeleteResponseDto deletePost(
+		PostServiceDto.DeleteRequestDto deleteRequestDto) {
 		Long postId = deleteRequestDto.getId();
 		Post post = postRepository.findById(postId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
@@ -50,7 +53,8 @@ public class PostService {
 			.build();
 	}
 
-	public PostServiceDto.ReadOnePostResponseDto readPost(PostServiceDto.ReadOnePostRequestDto readOnePostRequestDto) {
+	public PostServiceDto.ReadOnePostResponseDto readPost(
+		PostServiceDto.ReadOnePostRequestDto readOnePostRequestDto) {
 		Long postId = readOnePostRequestDto.getId();
 		// TODO 읽기권한 검사
 		Post post = postRepository.findById(postId)

@@ -27,7 +27,6 @@ public class PostControllerDto {
 		private LocalDateTime createdAt;
 		private MemberResponseDto createdBy;
 		private LocalDateTime modifiedAt;
-		private MemberResponseDto modifiedBy;
 
 		public static ReadOnePostResponseDto of(PostServiceDto.ReadOnePostResponseDto readOnePostResponseDto) {
 			return ModelMapperUtil.mapClass(readOnePostResponseDto, ReadOnePostResponseDto.class);
@@ -45,7 +44,6 @@ public class PostControllerDto {
 		private LocalDateTime createdAt;
 		private MemberResponseDto createdBy;
 		private LocalDateTime modifiedAt;
-		private MemberResponseDto modifiedBy;
 
 		public static CreateResponseDto of(PostServiceDto.CreateResponseDto postDto) {
 			return ModelMapperUtil.mapClass(postDto, CreateResponseDto.class);
@@ -96,7 +94,6 @@ public class PostControllerDto {
 		private LocalDateTime createdAt;
 		private MemberResponseDto createdBy;
 		private LocalDateTime modifiedAt;
-		private MemberResponseDto modifiedBy;
 
 		public static ModifyResponseDto of(PostServiceDto.ModifyResponseDto modifyResponseDto) {
 			return ModelMapperUtil.mapClass(modifyResponseDto, ModifyResponseDto.class);

@@ -111,7 +111,6 @@ class PostServiceTest extends IntegrationTest {
 		// then
 		assertThat(postModifyResponse.getId()).isEqualTo(postCreateResponse.getId());
 		assertThat(postModifyResponse.getContent()).isEqualTo(modifyContent);
-		assertThat(postModifyResponse.getModifiedBy().getId()).isEqualTo(creator.getId());
 	}
 
 	@Test

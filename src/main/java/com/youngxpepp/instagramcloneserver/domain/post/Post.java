@@ -7,6 +7,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.DynamicUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -23,6 +24,7 @@ import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTime
 @Builder
 @Getter
 @Setter
+@DynamicUpdate
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Post extends AbstractBaseTimeEntity {
 	@Id
@@ -41,12 +43,7 @@ public class Post extends AbstractBaseTimeEntity {
 	@JoinColumn(name = "created_by")
 	private Member createdBy;
 
-	@ManyToOne
-	@JoinColumn(name = "modified_by")
-	private Member modifiedBy;
-
-	public void modify(PostServiceDto.ModifyRequestDto modifyRequestDto) {
-		this.content = modifyRequestDto.getContent();
-		this.modifiedBy = modifyRequestDto.getModifiedBy();
+	public void modify(Post modifyPost) {
+		this.content = modifyPost.getContent();
 	}
 }

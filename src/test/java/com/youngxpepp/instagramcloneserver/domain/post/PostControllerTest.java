@@ -241,8 +241,7 @@ class PostControllerTest extends IntegrationTest {
 		resultActions
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("$.id").value(post.getId()))
-			.andExpect(jsonPath("$.content").value(modifiedString))
-			.andExpect(jsonPath("$.modified_by.id").value(principal.getId()));
+			.andExpect(jsonPath("$.content").value(modifiedString));
 	}
 
 	@Test
