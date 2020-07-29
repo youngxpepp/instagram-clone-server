@@ -7,7 +7,6 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
-import org.hibernate.annotations.DynamicUpdate;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -24,7 +23,6 @@ import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTime
 @Builder
 @Getter
 @Setter
-@DynamicUpdate
 @EqualsAndHashCode(of = {"id"}, callSuper = false)
 public class Post extends AbstractBaseTimeEntity {
 	@Id
