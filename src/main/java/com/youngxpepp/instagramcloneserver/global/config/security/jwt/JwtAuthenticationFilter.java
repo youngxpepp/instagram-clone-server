@@ -19,7 +19,6 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
-import com.youngxpepp.instagramcloneserver.global.error.exception.NoAuthorizationException;
 
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -38,6 +37,13 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 		HttpServletResponse response = (HttpServletResponse)res;
 
 		if (!requiresAuthentication(request, response)) {
+			chain.doFilter(request, response);
+
+			return;
+		}
+
+		String accessToken = request.getHeader("Authorization");
+		if (accessToken == null) {
 			chain.doFilter(request, response);
 
 			return;
@@ -66,10 +72,6 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 		throws AuthenticationException, IOException, ServletException, JwtException {
 		String accessToken = request.getHeader("Authorization");
-
-		if (accessToken == null) {
-			throw new NoAuthorizationException("No authorization in header");
-		}
 
 		PreJwtAuthenticationToken preJwtAuthenticationToken = new PreJwtAuthenticationToken(accessToken);
 
