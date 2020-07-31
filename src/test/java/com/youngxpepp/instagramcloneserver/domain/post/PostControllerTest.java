@@ -208,8 +208,7 @@ class PostControllerTest extends IntegrationTest {
 
 		// then
 		resultActions
-			.andExpect(status().isBadRequest())
-			.andExpect(jsonPath("$.error.code").value(2003));
+			.andExpect(status().isForbidden());
 	}
 
 	@Test
