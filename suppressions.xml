@@ -5,4 +5,6 @@
 
 <suppressions>
     <suppress files="MemberControllerTest.java" checks="MethodName|AbbreviationAsWordInName"/>
+    <suppress files="PostServiceTest.java" checks="MethodName|AbbreviationAsWordInName"/>
+    <suppress files="PostControllerTest.java" checks="MethodName|AbbreviationAsWordInName"/>
 </suppressions>
