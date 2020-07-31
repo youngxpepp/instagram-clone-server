@@ -89,7 +89,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http
 			.authorizeRequests()
 			.antMatchers("/api/v1/follows/**").hasRole("MEMBER")
-			.antMatchers("/api/v1/post/**").hasRole("MEMBER");
+			.antMatchers("/api/v1/post/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/login").anonymous();
 
 		http
