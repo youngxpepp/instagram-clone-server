@@ -3,8 +3,10 @@ package com.youngxpepp.instagramcloneserver.global.config.security;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,12 +17,15 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
+import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthenticationFilter;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthenticationProvider;
@@ -28,10 +33,11 @@ import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtAuthent
 @Configuration
 @EnableWebSecurity
 @EnableGlobalMethodSecurity(securedEnabled = true, prePostEnabled = true)
+@RequiredArgsConstructor
 public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
-	@Autowired
-	private JwtAuthenticationProvider jwtAuthenticationProvider;
+	private final JwtAuthenticationProvider jwtAuthenticationProvider;
+	private final HandlerExceptionResolver handlerExceptionResolver;
 
 	@Bean
 	public PasswordEncoder passwordEncoder() {
@@ -85,6 +91,16 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		http.headers().frameOptions().disable();
 
 		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+
+		AuthenticationEntryPoint authenticationEntryPoint =
+			(HttpServletRequest request, HttpServletResponse response, AuthenticationException authException) -> {
+
+				this.handlerExceptionResolver.resolveException(request, response, null, authException);
+			};
+
+		http
+			.exceptionHandling()
+			.authenticationEntryPoint(authenticationEntryPoint);
 
 		http
 			.authorizeRequests()
