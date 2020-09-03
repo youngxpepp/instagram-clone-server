@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.UnfollowRequestDto;
@@ -37,17 +38,17 @@ public class FollowController {
 	@PostMapping
 	public void follow(
 		@RequestBody @Valid FollowRequestDto dto,
-		@AuthenticationPrincipal Member principal
+		@AuthenticationPrincipal @ApiIgnore Member principal
 	)
 		throws BusinessException {
 
 		followService.follow(principal, dto);
 	}
 
-	@DeleteMapping("/{memberNickname}")
+	@DeleteMapping("/{member_nickname}")
 	public void unfollow(
-		@PathVariable("memberNickname") String memberNickname,
-		@AuthenticationPrincipal Member principal
+		@PathVariable("member_nickname") String memberNickname,
+		@AuthenticationPrincipal @ApiIgnore Member principal
 	) {
 
 		UnfollowRequestDto dto = UnfollowRequestDto.builder()
