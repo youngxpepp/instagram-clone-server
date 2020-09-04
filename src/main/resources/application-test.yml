@@ -4,9 +4,3 @@ spring:
     show-sql: true
     hibernate:
       ddl-auto: create-drop
-
-jwt:
-  issuer: instagram-clone
-  access-token-expiration: 1800
-  refresh-token-expiration: 604800
-  secret: 123123123123123123123fhaskjhfadshfas

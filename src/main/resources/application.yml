@@ -8,8 +8,7 @@ server:
 
 spring:
   profiles:
-    active: local
-
+    active: ${SPRING_PROFILES_ACTIVE:local}
   jackson:
     property-naming-strategy: SNAKE_CASE
 
