@@ -1,5 +1,6 @@
 package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
@@ -22,9 +23,9 @@ public class MemberController {
 
 	private MemberService memberService;
 
-	@GetMapping("/{memberNickname}")
+	@GetMapping("/{nickname}")
 	public MemberControllerDto.GetMemberResponseDto getMember(
-		@PathVariable("memberNickname") @NotEmpty @NotNull String memberNickname) {
+		@PathVariable("nickname") @NotBlank String memberNickname) {
 
 		MemberServiceDto.GetMemberResponseDto serviceResponse = memberService.getMember(memberNickname);
 

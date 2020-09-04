@@ -84,7 +84,7 @@ class MemberControllerTest extends IntegrationTest {
 
 		// when
 		ResultActions resultActions =
-			mockMvc.perform(get("/api/v1/members/{memberNickname}", memberA.getNickname()));
+			mockMvc.perform(get("/api/v1/members/{nickname}", memberA.getNickname()));
 
 		// then
 		resultActions
