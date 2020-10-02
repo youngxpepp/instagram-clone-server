@@ -37,7 +37,6 @@ class PostServiceTest extends IntegrationTest {
 		principal = Member.builder()
 			.name("principalName")
 			.nickname("principalNickname")
-			.email("principal@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
@@ -46,7 +45,6 @@ class PostServiceTest extends IntegrationTest {
 		principal2 = Member.builder()
 			.name("principalName2")
 			.nickname("principalNickname2")
-			.email("principal2@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();

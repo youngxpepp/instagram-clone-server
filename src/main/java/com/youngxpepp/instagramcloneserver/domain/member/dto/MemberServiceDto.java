@@ -16,7 +16,6 @@ public class MemberServiceDto {
 
 		private String memberNickname;
 		private String memberName;
-		private String memberEmail;
 		private Long followerCount;
 		private Long followingCount;
 	}

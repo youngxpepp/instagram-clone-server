@@ -39,14 +39,13 @@ class PostControllerTest extends IntegrationTest {
 		principal = Member.builder()
 			.name("principalName")
 			.nickname("principalNickname")
-			.email("principal@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(principal);
 
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email(principal.getEmail())
+			.memberId(principal.getId())
 			.roles(ImmutableList.of(principal.getRole()))
 			.build();
 		accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
@@ -54,14 +53,13 @@ class PostControllerTest extends IntegrationTest {
 		Member principal2 = Member.builder()
 			.name("principalName2")
 			.nickname("principalNickname2")
-			.email("principal2@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(principal2);
 
 		AccessTokenClaims accessTokenClaims2 = AccessTokenClaims.builder()
-			.email(principal2.getEmail())
+			.memberId(principal2.getId())
 			.roles(ImmutableList.of(principal2.getRole()))
 			.build();
 		accessToken2 = jwtUtil.generateAccessToken(accessTokenClaims2);
@@ -84,7 +82,7 @@ class PostControllerTest extends IntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON));
 		}
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email(principal.getEmail())
+			.memberId(principal.getId())
 			.roles(ImmutableList.of(principal.getRole()))
 			.build();
 		String token = jwtUtil.generateAccessToken(accessTokenClaims);

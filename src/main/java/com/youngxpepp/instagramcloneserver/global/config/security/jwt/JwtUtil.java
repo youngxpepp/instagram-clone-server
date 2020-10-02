@@ -4,49 +4,37 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jws;
 import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.MalformedJwtException;
-import io.jsonwebtoken.UnsupportedJwtException;
 import io.jsonwebtoken.security.Keys;
-import io.jsonwebtoken.security.SignatureException;
 import lombok.Getter;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
 import com.youngxpepp.instagramcloneserver.global.error.exception.NoPrefixJwtException;
 
 @Component
+@RequiredArgsConstructor
 public class JwtUtil {
 
 	public static final String TOKEN_PREFIX = "Bearer ";
-	@Autowired
-	private JwtProperties jwtProperties;
+
+	private final JwtProperties jwtProperties;
 
 	public String generateAccessToken(AccessTokenClaims claims) {
 		String accessToken = Jwts.builder()
 			.setIssuer(jwtProperties.getIssuer())
 			.setSubject(JwtSubject.ACCESS_TOKEN.getValue())
 			.setExpiration(this.getAccessTokenExpirationByDate())
-
 			.addClaims(claims.getClaimsByMap())
-
 			.signWith(this.getSecretKey())
 			.compact();
 
 		return JwtUtil.TOKEN_PREFIX + accessToken;
 	}
 
-	public Jws<Claims> verifyAccessToken(String bearerAccessToken)
-		throws
-		ExpiredJwtException,
-		UnsupportedJwtException,
-		MalformedJwtException,
-		SignatureException,
-		IllegalArgumentException,
-		NoPrefixJwtException {
+	public Jws<Claims> verifyAccessToken(String bearerAccessToken) {
 		if (bearerAccessToken.indexOf(JwtUtil.TOKEN_PREFIX) != 0) {
 			throw new NoPrefixJwtException(bearerAccessToken);
 		}

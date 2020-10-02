@@ -46,14 +46,13 @@ public class FollowControllerTest extends IntegrationTest {
 		principal = Member.builder()
 			.name("principalName")
 			.nickname("principalNickname")
-			.email("principal@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(principal);
 
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email(principal.getEmail())
+			.memberId(principal.getId())
 			.roles(Arrays.asList(principal.getRole()))
 			.build();
 		accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
@@ -72,7 +71,6 @@ public class FollowControllerTest extends IntegrationTest {
 		Member opponent = Member.builder()
 			.name("opponentName")
 			.nickname("opponentNickname")
-			.email("opponent@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
@@ -102,7 +100,6 @@ public class FollowControllerTest extends IntegrationTest {
 		Member opponent = Member.builder()
 			.name("opponentName")
 			.nickname("opponentNickname")
-			.email("opponent@gmail.com")
 			.password("123123")
 			.build();
 		memberRepository.save(opponent);

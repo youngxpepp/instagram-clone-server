@@ -3,6 +3,7 @@ package com.youngxpepp.instagramcloneserver.domain.member.service;
 import java.util.List;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,11 +16,11 @@ import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberService {
 
-	private MemberRepository memberRepository;
-	private FollowRepository followRepository;
+	private final MemberRepository memberRepository;
+	private final FollowRepository followRepository;
 
 	@Transactional
 	public MemberServiceDto.GetMemberResponseDto getMember(String memberNickname) {
@@ -32,7 +33,6 @@ public class MemberService {
 		return MemberServiceDto.GetMemberResponseDto.builder()
 			.memberNickname(member.getNickname())
 			.memberName(member.getName())
-			.memberEmail(member.getEmail())
 			.followerCount(followerCount)
 			.followingCount(followingCount)
 			.build();

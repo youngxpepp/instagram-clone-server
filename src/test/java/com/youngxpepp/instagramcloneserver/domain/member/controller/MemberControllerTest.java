@@ -41,21 +41,18 @@ class MemberControllerTest extends IntegrationTest {
 
 		// given
 		Member memberA = Member.builder()
-			.email("a@gmail.com")
 			.name("a")
 			.nickname("a")
 			.password("a")
 			.role(MemberRole.MEMBER)
 			.build();
 		Member memberB = Member.builder()
-			.email("b@gmail.com")
 			.name("b")
 			.nickname("b")
 			.password("b")
 			.role(MemberRole.MEMBER)
 			.build();
 		Member memberC = Member.builder()
-			.email("c@gmail.com")
 			.name("c")
 			.nickname("c")
 			.password("c")
@@ -91,7 +88,6 @@ class MemberControllerTest extends IntegrationTest {
 			.andExpect(status().isOk())
 			.andExpect(jsonPath("member_nickname").value(memberA.getNickname()))
 			.andExpect(jsonPath("member_name").value(memberA.getName()))
-			.andExpect(jsonPath("member_email").value(memberA.getEmail()))
 			.andExpect(jsonPath("follower_count").value(2L))
 			.andExpect(jsonPath("following_count").value(2L));
 	}

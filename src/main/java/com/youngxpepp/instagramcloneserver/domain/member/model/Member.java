@@ -36,9 +36,6 @@ public class Member extends AbstractBaseTimeEntity {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "email", unique = true)
-	private String email;
-
 	@Column(name = "password")
 	private String password;
 
@@ -53,10 +50,9 @@ public class Member extends AbstractBaseTimeEntity {
 	private List<Follow> followings = new ArrayList<>();
 
 	@Builder
-	public Member(String nickname, String name, String email, String password, MemberRole role) {
+	public Member(String nickname, String name, String password, MemberRole role) {
 		this.nickname = nickname;
 		this.name = name;
-		this.email = email;
 		this.password = password;
 		this.role = role;
 	}

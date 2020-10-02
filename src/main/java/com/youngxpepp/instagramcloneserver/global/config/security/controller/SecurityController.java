@@ -29,12 +29,12 @@ public class SecurityController {
 
 	@PostMapping("/api/v1/login")
 	public LoginResponseDto login(@Valid @RequestBody LoginRequestDto dto) {
-		Member member = memberRepository.findByEmail(dto.getEmail())
-			.orElseThrow(() -> new BusinessException(ErrorCode.AUTHENTICATION_FAILED));
+		Member member = memberRepository.findByNickname(dto.getNickname())
+			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
 		if (passwordEncoder.matches(dto.getPassword(), member.getPassword())) {
 			AccessTokenClaims claims = AccessTokenClaims.builder()
-				.email(member.getEmail())
+				.memberId(member.getId())
 				.roles(Arrays.asList(member.getRole()))
 				.build();
 			String accessToken = jwtUtil.generateAccessToken(claims);
@@ -44,10 +44,5 @@ public class SecurityController {
 		}
 
 		throw new BusinessException(ErrorCode.AUTHENTICATION_FAILED);
-	}
-
-	@GetMapping("/api/v1/test")
-	public String getTest() {
-		return "test";
 	}
 }

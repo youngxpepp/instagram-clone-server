@@ -38,13 +38,12 @@ public class SecurityControllerTest extends IntegrationTest {
 		Member member = Member.builder()
 			.nickname("testNickname")
 			.name("testName")
-			.email("test@gmail.com")
 			.password(passwordEncoder.encode("123123"))
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(member);
 		LoginRequestDto requestDto = LoginRequestDto.builder()
-			.email(member.getEmail())
+			.nickname(member.getNickname())
 			.password("123123")
 			.build();
 
@@ -55,8 +54,6 @@ public class SecurityControllerTest extends IntegrationTest {
 		Jws<Claims> jws = jwtUtil.verifyAccessToken(responseDto.getAccessToken());
 
 		//        then
-		assertThat(jws.getBody().get("email"))
-			.isEqualTo(member.getEmail());
 		assertThat(jws.getBody().get("roles"))
 			.isEqualTo(Arrays.asList(member.getRole().getName()));
 

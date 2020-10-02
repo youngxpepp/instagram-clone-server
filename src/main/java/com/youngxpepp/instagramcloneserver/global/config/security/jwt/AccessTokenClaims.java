@@ -16,7 +16,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 @Getter
 public class AccessTokenClaims {
 
-	private String email;
+	private Long memberId;
 	private List<MemberRole> roles;
 
 	public List<String> getRolesByString() {
@@ -28,7 +28,7 @@ public class AccessTokenClaims {
 
 	public Map<String, Object> getClaimsByMap() {
 		Map<String, Object> claimsByMap = new HashMap<>();
-		claimsByMap.put("email", this.email);
+		claimsByMap.put("memberId", this.memberId);
 		claimsByMap.put("roles", this.getRolesByString());
 		return claimsByMap;
 	}

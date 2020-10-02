@@ -5,6 +5,7 @@ import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -17,11 +18,11 @@ import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
 
 @RestController
 @RequestMapping("/api/v1/members")
-@AllArgsConstructor
+@RequiredArgsConstructor
 @Validated
 public class MemberController {
 
-	private MemberService memberService;
+	private final MemberService memberService;
 
 	@GetMapping("/{nickname}")
 	public MemberControllerDto.GetMemberResponseDto getMember(
@@ -32,7 +33,6 @@ public class MemberController {
 		return MemberControllerDto.GetMemberResponseDto.builder()
 			.memberNickname(serviceResponse.getMemberNickname())
 			.memberName(serviceResponse.getMemberName())
-			.memberEmail(serviceResponse.getMemberEmail())
 			.followerCount(serviceResponse.getFollowerCount())
 			.followingCount(serviceResponse.getFollowingCount())
 			.build();

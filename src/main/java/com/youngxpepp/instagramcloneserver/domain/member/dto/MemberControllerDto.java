@@ -22,9 +22,6 @@ public class MemberControllerDto {
 		@JsonProperty("member_name")
 		private String memberName;
 
-		@JsonProperty("member_email")
-		private String memberEmail;
-
 		@JsonProperty("follower_count")
 		private Long followerCount;
 
