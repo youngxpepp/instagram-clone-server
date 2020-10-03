@@ -5,7 +5,6 @@ import java.util.stream.Collectors;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
@@ -21,7 +20,7 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-	private final JwtUtil jwtUtil;
+	private final JwtUtils jwtUtils;
 	private final MemberRepository memberRepository;
 
 	@Override
@@ -29,7 +28,7 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 		PreJwtAuthenticationToken preJwtAuthenticationToken = (PreJwtAuthenticationToken)authentication;
 		String accessToken = preJwtAuthenticationToken.getAccessToken();
 
-		Jws<Claims> jws = jwtUtil.verifyAccessToken(accessToken);
+		Jws<Claims> jws = jwtUtils.verifyAccessToken(accessToken);
 		Long id = jws.getBody().get("memberId", Long.class);
 		List<String> roles = jws.getBody().get("roles", List.class);
 		List<SimpleGrantedAuthority> authorities = roles.stream()

@@ -5,6 +5,8 @@ import javax.crypto.SecretKey;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
+import io.jsonwebtoken.JwtException;
+import io.jsonwebtoken.JwtParser;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.security.Keys;
 import lombok.Getter;
@@ -16,7 +18,7 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.NoPrefixJwtExc
 
 @Component
 @RequiredArgsConstructor
-public class JwtUtil {
+public class JwtUtils {
 
 	public static final String TOKEN_PREFIX = "Bearer ";
 
@@ -31,18 +33,18 @@ public class JwtUtil {
 			.signWith(this.getSecretKey())
 			.compact();
 
-		return JwtUtil.TOKEN_PREFIX + accessToken;
+		return JwtUtils.TOKEN_PREFIX + accessToken;
 	}
 
 	public Jws<Claims> verifyAccessToken(String bearerAccessToken) {
-		if (bearerAccessToken.indexOf(JwtUtil.TOKEN_PREFIX) != 0) {
+		if (bearerAccessToken.indexOf(JwtUtils.TOKEN_PREFIX) != 0) {
 			throw new NoPrefixJwtException(bearerAccessToken);
 		}
 
-		String accessToken = bearerAccessToken.substring(JwtUtil.TOKEN_PREFIX.length());
+		String accessToken = bearerAccessToken.substring(JwtUtils.TOKEN_PREFIX.length());
 
 		Jws<Claims> jws = Jwts.parserBuilder()
-			.requireIssuer(jwtProperties.getIssuer())
+			.requireIssuer(this.jwtProperties.getIssuer())
 			.requireSubject(JwtSubject.ACCESS_TOKEN.getValue())
 			.setSigningKey(this.getSecretKey())
 			.build()
@@ -54,7 +56,7 @@ public class JwtUtil {
 	public boolean isValidAccessToken(String bearerAccessToken) {
 		try {
 			this.verifyAccessToken(bearerAccessToken);
-		} catch (Exception e) {
+		} catch (JwtException e) {
 			return false;
 		}
 		return true;

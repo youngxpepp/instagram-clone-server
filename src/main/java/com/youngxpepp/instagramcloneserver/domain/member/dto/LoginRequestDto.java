@@ -1,8 +1,9 @@
-package com.youngxpepp.instagramcloneserver.global.config.security.dto;
+package com.youngxpepp.instagramcloneserver.domain.member.dto;
 
 import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;

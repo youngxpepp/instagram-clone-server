@@ -57,7 +57,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		//        Jwt 인증 필터가 적용될 경로
 		patterns.add("/api/v1/follows/**");
 		patterns.add("/api/v1/post/**");
-		patterns.add("/api/v1/login");
+		patterns.add("/api/v1/members/login");
 
 		List<RequestMatcher> requestMatchers = patterns
 			.stream()
@@ -106,7 +106,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/api/v1/follows/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/post/**").hasRole("MEMBER")
-			.antMatchers("/api/v1/login").anonymous();
+			.antMatchers("/api/v1/members/login").anonymous();
 
 		http
 			.addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

@@ -16,13 +16,13 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
 import com.youngxpepp.instagramcloneserver.test.MockTest;
 
-public class JwtUtilTest extends MockTest {
-
-	@InjectMocks
-	private JwtUtil jwtUtil;
+public class JwtUtilsTest extends MockTest {
 
 	@Mock
 	private JwtProperties jwtProperties;
+
+	@InjectMocks
+	private JwtUtils jwtUtils;
 
 	@Test
 	public void Given_정상적인Claims_When_AccessToken생성_Then_AccessToken검증성공() { // SUPPRESS CHECKSTYLE MethodName
@@ -38,10 +38,10 @@ public class JwtUtilTest extends MockTest {
 			.memberId(0L)
 			.roles(Arrays.asList(MemberRole.MEMBER))
 			.build();
-		String accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
+		String accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
 
 		// when
-		Jws<Claims> jws = jwtUtil.verifyAccessToken(accessToken);
+		Jws<Claims> jws = jwtUtils.verifyAccessToken(accessToken);
 
 		// then
 		assertThat(jws.getBody().get("memberId"))
@@ -63,7 +63,7 @@ public class JwtUtilTest extends MockTest {
 		// when
 		// then
 		assertThatThrownBy(() -> {
-			Jws<Claims> jws = jwtUtil.verifyAccessToken(bearerAccessToken);
+			Jws<Claims> jws = jwtUtils.verifyAccessToken(bearerAccessToken);
 		}).isInstanceOf(ExpiredJwtException.class);
 	}
 }

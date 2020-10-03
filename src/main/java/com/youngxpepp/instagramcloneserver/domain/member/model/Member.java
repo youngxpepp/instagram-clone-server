@@ -36,7 +36,7 @@ public class Member extends AbstractBaseTimeEntity {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "password")
+	@Column(name = "password", columnDefinition = "TEXT")
 	private String password;
 
 	@Column(name = "role")

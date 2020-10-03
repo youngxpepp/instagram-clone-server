@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.validation.BindingResult;
 
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;

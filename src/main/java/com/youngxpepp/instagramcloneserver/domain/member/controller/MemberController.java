@@ -1,17 +1,19 @@
 package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
+import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 
-import lombok.AllArgsConstructor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberControllerDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberServiceDto;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
@@ -35,6 +37,15 @@ public class MemberController {
 			.memberName(serviceResponse.getMemberName())
 			.followerCount(serviceResponse.getFollowerCount())
 			.followingCount(serviceResponse.getFollowingCount())
+			.build();
+	}
+
+	@PostMapping("/login")
+	public LoginResponseDto login(@RequestBody @Valid LoginRequestDto requestDto) {
+		String accessToken = this.memberService.login(requestDto.getNickname(), requestDto.getPassword());
+
+		return LoginResponseDto.builder()
+			.accessToken(accessToken)
 			.build();
 	}
 }

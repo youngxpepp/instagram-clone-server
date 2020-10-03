@@ -1,10 +1,8 @@
 package com.youngxpepp.instagramcloneserver.global.error;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @Getter
 public enum ErrorCode {
 
@@ -24,10 +22,11 @@ public enum ErrorCode {
 	JWT_MALFORMED(2005, HttpStatus.BAD_REQUEST, "JsonWebToken is malformed"),
 	JWT_SIG_INVALID(2006, HttpStatus.BAD_REQUEST, "JsonWebToken signature is invalid"),
 	JWT_UNSUPPORTED(2007, HttpStatus.BAD_REQUEST, "JsonWebToken format is unsupported"),
-	JWT_EXCEPTION(2008, HttpStatus.BAD_REQUEST, "JsonWebToken has a problem");
+	JWT_EXCEPTION(2008, HttpStatus.BAD_REQUEST, "JsonWebToken has a problem"),
+	WRONG_PASSWORD(2009, HttpStatus.BAD_REQUEST, "Password is wrong");
 
-	private final HttpStatus httpStatus;
 	private final int code;
+	private final HttpStatus httpStatus;
 	private final String message;
 
 	ErrorCode(int code, HttpStatus httpStatus, String message) {
