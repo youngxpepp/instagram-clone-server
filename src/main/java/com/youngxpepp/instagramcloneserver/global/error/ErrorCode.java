@@ -14,7 +14,7 @@ public enum ErrorCode {
 	HANDLE_ACCESS_DENIED(1005, HttpStatus.FORBIDDEN, "Access is denied"),
 	ENTITY_ALREADY_EXIST(1006, HttpStatus.BAD_REQUEST, "Entity already exists"),
 
-	//    Authentication
+	// Authentication
 	AUTHENTICATION_FAILED(2000, HttpStatus.BAD_REQUEST, "Authentication is failed"),
 	JWT_EXPIRED(2001, HttpStatus.BAD_REQUEST, "JsonWebToken is expired"),
 	NO_AUTHORIZATION(2003, HttpStatus.BAD_REQUEST, "No authorization in header"),
