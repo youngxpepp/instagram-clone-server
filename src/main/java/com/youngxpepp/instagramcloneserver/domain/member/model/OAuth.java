@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 @DiscriminatorColumn(name = "dtype")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class OAuth {
+public abstract class OAuth {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)

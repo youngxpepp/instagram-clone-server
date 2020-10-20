@@ -7,8 +7,6 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
-import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequest;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.stereotype.Component;
 
@@ -16,19 +14,13 @@ import org.springframework.stereotype.Component;
 @RequiredArgsConstructor
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-	private final AuthorizationRequestRepository<OAuth2AuthorizationRequest> customOAuth2AuthorizationRequestRepository;
+	private final OAuth2FinalRedirectUriRepository finalRedirectUriRepository;
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
 
-		if (CustomOAuth2AuthorizationRequestRepository.class.isAssignableFrom(
-			customOAuth2AuthorizationRequestRepository.getClass())) {
-
-			CustomOAuth2AuthorizationRequestRepository repository =
-				(CustomOAuth2AuthorizationRequestRepository)customOAuth2AuthorizationRequestRepository;
-			String finalRedirectUri = repository.removeFinalRedirectUri(request);
-			response.sendRedirect(finalRedirectUri);
-		}
+		String finalRedirectUri = finalRedirectUriRepository.removeFinalRedirectUri(request);
+		response.sendRedirect(finalRedirectUri);
 	}
 }
