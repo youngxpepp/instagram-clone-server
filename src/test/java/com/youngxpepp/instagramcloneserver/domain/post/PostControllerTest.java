@@ -14,7 +14,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtil;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtils;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
 
 class PostControllerTest extends IntegrationTest {
@@ -29,7 +29,7 @@ class PostControllerTest extends IntegrationTest {
 	private MemberRepository memberRepository;
 
 	@Autowired
-	private JwtUtil jwtUtil;
+	private JwtUtils jwtUtils;
 
 	@Autowired
 	private PostRepository postRepository;
@@ -39,32 +39,30 @@ class PostControllerTest extends IntegrationTest {
 		principal = Member.builder()
 			.name("principalName")
 			.nickname("principalNickname")
-			.email("principal@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(principal);
 
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email(principal.getEmail())
+			.memberId(principal.getId())
 			.roles(ImmutableList.of(principal.getRole()))
 			.build();
-		accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
+		accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
 
 		Member principal2 = Member.builder()
 			.name("principalName2")
 			.nickname("principalNickname2")
-			.email("principal2@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(principal2);
 
 		AccessTokenClaims accessTokenClaims2 = AccessTokenClaims.builder()
-			.email(principal2.getEmail())
+			.memberId(principal2.getId())
 			.roles(ImmutableList.of(principal2.getRole()))
 			.build();
-		accessToken2 = jwtUtil.generateAccessToken(accessTokenClaims2);
+		accessToken2 = jwtUtils.generateAccessToken(accessTokenClaims2);
 
 		Post test = Post.builder()
 			.createdBy(principal)
@@ -84,10 +82,10 @@ class PostControllerTest extends IntegrationTest {
 				.contentType(MediaType.APPLICATION_JSON));
 		}
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email(principal.getEmail())
+			.memberId(principal.getId())
 			.roles(ImmutableList.of(principal.getRole()))
 			.build();
-		String token = jwtUtil.generateAccessToken(accessTokenClaims);
+		String token = jwtUtils.generateAccessToken(accessTokenClaims);
 
 		return mockMvc.perform(get(url.toString())
 			.header("Authorization", token)

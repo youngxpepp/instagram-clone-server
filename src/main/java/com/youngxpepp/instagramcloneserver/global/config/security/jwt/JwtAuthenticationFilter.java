@@ -19,6 +19,7 @@ import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.servlet.HandlerExceptionResolver;
 
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
+import com.youngxpepp.instagramcloneserver.global.error.exception.NoAuthorizationException;
 
 public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFilter {
 
@@ -30,61 +31,28 @@ public class JwtAuthenticationFilter extends AbstractAuthenticationProcessingFil
 	}
 
 	@Override
-	public void doFilter(ServletRequest req, ServletResponse res, FilterChain chain) throws
-		IOException,
-		ServletException {
-		HttpServletRequest request = (HttpServletRequest)req;
-		HttpServletResponse response = (HttpServletResponse)res;
-
-		if (!requiresAuthentication(request, response)) {
-			chain.doFilter(request, response);
-
-			return;
-		}
-
-		String accessToken = request.getHeader("Authorization");
-		if (accessToken == null) {
-			chain.doFilter(request, response);
-
-			return;
-		}
-
-		Authentication authResult;
-
-		try {
-			authResult = attemptAuthentication(request, response);
-			if (authResult == null) {
-				// return immediately as subclass has indicated that it hasn't completed
-				// authentication
-				return;
-			}
-		} catch (AuthenticationException | BusinessException | JwtException failed) {
-			SecurityContextHolder.clearContext();
-			handlerExceptionResolver.resolveException(request, response, null, failed);
-
-			return;
-		}
-
-		successfulAuthentication(request, response, chain, authResult);
-	}
-
-	@Override
 	public Authentication attemptAuthentication(HttpServletRequest request, HttpServletResponse response)
 		throws AuthenticationException, IOException, ServletException, JwtException {
+		SecurityContextHolder.clearContext();
 		String accessToken = request.getHeader("Authorization");
-
+		if (accessToken == null) {
+			throw new NoAuthorizationException(null);
+		}
 		PreJwtAuthenticationToken preJwtAuthenticationToken = new PreJwtAuthenticationToken(accessToken);
-
 		return getAuthenticationManager().authenticate(preJwtAuthenticationToken);
 	}
 
 	@Override
 	protected void successfulAuthentication(HttpServletRequest request, HttpServletResponse response, FilterChain chain,
 		Authentication authResult) throws IOException, ServletException {
-		SecurityContext context = SecurityContextHolder.createEmptyContext();
-		context.setAuthentication(authResult);
-		SecurityContextHolder.setContext(context);
-
+		SecurityContextHolder.getContext().setAuthentication(authResult);
 		chain.doFilter(request, response);
+	}
+
+	@Override
+	protected void unsuccessfulAuthentication(HttpServletRequest request, HttpServletResponse response,
+		AuthenticationException failed) throws IOException, ServletException {
+		SecurityContextHolder.clearContext();
+		handlerExceptionResolver.resolveException(request, response, null, failed);
 	}
 }

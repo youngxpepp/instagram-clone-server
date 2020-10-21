@@ -16,42 +16,43 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
 import com.youngxpepp.instagramcloneserver.test.MockTest;
 
-public class JwtUtilTest extends MockTest {
-
-	@InjectMocks
-	private JwtUtil jwtUtil;
+public class JwtUtilsTest extends MockTest {
 
 	@Mock
 	private JwtProperties jwtProperties;
 
+	@InjectMocks
+	private JwtUtils jwtUtils;
+
 	@Test
 	public void Given_정상적인Claims_When_AccessToken생성_Then_AccessToken검증성공() { // SUPPRESS CHECKSTYLE MethodName
-		//        given
+		// given
 		given(jwtProperties.getIssuer())
 			.willReturn("testIssuer");
 		given(jwtProperties.getAccessTokenExpiration())
 			.willReturn(1800L);
 		given(jwtProperties.getSecret())
 			.willReturn("testtesttesttesttesttesttesttest");
+
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email("test@gmail.com")
+			.memberId(0L)
 			.roles(Arrays.asList(MemberRole.MEMBER))
 			.build();
-		String accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
+		String accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
 
-		//        when
-		Jws<Claims> jws = jwtUtil.verifyAccessToken(accessToken);
+		// when
+		Jws<Claims> jws = jwtUtils.verifyAccessToken(accessToken);
 
-		//        then
-		assertThat(jws.getBody().get("email"))
-			.isEqualTo(accessTokenClaims.getEmail());
+		// then
+		assertThat(jws.getBody().get("memberId"))
+			.isEqualTo(accessTokenClaims.getMemberId().intValue());
 		assertThat(jws.getBody().get("roles"))
 			.isEqualTo(accessTokenClaims.getRolesByString());
 	}
 
 	@Test
 	public void Given_기간만료AccessToken_When_검증_Then_기간만료() { // SUPPRESS CHECKSTYLE MethodName
-		//                given
+		// given
 		given(jwtProperties.getIssuer())
 			.willReturn("testIssuer");
 		given(jwtProperties.getSecret())
@@ -59,10 +60,10 @@ public class JwtUtilTest extends MockTest {
 
 		String bearerAccessToken = "Bearer eyJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJ0ZXN0SXNzdWVyIiwic3ViIjoiQUNDRVNTX1RPS0VOIiwiZXhwIjowLCJlbWFpbCI6InRlc3RAZ21haWwuY29tIiwicm9sZXMiOlsiUk9MRV9NRU1CRVIiXX0.LySV4gbfTiLilFNg8Z8ACblaQKKOqXs2FkSa9JIF1Ok";
 
-		//        when
-		//        then
+		// when
+		// then
 		assertThatThrownBy(() -> {
-			Jws<Claims> jws = jwtUtil.verifyAccessToken(bearerAccessToken);
+			Jws<Claims> jws = jwtUtils.verifyAccessToken(bearerAccessToken);
 		}).isInstanceOf(ExpiredJwtException.class);
 	}
 }

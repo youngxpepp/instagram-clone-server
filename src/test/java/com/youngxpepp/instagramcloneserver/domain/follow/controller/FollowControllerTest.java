@@ -22,7 +22,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtil;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtils;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
@@ -39,24 +39,23 @@ public class FollowControllerTest extends IntegrationTest {
 	private FollowRepository followRepository;
 
 	@Autowired
-	private JwtUtil jwtUtil;
+	private JwtUtils jwtUtils;
 
 	@BeforeEach
 	public void setUp() {
 		principal = Member.builder()
 			.name("principalName")
 			.nickname("principalNickname")
-			.email("principal@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
 		memberRepository.save(principal);
 
 		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.email(principal.getEmail())
+			.memberId(principal.getId())
 			.roles(Arrays.asList(principal.getRole()))
 			.build();
-		accessToken = jwtUtil.generateAccessToken(accessTokenClaims);
+		accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
 	}
 
 	@AfterEach
@@ -72,7 +71,6 @@ public class FollowControllerTest extends IntegrationTest {
 		Member opponent = Member.builder()
 			.name("opponentName")
 			.nickname("opponentNickname")
-			.email("opponent@gmail.com")
 			.password("123123")
 			.role(MemberRole.MEMBER)
 			.build();
@@ -102,7 +100,6 @@ public class FollowControllerTest extends IntegrationTest {
 		Member opponent = Member.builder()
 			.name("opponentName")
 			.nickname("opponentNickname")
-			.email("opponent@gmail.com")
 			.password("123123")
 			.build();
 		memberRepository.save(opponent);

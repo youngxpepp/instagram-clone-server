@@ -1,25 +1,35 @@
 package com.youngxpepp.instagramcloneserver.domain.member.service;
 
-import java.util.List;
+import java.util.Arrays;
 
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberServiceDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.member.model.Google;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.member.repository.GoogleRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtils;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class MemberService {
 
-	private MemberRepository memberRepository;
-	private FollowRepository followRepository;
+	private final MemberRepository memberRepository;
+	private final FollowRepository followRepository;
+	private final GoogleRepository googleRepository;
+	private final PasswordEncoder passwordEncoder;
+	private final JwtUtils jwtUtils;
 
 	@Transactional
 	public MemberServiceDto.GetMemberResponseDto getMember(String memberNickname) {
@@ -32,9 +42,51 @@ public class MemberService {
 		return MemberServiceDto.GetMemberResponseDto.builder()
 			.memberNickname(member.getNickname())
 			.memberName(member.getName())
-			.memberEmail(member.getEmail())
 			.followerCount(followerCount)
 			.followingCount(followingCount)
 			.build();
+	}
+
+	public String login(String nickname, String password) {
+		Member member = memberRepository.findByNickname(nickname)
+			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+
+		if (!this.passwordEncoder.matches(password, member.getPassword())) {
+			throw new BusinessException(ErrorCode.WRONG_PASSWORD);
+		}
+
+		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
+			.memberId(member.getId())
+			.roles(Arrays.asList(member.getRole()))
+			.build();
+		String accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
+		return accessToken;
+	}
+
+	@Transactional
+	public String signup(String key, SignupRequestDto requestDto) {
+		memberRepository.findByNickname(requestDto.getNickname())
+			.ifPresent(member -> new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST));
+		googleRepository.findByKey(key)
+			.ifPresent(google -> new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST));
+
+		Member member = Member.builder()
+			.name(requestDto.getName())
+			.nickname(requestDto.getNickname())
+			.password(passwordEncoder.encode(requestDto.getPassword()))
+			.role(MemberRole.MEMBER)
+			.build();
+		memberRepository.save(member);
+
+		Google google = new Google(member, key);
+		googleRepository.save(google);
+
+		AccessTokenClaims claims = AccessTokenClaims.builder()
+			.memberId(member.getId())
+			.roles(Arrays.asList(member.getRole()))
+			.build();
+		String accessToken = jwtUtils.generateAccessToken(claims);
+
+		return accessToken;
 	}
 }

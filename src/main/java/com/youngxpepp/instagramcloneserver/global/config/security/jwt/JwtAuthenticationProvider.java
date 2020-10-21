@@ -5,11 +5,9 @@ import java.util.stream.Collectors;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jws;
-import io.jsonwebtoken.JwtException;
-import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
@@ -19,26 +17,25 @@ import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
 @Component
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 
-	private JwtUtil jwtUtil;
-	private MemberRepository memberRepository;
+	private final JwtUtils jwtUtils;
+	private final MemberRepository memberRepository;
 
 	@Override
-	public Authentication authenticate(Authentication authentication)
-		throws AuthenticationException, JwtException, BusinessException {
+	public Authentication authenticate(Authentication authentication) {
 		PreJwtAuthenticationToken preJwtAuthenticationToken = (PreJwtAuthenticationToken)authentication;
 		String accessToken = preJwtAuthenticationToken.getAccessToken();
 
-		Jws<Claims> jws = jwtUtil.verifyAccessToken(accessToken);
-		String email = jws.getBody().get("email", String.class);
+		Jws<Claims> jws = jwtUtils.verifyAccessToken(accessToken);
+		Long id = jws.getBody().get("memberId", Long.class);
 		List<String> roles = jws.getBody().get("roles", List.class);
 		List<SimpleGrantedAuthority> authorities = roles.stream()
-			.map(role -> new SimpleGrantedAuthority(role))
+			.map(SimpleGrantedAuthority::new)
 			.collect(Collectors.toList());
 
-		Member member = memberRepository.findByEmail(email)
+		Member member = memberRepository.findById(id)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
 		return new PostJwtAuthenticationToken(authorities, member);

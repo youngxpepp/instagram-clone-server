@@ -2,6 +2,8 @@ package com.youngxpepp.instagramcloneserver.global.config;
 
 import java.util.Arrays;
 
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -16,15 +18,16 @@ import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
 
 @Configuration
+@RequiredArgsConstructor
 public class SwaggerConfig {
 
-	@Bean("swaggerEnabled")
-	public Boolean getSwaggerEnabled(Environment environment) {
+	@Bean
+	public Boolean swaggerEnabled(Environment environment) {
 		return environment.acceptsProfiles(Profiles.of("dev", "local"));
 	}
 
 	@Bean
-	public Docket getDocket(@Qualifier("swaggerEnabled") Boolean swaggerEnabled) {
+	public Docket getDocket(@Autowired Boolean swaggerEnabled) {
 		RequestParameter authorization = new RequestParameterBuilder()
 			.in(ParameterType.HEADER)
 			.name("Authorization")

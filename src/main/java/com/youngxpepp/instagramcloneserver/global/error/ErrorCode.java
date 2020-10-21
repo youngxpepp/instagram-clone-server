@@ -1,10 +1,8 @@
 package com.youngxpepp.instagramcloneserver.global.error;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
 import org.springframework.http.HttpStatus;
 
-@JsonFormat(shape = JsonFormat.Shape.OBJECT)
 @Getter
 public enum ErrorCode {
 
@@ -16,18 +14,19 @@ public enum ErrorCode {
 	HANDLE_ACCESS_DENIED(1005, HttpStatus.FORBIDDEN, "Access is denied"),
 	ENTITY_ALREADY_EXIST(1006, HttpStatus.BAD_REQUEST, "Entity already exists"),
 
-	//    Authentication
+	// Authentication
 	AUTHENTICATION_FAILED(2000, HttpStatus.BAD_REQUEST, "Authentication is failed"),
 	JWT_EXPIRED(2001, HttpStatus.BAD_REQUEST, "JsonWebToken is expired"),
-	NO_AUTHORIZATION(2003, HttpStatus.BAD_REQUEST, "No authorization in header"),
+	NO_AUTHORIZATION(2003, HttpStatus.FORBIDDEN, "No authorization in header"),
 	JWT_NO_PREFIX(2004, HttpStatus.BAD_REQUEST, "No prefix in jwt"),
 	JWT_MALFORMED(2005, HttpStatus.BAD_REQUEST, "JsonWebToken is malformed"),
 	JWT_SIG_INVALID(2006, HttpStatus.BAD_REQUEST, "JsonWebToken signature is invalid"),
 	JWT_UNSUPPORTED(2007, HttpStatus.BAD_REQUEST, "JsonWebToken format is unsupported"),
-	JWT_EXCEPTION(2008, HttpStatus.BAD_REQUEST, "JsonWebToken has a problem");
+	JWT_EXCEPTION(2008, HttpStatus.BAD_REQUEST, "JsonWebToken has a problem"),
+	WRONG_PASSWORD(2009, HttpStatus.BAD_REQUEST, "Password is wrong");
 
-	private final HttpStatus httpStatus;
 	private final int code;
+	private final HttpStatus httpStatus;
 	private final String message;
 
 	ErrorCode(int code, HttpStatus httpStatus, String message) {
