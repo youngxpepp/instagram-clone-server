@@ -17,7 +17,7 @@ public enum ErrorCode {
 	// Authentication
 	AUTHENTICATION_FAILED(2000, HttpStatus.BAD_REQUEST, "Authentication is failed"),
 	JWT_EXPIRED(2001, HttpStatus.BAD_REQUEST, "JsonWebToken is expired"),
-	NO_AUTHORIZATION(2003, HttpStatus.BAD_REQUEST, "No authorization in header"),
+	NO_AUTHORIZATION(2003, HttpStatus.FORBIDDEN, "No authorization in header"),
 	JWT_NO_PREFIX(2004, HttpStatus.BAD_REQUEST, "No prefix in jwt"),
 	JWT_MALFORMED(2005, HttpStatus.BAD_REQUEST, "JsonWebToken is malformed"),
 	JWT_SIG_INVALID(2006, HttpStatus.BAD_REQUEST, "JsonWebToken signature is invalid"),

@@ -16,4 +16,9 @@ public class Google extends OAuth {
 
 	@Column(name = "key", unique = true)
 	private String key;
+
+	public Google(Member member, String key) {
+		super(member);
+		this.key = key;
+	}
 }

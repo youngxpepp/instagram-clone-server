@@ -13,7 +13,6 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.web.AuthorizationRequestRepository;
@@ -52,7 +51,6 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		// Jwt 인증 필터가 적용될 경로
 		patterns.add("/api/v1/follows/**");
 		patterns.add("/api/v1/post/**");
-		patterns.add("/api/v1/members/login");
 
 		List<RequestMatcher> requestMatchers = patterns
 			.stream()
@@ -85,7 +83,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.headers().frameOptions().disable();
 
-		http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
 
 		AuthenticationEntryPoint authenticationEntryPoint = (request, response, authException) -> {
 			this.handlerExceptionResolver.resolveException(request, response, null, authException);
@@ -100,7 +98,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/v1/follows/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/post/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/members/login").anonymous()
-			.antMatchers("/api/v1/members/*").permitAll();
+			.antMatchers("/api/v1/members/signup").authenticated()
+			.antMatchers("/api/v1/members/**").permitAll();
 
 		http
 			.addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

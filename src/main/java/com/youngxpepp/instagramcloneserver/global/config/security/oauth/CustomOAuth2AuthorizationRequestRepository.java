@@ -12,7 +12,7 @@ import org.springframework.stereotype.Component;
 public class CustomOAuth2AuthorizationRequestRepository
 	implements AuthorizationRequestRepository<OAuth2AuthorizationRequest> {
 
-	private final AuthorizationRequestRepository<OAuth2AuthorizationRequest> authorizationRequestRepository
+	private final AuthorizationRequestRepository<OAuth2AuthorizationRequest> delegate
 		= new HttpSessionOAuth2AuthorizationRequestRepository();
 	private final OAuth2FinalRedirectUriRepository finalRedirectUriRepository;
 
@@ -22,13 +22,13 @@ public class CustomOAuth2AuthorizationRequestRepository
 
 	@Override
 	public OAuth2AuthorizationRequest loadAuthorizationRequest(HttpServletRequest request) {
-		return authorizationRequestRepository.loadAuthorizationRequest(request);
+		return delegate.loadAuthorizationRequest(request);
 	}
 
 	@Override
 	public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request,
 		HttpServletResponse response) {
-		authorizationRequestRepository.saveAuthorizationRequest(authorizationRequest, request, response);
+		delegate.saveAuthorizationRequest(authorizationRequest, request, response);
 		finalRedirectUriRepository.saveFinalRedirectUri(authorizationRequest, request);
 	}
 
@@ -41,6 +41,6 @@ public class CustomOAuth2AuthorizationRequestRepository
 	@Override
 	public OAuth2AuthorizationRequest removeAuthorizationRequest(HttpServletRequest request,
 		HttpServletResponse response) {
-		return authorizationRequestRepository.removeAuthorizationRequest(request, response);
+		return delegate.removeAuthorizationRequest(request, response);
 	}
 }
