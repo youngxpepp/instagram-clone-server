@@ -422,7 +422,7 @@ The following rules in the Naver coding convention cannot be checked by this con
     <!--- Suppression -->
     <module name="SuppressionFilter">
         <property name="file" value="${suppressionFile}"/>
-        <property name="optional" value="true"/>
+<!--        <property name="optional" value="true"/>-->
     </module>
 
 </module>

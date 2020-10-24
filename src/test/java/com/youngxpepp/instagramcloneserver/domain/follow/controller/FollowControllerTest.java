@@ -8,6 +8,7 @@ import java.util.Arrays;
 import java.util.Optional;
 
 import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,14 +61,12 @@ public class FollowControllerTest extends IntegrationTest {
 
 	@AfterEach
 	public void tearDown() {
-		//        memberRepository.deleteAll();
+		// memberRepository.deleteAll();
 	}
 
 	@Test
-	// CHECKSTYLE:OFF
 	public void Given_팔로우할상대방생성_When_follow호출_Then_200ok_Follow생성확인() throws Exception {
-		// CHECKSTYLE:ON
-		//        given
+		// given
 		Member opponent = Member.builder()
 			.name("opponentName")
 			.nickname("opponentNickname")
@@ -76,7 +75,7 @@ public class FollowControllerTest extends IntegrationTest {
 			.build();
 		memberRepository.save(opponent);
 
-		//        when
+		// when
 		FollowRequestDto dto = FollowRequestDto.builder()
 			.memberNickname(opponent.getNickname())
 			.build();
@@ -85,7 +84,7 @@ public class FollowControllerTest extends IntegrationTest {
 		Follow follow = followRepository.findByFromMemberIdAndToMemberId(principal.getId(), opponent.getId())
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-		//        then
+		// then
 		resultActions
 			.andExpect(status().isOk());
 		assertThat(follow.getFromMember().getId())
@@ -96,7 +95,7 @@ public class FollowControllerTest extends IntegrationTest {
 
 	@Test
 	public void Given_서로팔로우_When_언팔로우_Then_200ok_팔로삭제확인() throws Exception { // SUPPRESS CHECKSTYLE MethodName
-		//        given
+		// given
 		Member opponent = Member.builder()
 			.name("opponentName")
 			.nickname("opponentNickname")
@@ -110,7 +109,7 @@ public class FollowControllerTest extends IntegrationTest {
 			.build();
 		followRepository.save(follow);
 
-		//        when
+		// when
 		UnfollowRequestDto dto = UnfollowRequestDto.builder()
 			.memberNickname(opponent.getNickname())
 			.build();
@@ -118,7 +117,7 @@ public class FollowControllerTest extends IntegrationTest {
 		Optional<Follow> resultFollow = followRepository.findByFromMemberIdAndToMemberId(principal.getId(),
 			opponent.getId());
 
-		//        then
+		// then
 		resultActions.andExpect(status().isOk());
 		assertThat(resultFollow).isEqualTo(Optional.empty());
 	}
