@@ -9,8 +9,9 @@ compileJava.options.encoding = 'UTF-8'
 compileTestJava.options.encoding = 'UTF-8'
 
 checkstyle {
-    configFile = file("${rootDir}/checkstyle.xml")
-    configProperties = ["suppressionFile": "${rootDir}/suppressions.xml"]
+    configFile = file("checkstyle.xml")
+    configDirectory = getRootDir()
+    configProperties = ["suppressionFile": "suppressions.xml"]
     maxWarnings = 0
     toolVersion = '8.34'
 }

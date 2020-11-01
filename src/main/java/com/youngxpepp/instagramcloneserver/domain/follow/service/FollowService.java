@@ -3,7 +3,9 @@ package com.youngxpepp.instagramcloneserver.domain.follow.service;
 import javax.validation.Valid;
 
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
@@ -17,13 +19,15 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 
 @Service
 @AllArgsConstructor
+@Slf4j
 public class FollowService {
 
 	private FollowRepository followRepository;
 	private MemberRepository memberRepository;
 
 	@Transactional
-	public void follow(Member fromMember, FollowRequestDto dto) throws BusinessException {
+	public void follow(Long memberId, FollowRequestDto dto) throws BusinessException {
+		Member fromMember = memberRepository.getOne(memberId);
 		Member toMember = memberRepository.findByNickname(dto.getMemberNickname())
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
@@ -41,7 +45,8 @@ public class FollowService {
 	}
 
 	@Transactional
-	public void unfollow(Member fromMember, @Valid UnfollowRequestDto dto) {
+	public void unfollow(Long memberId, @Valid UnfollowRequestDto dto) {
+		Member fromMember = memberRepository.getOne(memberId);
 		Member toMember = memberRepository.findByNickname(dto.getMemberNickname())
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 

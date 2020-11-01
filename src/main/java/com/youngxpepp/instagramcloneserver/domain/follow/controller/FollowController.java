@@ -33,27 +33,24 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 public class FollowController {
 
 	private FollowService followService;
-	private Validator validator;
 
 	@PostMapping
 	public void follow(
 		@RequestBody @Valid FollowRequestDto dto,
-		@AuthenticationPrincipal @ApiIgnore Member principal
-	)
-		throws BusinessException {
-
-		followService.follow(principal, dto);
+		@AuthenticationPrincipal @ApiIgnore Member member
+	) {
+		followService.follow(member.getId(), dto);
 	}
 
 	@DeleteMapping("/{member_nickname}")
 	public void unfollow(
 		@PathVariable("member_nickname") String memberNickname,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore Member member
 	) {
 
 		UnfollowRequestDto dto = UnfollowRequestDto.builder()
 			.memberNickname(memberNickname)
 			.build();
-		followService.unfollow(principal, dto);
+		followService.unfollow(member.getId(), dto);
 	}
 }

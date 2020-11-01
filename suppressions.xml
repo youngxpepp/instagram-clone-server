@@ -4,7 +4,5 @@
         "http://www.puppycrawl.com/dtds/suppressions_1_1.dtd">
 
 <suppressions>
-    <suppress files="MemberControllerTest.java" checks="MethodName|AbbreviationAsWordInName"/>
-    <suppress files="PostServiceTest.java" checks="MethodName|AbbreviationAsWordInName"/>
-    <suppress files="PostControllerTest.java" checks="MethodName|AbbreviationAsWordInName"/>
+    <suppress files=".*Test.java" checks="MethodName|AbbreviationAsWordInName"/>
 </suppressions>
