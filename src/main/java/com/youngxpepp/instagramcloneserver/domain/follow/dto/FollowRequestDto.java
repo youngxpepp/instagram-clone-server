@@ -1,8 +1,9 @@
 package com.youngxpepp.instagramcloneserver.domain.follow.dto;
 
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
+import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,8 +18,6 @@ import lombok.Setter;
 @Setter
 public class FollowRequestDto {
 
-	@JsonProperty("member_nickname")
 	@NotNull
-	@NotEmpty
-	private String memberNickname;
+	private Long memberId;
 }

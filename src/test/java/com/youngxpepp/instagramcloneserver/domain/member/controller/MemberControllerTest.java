@@ -2,6 +2,7 @@ package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
 import static org.assertj.core.api.BDDAssertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
@@ -77,20 +78,20 @@ public class MemberControllerTest extends IntegrationTest {
 
 		List<Follow> follows = new ArrayList<>();
 		follows.add(Follow.builder()
-			.fromMember(memberA)
-			.toMember(memberB)
+			.followingMember(memberA)
+			.followedMember(memberB)
 			.build());
 		follows.add(Follow.builder()
-			.fromMember(memberA)
-			.toMember(memberC)
+			.followingMember(memberA)
+			.followedMember(memberC)
 			.build());
 		follows.add(Follow.builder()
-			.fromMember(memberB)
-			.toMember(memberA)
+			.followingMember(memberB)
+			.followedMember(memberA)
 			.build());
 		follows.add(Follow.builder()
-			.fromMember(memberC)
-			.toMember(memberA)
+			.followingMember(memberC)
+			.followedMember(memberA)
 			.build());
 		followRepository.saveAll(follows);
 
@@ -177,6 +178,7 @@ public class MemberControllerTest extends IntegrationTest {
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(this.objectMapper.writeValueAsString(loginRequestDto)))
+			.andDo(print())
 			.andReturn();
 	}
 }

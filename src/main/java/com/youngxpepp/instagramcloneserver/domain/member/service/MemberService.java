@@ -35,8 +35,8 @@ public class MemberService {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-		Long followerCount = followRepository.countByToMemberId(member.getId());
-		Long followingCount = followRepository.countByFromMemberId(member.getId());
+		Long followerCount = followRepository.countByFollowedMemberId(member.getId());
+		Long followingCount = followRepository.countByFollowingMemberId(member.getId());
 
 		return GetMemberResponseDto.builder()
 			.id(member.getId())

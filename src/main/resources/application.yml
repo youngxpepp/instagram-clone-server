@@ -9,8 +9,6 @@ server:
 spring:
   profiles:
     active: ${SPRING_PROFILES_ACTIVE:local}
-  jackson:
-    property-naming-strategy: SNAKE_CASE
   security:
     oauth2:
       client:

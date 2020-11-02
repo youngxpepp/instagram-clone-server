@@ -43,12 +43,6 @@ public class Member extends AbstractBaseTimeEntity {
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
 
-	@OneToMany(mappedBy = "toMember")
-	private List<Follow> followers = new ArrayList<>();
-
-	@OneToMany(mappedBy = "fromMember")
-	private List<Follow> followings = new ArrayList<>();
-
 	@Builder
 	public Member(String nickname, String name, String password, MemberRole role) {
 		this.nickname = nickname;
