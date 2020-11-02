@@ -6,5 +6,6 @@ spring:
     password: ${SPRING_DATASOURCE_PASSWORD}
   jpa:
     database: mysql
+    database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
