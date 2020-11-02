@@ -54,7 +54,6 @@ public class MemberControllerTest extends IntegrationTest {
 
 	@Test
 	public void Given_MemberABC서로팔로우_When_MemberA조회_Then_MemberA() throws Exception {
-
 		// given
 		Member memberA = Member.builder()
 			.name("a")
@@ -97,15 +96,16 @@ public class MemberControllerTest extends IntegrationTest {
 
 		// when
 		ResultActions resultActions =
-			mockMvc.perform(get("/api/v1/members/{nickname}", memberA.getNickname()));
+			mockMvc.perform(get("/api/v1/members/{memberId}", memberA.getId()));
 
 		// then
 		resultActions
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("member_nickname").value(memberA.getNickname()))
-			.andExpect(jsonPath("member_name").value(memberA.getName()))
-			.andExpect(jsonPath("follower_count").value(2L))
-			.andExpect(jsonPath("following_count").value(2L));
+			.andExpect(jsonPath("id").value(memberA.getId()))
+			.andExpect(jsonPath("name").value(memberA.getName()))
+			.andExpect(jsonPath("nickname").value(memberA.getNickname()))
+			.andExpect(jsonPath("follower_count").value(2))
+			.andExpect(jsonPath("following_count").value(2));
 	}
 
 	@Test

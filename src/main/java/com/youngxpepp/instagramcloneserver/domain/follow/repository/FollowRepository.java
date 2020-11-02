@@ -6,7 +6,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 
-public interface FollowRepository extends JpaRepository<Follow, Long>, FollowCustomRepository {
+public interface FollowRepository extends JpaRepository<Follow, Long> {
 
 	Optional<Follow> findByFromMemberIdAndToMemberId(Long fromMemberId, Long toMemberId);
+
+	Long countByFromMemberId(Long fromMemberId);
+
+	Long countByToMemberId(Long fromMemberId);
 }

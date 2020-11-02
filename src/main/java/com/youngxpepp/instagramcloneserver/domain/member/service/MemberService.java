@@ -4,12 +4,11 @@ import java.util.Arrays;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberServiceDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Google;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
@@ -32,16 +31,17 @@ public class MemberService {
 	private final JwtUtils jwtUtils;
 
 	@Transactional
-	public MemberServiceDto.GetMemberResponseDto getMember(String memberNickname) {
-		Member member = memberRepository.findByNickname(memberNickname)
+	public GetMemberResponseDto getMember(Long memberId) {
+		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
-		Long followerCount = followRepository.getFollowerCountByMemberNickname(memberNickname);
-		Long followingCount = followRepository.getFollowingCountByMemberNickname(memberNickname);
+		Long followerCount = followRepository.countByToMemberId(member.getId());
+		Long followingCount = followRepository.countByFromMemberId(member.getId());
 
-		return MemberServiceDto.GetMemberResponseDto.builder()
-			.memberNickname(member.getNickname())
-			.memberName(member.getName())
+		return GetMemberResponseDto.builder()
+			.id(member.getId())
+			.name(member.getName())
+			.nickname(member.getNickname())
 			.followerCount(followerCount)
 			.followingCount(followingCount)
 			.build();

@@ -1,7 +1,7 @@
 package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
 import javax.validation.Valid;
-import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -15,10 +15,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginResponseDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberControllerDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberServiceDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
@@ -31,18 +30,9 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@GetMapping("/{nickname}")
-	public MemberControllerDto.GetMemberResponseDto getMember(
-		@PathVariable("nickname") @NotBlank String memberNickname) {
-
-		MemberServiceDto.GetMemberResponseDto serviceResponse = memberService.getMember(memberNickname);
-
-		return MemberControllerDto.GetMemberResponseDto.builder()
-			.memberNickname(serviceResponse.getMemberNickname())
-			.memberName(serviceResponse.getMemberName())
-			.followerCount(serviceResponse.getFollowerCount())
-			.followingCount(serviceResponse.getFollowingCount())
-			.build();
+	@GetMapping("/{memberId}")
+	public GetMemberResponseDto getMember(@PathVariable("memberId") @NotNull Long memberId) {
+		return memberService.getMember(memberId);
 	}
 
 	@PostMapping("/login")
