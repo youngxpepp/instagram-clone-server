@@ -2,6 +2,7 @@ package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
 import static org.assertj.core.api.BDDAssertions.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
+import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 import java.util.ArrayList;
@@ -54,7 +55,6 @@ public class MemberControllerTest extends IntegrationTest {
 
 	@Test
 	public void Given_MemberABC서로팔로우_When_MemberA조회_Then_MemberA() throws Exception {
-
 		// given
 		Member memberA = Member.builder()
 			.name("a")
@@ -78,34 +78,35 @@ public class MemberControllerTest extends IntegrationTest {
 
 		List<Follow> follows = new ArrayList<>();
 		follows.add(Follow.builder()
-			.fromMember(memberA)
-			.toMember(memberB)
+			.followingMember(memberA)
+			.followedMember(memberB)
 			.build());
 		follows.add(Follow.builder()
-			.fromMember(memberA)
-			.toMember(memberC)
+			.followingMember(memberA)
+			.followedMember(memberC)
 			.build());
 		follows.add(Follow.builder()
-			.fromMember(memberB)
-			.toMember(memberA)
+			.followingMember(memberB)
+			.followedMember(memberA)
 			.build());
 		follows.add(Follow.builder()
-			.fromMember(memberC)
-			.toMember(memberA)
+			.followingMember(memberC)
+			.followedMember(memberA)
 			.build());
 		followRepository.saveAll(follows);
 
 		// when
 		ResultActions resultActions =
-			mockMvc.perform(get("/api/v1/members/{nickname}", memberA.getNickname()));
+			mockMvc.perform(get("/api/v1/members/{memberId}", memberA.getId()));
 
 		// then
 		resultActions
 			.andExpect(status().isOk())
-			.andExpect(jsonPath("member_nickname").value(memberA.getNickname()))
-			.andExpect(jsonPath("member_name").value(memberA.getName()))
-			.andExpect(jsonPath("follower_count").value(2L))
-			.andExpect(jsonPath("following_count").value(2L));
+			.andExpect(jsonPath("id").value(memberA.getId()))
+			.andExpect(jsonPath("name").value(memberA.getName()))
+			.andExpect(jsonPath("nickname").value(memberA.getNickname()))
+			.andExpect(jsonPath("follower_count").value(2))
+			.andExpect(jsonPath("following_count").value(2));
 	}
 
 	@Test
@@ -177,6 +178,7 @@ public class MemberControllerTest extends IntegrationTest {
 			.accept(MediaType.APPLICATION_JSON)
 			.contentType(MediaType.APPLICATION_JSON)
 			.content(this.objectMapper.writeValueAsString(loginRequestDto)))
+			.andDo(print())
 			.andReturn();
 	}
 }

@@ -1,14 +1,13 @@
 package com.youngxpepp.instagramcloneserver.domain.follow.controller;
 
 import javax.validation.Valid;
-import javax.validation.Validation;
-import javax.validation.Validator;
-import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -18,12 +17,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
-import com.youngxpepp.instagramcloneserver.domain.follow.dto.UnfollowRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.follow.service.FollowService;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.PostJwtAuthenticationToken;
-import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
 @RestController
 @RequestMapping("/api/v1/follows")
@@ -35,22 +32,19 @@ public class FollowController {
 	private FollowService followService;
 
 	@PostMapping
-	public void follow(
-		@RequestBody @Valid FollowRequestDto dto,
-		@AuthenticationPrincipal @ApiIgnore Member member
-	) {
-		followService.follow(member.getId(), dto);
+	public ResponseEntity<FollowDto> follow(
+		@RequestBody @Valid FollowRequestDto requestDto,
+		@AuthenticationPrincipal @ApiIgnore Member principal) {
+		return new ResponseEntity<FollowDto>(followService.follow(principal.getId(), requestDto.getMemberId()),
+			HttpStatus.CREATED);
 	}
 
-	@DeleteMapping("/{member_nickname}")
-	public void unfollow(
-		@PathVariable("member_nickname") String memberNickname,
-		@AuthenticationPrincipal @ApiIgnore Member member
+	@DeleteMapping("/{followId}")
+	public ResponseEntity unfollow(
+		@PathVariable("followId") @NotNull Long followId,
+		@AuthenticationPrincipal @ApiIgnore Member principal
 	) {
-
-		UnfollowRequestDto dto = UnfollowRequestDto.builder()
-			.memberNickname(memberNickname)
-			.build();
-		followService.unfollow(member.getId(), dto);
+		followService.unfollow(principal.getId(), followId);
+		return new ResponseEntity(HttpStatus.NO_CONTENT);
 	}
 }

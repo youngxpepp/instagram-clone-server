@@ -22,7 +22,7 @@ public class AccessTokenClaims {
 	public List<String> getRolesByString() {
 		return this.roles
 			.stream()
-			.map(role -> role.getName())
+			.map(role -> role.getValue())
 			.collect(Collectors.toList());
 	}
 

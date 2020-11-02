@@ -18,7 +18,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"from_member_id", "to_member_id"})})
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"following_member_id", "followed_member_id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Follow extends AbstractBaseTimeEntity {
@@ -28,18 +28,16 @@ public class Follow extends AbstractBaseTimeEntity {
 	private Long id;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "from_member_id")
-	private Member fromMember;
+	@JoinColumn(name = "following_member_id")
+	private Member followingMember;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "to_member_id")
-	private Member toMember;
+	@JoinColumn(name = "followed_member_id")
+	private Member followedMember;
 
 	@Builder
-	public Follow(Member fromMember, Member toMember) {
-		this.fromMember = fromMember;
-		this.toMember = toMember;
-		// fromMember.getFollowings().add(this);
-		// toMember.getFollowers().add(this);
+	public Follow(Member followingMember, Member followedMember) {
+		this.followingMember = followingMember;
+		this.followedMember = followedMember;
 	}
 }

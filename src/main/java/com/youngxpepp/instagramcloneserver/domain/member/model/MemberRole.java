@@ -7,9 +7,9 @@ public enum MemberRole {
 	MEMBER("ROLE_MEMBER"),
 	ADMIN("ROLE_ADMIN");
 
-	private String name;
+	private String value;
 
-	MemberRole(String name) {
-		this.name = name;
+	MemberRole(String value) {
+		this.value = value;
 	}
 }

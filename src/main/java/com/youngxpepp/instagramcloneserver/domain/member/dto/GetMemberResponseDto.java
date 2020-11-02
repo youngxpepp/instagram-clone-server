@@ -5,14 +5,23 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 
-@AllArgsConstructor
-@NoArgsConstructor
+@RequiredArgsConstructor
 @Builder
 @Getter
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class LoginResponseDto {
+public class GetMemberResponseDto {
 
-	private String accessToken;
+	private final Long id;
+
+	private final String name;
+
+	private final String nickname;
+
+	@JsonProperty("follower_count")
+	private final Long followerCount;
+
+	@JsonProperty("following_count")
+	private final Long followingCount;
 }
