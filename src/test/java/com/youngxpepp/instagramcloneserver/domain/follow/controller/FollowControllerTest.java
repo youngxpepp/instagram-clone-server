@@ -78,11 +78,9 @@ public class FollowControllerTest extends IntegrationTest {
 			.andExpect(jsonPath("followingMember.id").value(principal.getId()))
 			.andExpect(jsonPath("followingMember.nickname").value(principal.getNickname()))
 			.andExpect(jsonPath("followingMember.name").value(principal.getName()))
-			.andExpect(jsonPath("followingMember.role").value(principal.getRole().name()))
 			.andExpect(jsonPath("followedMember.id").value(opponent.getId()))
 			.andExpect(jsonPath("followedMember.nickname").value(opponent.getNickname()))
-			.andExpect(jsonPath("followedMember.name").value(opponent.getName()))
-			.andExpect(jsonPath("followedMember.role").value(opponent.getRole().name()));
+			.andExpect(jsonPath("followedMember.name").value(opponent.getName()));
 	}
 
 	@Test

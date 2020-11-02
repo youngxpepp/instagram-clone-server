@@ -14,14 +14,8 @@ import lombok.RequiredArgsConstructor;
 public class GetMemberResponseDto {
 
 	private final Long id;
-
 	private final String name;
-
 	private final String nickname;
-
-	@JsonProperty("follower_count")
 	private final Long followerCount;
-
-	@JsonProperty("following_count")
 	private final Long followingCount;
 }

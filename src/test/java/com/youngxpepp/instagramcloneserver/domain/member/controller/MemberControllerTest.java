@@ -105,8 +105,8 @@ public class MemberControllerTest extends IntegrationTest {
 			.andExpect(jsonPath("id").value(memberA.getId()))
 			.andExpect(jsonPath("name").value(memberA.getName()))
 			.andExpect(jsonPath("nickname").value(memberA.getNickname()))
-			.andExpect(jsonPath("follower_count").value(2))
-			.andExpect(jsonPath("following_count").value(2));
+			.andExpect(jsonPath("followerCount").value(2))
+			.andExpect(jsonPath("followingCount").value(2));
 	}
 
 	@Test

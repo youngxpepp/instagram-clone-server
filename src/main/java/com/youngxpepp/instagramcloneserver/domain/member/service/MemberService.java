@@ -9,11 +9,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
-import com.youngxpepp.instagramcloneserver.domain.member.model.Google;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
-import com.youngxpepp.instagramcloneserver.domain.member.repository.GoogleRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtils;
@@ -26,7 +25,6 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final FollowRepository followRepository;
-	private final GoogleRepository googleRepository;
 	private final PasswordEncoder passwordEncoder;
 	private final JwtUtils jwtUtils;
 
@@ -64,13 +62,18 @@ public class MemberService {
 	}
 
 	@Transactional
-	public String signup(String key, SignupRequestDto requestDto) {
+	public MemberDto signup(String email, SignupRequestDto requestDto) {
+		memberRepository.findByEmail(email)
+			.ifPresent(member -> {
+				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
+			});
 		memberRepository.findByNickname(requestDto.getNickname())
-			.ifPresent(member -> new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST));
-		googleRepository.findByKey(key)
-			.ifPresent(google -> new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST));
+			.ifPresent(member -> {
+				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
+			});
 
 		Member member = Member.builder()
+			.email(email)
 			.name(requestDto.getName())
 			.nickname(requestDto.getNickname())
 			.password(passwordEncoder.encode(requestDto.getPassword()))
@@ -78,15 +81,6 @@ public class MemberService {
 			.build();
 		memberRepository.save(member);
 
-		Google google = new Google(member, key);
-		googleRepository.save(google);
-
-		AccessTokenClaims claims = AccessTokenClaims.builder()
-			.memberId(member.getId())
-			.roles(Arrays.asList(member.getRole()))
-			.build();
-		String accessToken = jwtUtils.generateAccessToken(claims);
-
-		return accessToken;
+		return MemberDto.ofMember(member);
 	}
 }

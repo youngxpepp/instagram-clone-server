@@ -4,6 +4,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.annotation.Validated;
@@ -18,8 +20,8 @@ import springfox.documentation.annotations.ApiIgnore;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginResponseDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
 
 @RestController
@@ -38,17 +40,15 @@ public class MemberController {
 	@PostMapping("/login")
 	public LoginResponseDto login(@RequestBody @Valid LoginRequestDto requestDto) {
 		String accessToken = this.memberService.login(requestDto.getNickname(), requestDto.getPassword());
-
 		return LoginResponseDto.builder()
 			.accessToken(accessToken)
 			.build();
 	}
 
 	@PostMapping("/signup")
-	public SignupResponseDto signup(
-		@RequestBody @Valid SignupRequestDto requestDto,
+	public ResponseEntity<MemberDto> signup(@RequestBody @Valid SignupRequestDto requestDto,
 		@AuthenticationPrincipal @ApiIgnore OAuth2User principal) {
-		String accessToken = memberService.signup(principal.getName(), requestDto);
-		return new SignupResponseDto(accessToken);
+		MemberDto memberDto = memberService.signup(principal.getAttribute("email"), requestDto);
+		return new ResponseEntity<MemberDto>(memberDto, HttpStatus.CREATED);
 	}
 }

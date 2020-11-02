@@ -30,6 +30,9 @@ public class Member extends AbstractBaseTimeEntity {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
+	@Column(name = "email", unique = true)
+	private String email;
+
 	@Column(name = "nickname", unique = true)
 	private String nickname;
 
@@ -44,7 +47,8 @@ public class Member extends AbstractBaseTimeEntity {
 	private MemberRole role;
 
 	@Builder
-	public Member(String nickname, String name, String password, MemberRole role) {
+	public Member(String email, String nickname, String name, String password, MemberRole role) {
+		this.email = email;
 		this.nickname = nickname;
 		this.name = name;
 		this.password = password;
