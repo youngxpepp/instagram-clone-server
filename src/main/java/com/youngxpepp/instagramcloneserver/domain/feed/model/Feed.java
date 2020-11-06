@@ -1,0 +1,33 @@
+package com.youngxpepp.instagramcloneserver.domain.feed.model;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
+
+import lombok.AccessLevel;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
+
+@Entity(name = "feed")
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Getter
+public class Feed extends AbstractBaseTimeEntity {
+
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	private Long id;
+
+	@ManyToOne(optional = false)
+	@JoinColumn(name = "member_id")
+	private Member member;
+
+	@Column(name = "content")
+	private String content;
+}
