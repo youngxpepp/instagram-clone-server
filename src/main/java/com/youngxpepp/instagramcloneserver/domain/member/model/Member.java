@@ -42,6 +42,12 @@ public class Member extends AbstractBaseTimeEntity {
 	@Column(name = "password", columnDefinition = "TEXT")
 	private String password;
 
+	@Column(name = "profile_image_url")
+	private String profileImageUrl;
+
+	@Column(name = "description")
+	private String description;
+
 	@Column(name = "role")
 	@Enumerated(EnumType.STRING)
 	private MemberRole role;
