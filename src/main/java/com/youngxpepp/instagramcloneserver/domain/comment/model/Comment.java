@@ -12,7 +12,7 @@ import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.youngxpepp.instagramcloneserver.domain.feed.model.Feed;
+import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
@@ -34,8 +34,8 @@ public class Comment extends AbstractBaseTimeEntity {
 	private Member member;
 
 	@ManyToOne(optional = false)
-	@JoinColumn(name = "feed_id")
-	private Feed feed;
+	@JoinColumn(name = "article_id")
+	private Article article;
 
 	@Column(name = "content")
 	private String content;

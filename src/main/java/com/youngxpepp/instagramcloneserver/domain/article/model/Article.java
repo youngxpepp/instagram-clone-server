@@ -1,37 +1,36 @@
-package com.youngxpepp.instagramcloneserver.domain.feed.model;
+package com.youngxpepp.instagramcloneserver.domain.article.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
-@Entity(name = "feed_image")
+@Entity
+@Table(name = "article")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class FeedImage extends AbstractBaseTimeEntity {
+public class Article extends AbstractBaseTimeEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@OneToOne
-	@JoinColumn(name = "next_feed_image_id")
-	private FeedImage nextFeedImage;
+	@Column(name = "content")
+	private String content;
 
-	@ManyToOne(optional = false)
-	@JoinColumn(name = "feed_id")
-	private Feed feed;
-
-	@Column(name = "uri")
-	private String uri;
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "member_id")
+	private Member createdBy;
 }
