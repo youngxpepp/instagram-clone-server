@@ -1,5 +1,25 @@
+server:
+  port: 8080
+#  error:
+#    include_exception: false # 응답에 exception 내용 포함 여부
+#    include-stacktrace: never # Stacktrace 내용 포함 여부
+#    path: '/error' # 에러 처리 경로
+#    whitelabel.enabled: true # 에러 발생 시 기본 페이지 생성 여부
+
 spring:
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: create-drop
+  profiles:
+    active: ${SPRING_PROFILES_ACTIVE:local}
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-ID}
+            client-secret: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_CLIENT-SECRET}
+            scope: ${SPRING_SECURITY_OAUTH2_CLIENT_REGISTRATION_GOOGLE_SCOPE}
+jwt:
+  issuer: instagram-clone
+  access-token-expiration: 1800
+  refresh-token-expiration: 604800
+  secret: 123123123123123123123fhaskjhfadshfas
+
