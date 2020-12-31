@@ -29,7 +29,7 @@ public class ArticleImage extends AbstractBaseTimeEntity {
 	@Column(name = "url")
 	private String url;
 
-	@Column(name = "order")
+	@Column(name = "order_number")
 	private Integer order;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
