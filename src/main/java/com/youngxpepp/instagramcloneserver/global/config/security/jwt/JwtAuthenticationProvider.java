@@ -1,6 +1,7 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import io.jsonwebtoken.Claims;
@@ -15,6 +16,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
+import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -28,9 +30,9 @@ public class JwtAuthenticationProvider implements AuthenticationProvider {
 		PreJwtAuthenticationToken preJwtAuthenticationToken = (PreJwtAuthenticationToken)authentication;
 		String accessToken = preJwtAuthenticationToken.getAccessToken();
 
-		Jws<Claims> jws = jwtUtils.verifyAccessToken(accessToken);
-		Long id = jws.getBody().get("memberId", Long.class);
-		List<String> roles = jws.getBody().get("roles", List.class);
+		AccessTokenClaims claims = jwtUtils.verifyAccessToken(accessToken);
+		Long id = claims.getMemberId();
+		List<String> roles = claims.getRoles();
 		List<SimpleGrantedAuthority> authorities = roles.stream()
 			.map(SimpleGrantedAuthority::new)
 			.collect(Collectors.toList());

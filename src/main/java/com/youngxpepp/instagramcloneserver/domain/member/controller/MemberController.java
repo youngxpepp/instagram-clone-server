@@ -18,8 +18,6 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginRequestDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.LoginResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
@@ -35,14 +33,6 @@ public class MemberController {
 	@GetMapping("/{memberId}")
 	public GetMemberResponseDto getMember(@PathVariable("memberId") @NotNull Long memberId) {
 		return memberService.getMember(memberId);
-	}
-
-	@PostMapping("/login")
-	public LoginResponseDto login(@RequestBody @Valid LoginRequestDto requestDto) {
-		String accessToken = this.memberService.login(requestDto.getNickname(), requestDto.getPassword());
-		return LoginResponseDto.builder()
-			.accessToken(accessToken)
-			.build();
 	}
 
 	@PostMapping("/signup")

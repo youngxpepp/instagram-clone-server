@@ -20,7 +20,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.JwtUtils;
+import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
 @Component
 @RequiredArgsConstructor
@@ -45,10 +45,8 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 		if (member == null) {
 			repo.saveContext(SecurityContextHolder.getContext(), request, response);
 		} else {
-			AccessTokenClaims claims = AccessTokenClaims.builder()
-				.memberId(member.getId())
-				.roles(Arrays.asList(member.getRole()))
-				.build();
+			AccessTokenClaims claims = AccessTokenClaims.ofMemberRoleList(member.getId(),
+				Arrays.asList(member.getRole()));
 			String accessToken = jwtUtils.generateAccessToken(claims);
 			uriBuilder.queryParam("accessToken", accessToken);
 		}
