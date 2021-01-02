@@ -76,6 +76,10 @@ dependencies {
 
     // google people api
     implementation 'com.google.apis:google-api-services-people:v1-rev20200813-1.30.10'
+
+    // sentry
+    implementation 'io.sentry:sentry-logback:3.2.0'
+    implementation 'io.sentry:sentry-spring-boot-starter:3.2.0'
 }
 
 test {

@@ -9,3 +9,6 @@ spring:
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     hibernate:
       ddl-auto: none
+sentry:
+  dsn: ${SENTRY_DSN}
+  exception-resolver-order: 2147483647
