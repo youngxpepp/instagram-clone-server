@@ -1,10 +1,12 @@
 package com.youngxpepp.instagramcloneserver.domain.follow.service;
 
 import lombok.AllArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowDto;
+import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowMapper;
 import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
@@ -13,11 +15,13 @@ import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
 @Service
-@AllArgsConstructor
+@RequiredArgsConstructor
 public class FollowService {
 
-	private FollowRepository followRepository;
-	private MemberRepository memberRepository;
+	private final FollowRepository followRepository;
+	private final MemberRepository memberRepository;
+	private final FollowMapper followMapper;
+
 
 	@Transactional
 	public FollowDto follow(Long followingMemberId, Long followedMemberId) {
@@ -38,7 +42,7 @@ public class FollowService {
 
 		followRepository.save(follow);
 
-		return FollowDto.ofFollow(follow);
+		return followMapper.toFollowDto(follow);
 	}
 
 	@Transactional

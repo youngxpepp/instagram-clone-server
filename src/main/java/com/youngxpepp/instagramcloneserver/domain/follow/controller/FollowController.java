@@ -4,7 +4,6 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import lombok.AllArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -18,14 +17,13 @@ import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowDto;
-import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.follow.dto.FollowRequestBody;
 import com.youngxpepp.instagramcloneserver.domain.follow.service.FollowService;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 
 @RestController
 @RequestMapping("/api/v1/follows")
 @AllArgsConstructor
-@Slf4j
 @Validated
 public class FollowController {
 
@@ -33,10 +31,10 @@ public class FollowController {
 
 	@PostMapping
 	public ResponseEntity<FollowDto> follow(
-		@RequestBody @Valid FollowRequestDto requestDto,
+		@RequestBody @Valid FollowRequestBody requestDto,
 		@AuthenticationPrincipal @ApiIgnore Member principal) {
-		return new ResponseEntity<FollowDto>(followService.follow(principal.getId(), requestDto.getMemberId()),
-			HttpStatus.CREATED);
+		FollowDto followDto = followService.follow(principal.getId(), requestDto.getMemberId());
+		return new ResponseEntity<FollowDto>(followDto, HttpStatus.CREATED);
 	}
 
 	@DeleteMapping("/{followId}")

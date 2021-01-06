@@ -19,7 +19,9 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestBody;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
 
 @RestController
@@ -29,6 +31,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
 public class MemberController {
 
 	private final MemberService memberService;
+	private final MemberMapper memberMapper;
 
 	@GetMapping("/{memberId}")
 	public GetMemberResponseDto getMember(@PathVariable("memberId") @NotNull Long memberId) {
@@ -36,9 +39,10 @@ public class MemberController {
 	}
 
 	@PostMapping("/signup")
-	public ResponseEntity<MemberDto> signup(@RequestBody @Valid SignupRequestDto requestDto,
+	public ResponseEntity<SignupResponseBody> signup(@RequestBody @Valid SignupRequestBody signupRequestBody,
 		@AuthenticationPrincipal @ApiIgnore OAuth2User principal) {
-		MemberDto memberDto = memberService.signup(principal.getAttribute("email"), requestDto);
-		return new ResponseEntity<MemberDto>(memberDto, HttpStatus.CREATED);
+		MemberDto memberDto = memberMapper.toMemberDto(signupRequestBody, principal.getAttribute("email"));
+		SignupResponseBody signupResponseBody = memberService.signup(memberDto);
+		return new ResponseEntity<SignupResponseBody>(signupResponseBody, HttpStatus.CREATED);
 	}
 }

@@ -65,11 +65,10 @@ dependencies {
             'io.jsonwebtoken:jjwt-jackson:0.11.2'
 
     // lombok
-    compileOnly 'org.projectlombok:lombok'
-    annotationProcessor 'org.projectlombok:lombok'
-
-    // modelmapper
-    implementation 'org.modelmapper:modelmapper:2.3.8'
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
 
     // swagger
     implementation 'io.springfox:springfox-boot-starter:3.0.0'
@@ -80,6 +79,10 @@ dependencies {
     // sentry
     implementation 'io.sentry:sentry-logback:3.2.0'
     implementation 'io.sentry:sentry-spring-boot-starter:3.2.0'
+
+    // mapstruct
+    implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 }
 
 test {

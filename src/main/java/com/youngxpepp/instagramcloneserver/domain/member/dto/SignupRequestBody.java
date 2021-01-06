@@ -2,13 +2,12 @@ package com.youngxpepp.instagramcloneserver.domain.member.dto;
 
 import javax.validation.constraints.NotBlank;
 
-import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor
 @Getter
-public class SignupRequestDto {
+public class SignupRequestBody {
 
 	@NotBlank
 	private String nickname;
@@ -17,5 +16,8 @@ public class SignupRequestDto {
 	private String name;
 
 	@NotBlank
-	private String password;
+	private String profileImageUrl;
+
+	@NotBlank
+	private String description;
 }

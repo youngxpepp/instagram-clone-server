@@ -1,16 +1,16 @@
 package com.youngxpepp.instagramcloneserver.domain.member.service;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestBody;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
@@ -21,7 +21,7 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final FollowRepository followRepository;
-	private final PasswordEncoder passwordEncoder;
+	private final MemberMapper memberMapper;
 
 	@Transactional
 	public GetMemberResponseDto getMember(Long memberId) {
@@ -41,25 +41,19 @@ public class MemberService {
 	}
 
 	@Transactional
-	public MemberDto signup(String email, SignupRequestDto requestDto) {
-		memberRepository.findByEmail(email)
+	public SignupResponseBody signup(MemberDto memberDto) {
+		memberRepository.findByEmail(memberDto.getEmail())
 			.ifPresent(member -> {
 				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
 			});
-		memberRepository.findByNickname(requestDto.getNickname())
+		memberRepository.findByNickname(memberDto.getNickname())
 			.ifPresent(member -> {
 				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
 			});
 
-		Member member = Member.builder()
-			.email(email)
-			.name(requestDto.getName())
-			.nickname(requestDto.getNickname())
-			.password(passwordEncoder.encode(requestDto.getPassword()))
-			.role(MemberRole.MEMBER)
-			.build();
+		Member member = memberMapper.toMemberEntity(memberDto);
 		memberRepository.save(member);
 
-		return MemberDto.ofMember(member);
+		return memberMapper.toSignupResponseBody(member);
 	}
 }

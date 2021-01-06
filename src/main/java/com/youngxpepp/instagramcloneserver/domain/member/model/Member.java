@@ -1,24 +1,18 @@
 package com.youngxpepp.instagramcloneserver.domain.member.model;
 
-import java.util.ArrayList;
-import java.util.List;
-import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
 import javax.persistence.Enumerated;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.OneToMany;
 
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.youngxpepp.instagramcloneserver.domain.follow.model.Follow;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
 @Entity(name = "member")
@@ -39,9 +33,6 @@ public class Member extends AbstractBaseTimeEntity {
 	@Column(name = "name")
 	private String name;
 
-	@Column(name = "password", columnDefinition = "TEXT")
-	private String password;
-
 	@Column(name = "profile_image_url")
 	private String profileImageUrl;
 
@@ -53,11 +44,13 @@ public class Member extends AbstractBaseTimeEntity {
 	private MemberRole role;
 
 	@Builder
-	public Member(String email, String nickname, String name, String password, MemberRole role) {
+	public Member(String email, String nickname, String name, String profileImageUrl, String description,
+		MemberRole role) {
 		this.email = email;
 		this.nickname = nickname;
 		this.name = name;
-		this.password = password;
+		this.profileImageUrl = profileImageUrl;
+		this.description = description;
 		this.role = role;
 	}
 }
