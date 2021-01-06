@@ -16,7 +16,7 @@ public class OAuth2FinalRedirectUriRepository {
 	private static final String FINAL_REDIRECT_URI_ATTR_NAME =
 		OAuth2FinalRedirectUriRepository.class.getName() + ".FINAL_REDIRECT_URI";
 
-	private static final String FINAL_REDIRECT_URI_PARAM_NAME = "final_redirect_uri";
+	private static final String FINAL_REDIRECT_URI_PARAM_NAME = "finalRedirectUri";
 
 	public void saveFinalRedirectUri(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request) {
 		String state = authorizationRequest.getState();
