@@ -1,7 +1,9 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.oauth;
 
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -18,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
@@ -45,8 +48,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 		if (member == null) {
 			repo.saveContext(SecurityContextHolder.getContext(), request, response);
 		} else {
-			AccessTokenClaims claims = AccessTokenClaims.ofMemberRoleList(member.getId(),
-				Arrays.asList(member.getRole()));
+			List<MemberRole> roles = new ArrayList<>();
+			Optional.ofNullable(member.getRole()).ifPresent(roles::add);
+			AccessTokenClaims claims = AccessTokenClaims.ofMemberRoleList(member.getId(), roles);
 			String accessToken = jwtUtils.generateAccessToken(claims);
 			uriBuilder.queryParam("accessToken", accessToken);
 		}

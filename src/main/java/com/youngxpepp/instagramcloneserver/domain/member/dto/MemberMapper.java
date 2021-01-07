@@ -6,6 +6,7 @@ import org.mapstruct.Mapping;
 import org.mapstruct.ReportingPolicy;
 
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 
 @Mapper(
 	unmappedTargetPolicy = ReportingPolicy.ERROR,
@@ -19,6 +20,9 @@ public interface MemberMapper {
 	MemberDto toMemberDto(SignupRequestBody signupRequestBody, String email);
 
 	Member toMemberEntity(MemberDto memberDto);
+
+	@Mapping(source = "role", target = "role")
+	Member toMemberEntity(MemberDto memberDto, MemberRole role);
 
 	SignupResponseBody toSignupResponseBody(Member member);
 }
