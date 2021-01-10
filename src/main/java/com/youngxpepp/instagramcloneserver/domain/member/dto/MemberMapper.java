@@ -25,4 +25,10 @@ public interface MemberMapper {
 	Member toMemberEntity(MemberDto memberDto, MemberRole role);
 
 	SignupResponseBody toSignupResponseBody(Member member);
+
+	@Mapping(source = "followerCount", target = "followerCount")
+	@Mapping(source = "followingCount", target = "followingCount")
+	@Mapping(source = "articleCount", target = "articleCount")
+	GetMemberResponseBody toGetMemberResponseBody(Member member, Long followerCount, Long followingCount,
+		Long articleCount);
 }

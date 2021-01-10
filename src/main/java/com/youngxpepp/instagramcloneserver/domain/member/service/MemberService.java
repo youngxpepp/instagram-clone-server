@@ -4,8 +4,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.youngxpepp.instagramcloneserver.domain.article.repository.ArticleRepository;
 import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowRepository;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseBody;
@@ -21,23 +22,19 @@ public class MemberService {
 
 	private final MemberRepository memberRepository;
 	private final FollowRepository followRepository;
+	private final ArticleRepository articleRepository;
 	private final MemberMapper memberMapper;
 
 	@Transactional
-	public GetMemberResponseDto getMember(Long memberId) {
+	public GetMemberResponseBody getMember(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 
 		Long followerCount = followRepository.countByFollowedMemberId(member.getId());
 		Long followingCount = followRepository.countByFollowingMemberId(member.getId());
+		Long articleCount = articleRepository.countByCreatedById(member.getId());
 
-		return GetMemberResponseDto.builder()
-			.id(member.getId())
-			.name(member.getName())
-			.nickname(member.getNickname())
-			.followerCount(followerCount)
-			.followingCount(followingCount)
-			.build();
+		return memberMapper.toGetMemberResponseBody(member, followerCount, followingCount, articleCount);
 	}
 
 	@Transactional

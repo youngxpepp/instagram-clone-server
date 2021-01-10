@@ -17,7 +17,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
-import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseDto;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestBody;
@@ -34,7 +34,7 @@ public class MemberController {
 	private final MemberMapper memberMapper;
 
 	@GetMapping("/{memberId}")
-	public GetMemberResponseDto getMember(@PathVariable("memberId") @NotNull Long memberId) {
+	public GetMemberResponseBody getMember(@PathVariable("memberId") @NotNull Long memberId) {
 		return memberService.getMember(memberId);
 	}
 
