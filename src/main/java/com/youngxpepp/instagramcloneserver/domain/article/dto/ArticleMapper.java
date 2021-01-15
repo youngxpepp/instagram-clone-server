@@ -18,6 +18,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 public interface ArticleMapper {
 
 	@Mapping(source = "url", target = "url")
+	@Mapping(target = "article", ignore = true)
 	ArticleImage toArticleImage(String url);
 
 	List<ArticleImage> toArticleImageList(List<String> imageUrls);

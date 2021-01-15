@@ -1,5 +1,6 @@
 package com.youngxpepp.instagramcloneserver.domain.article.model;
 
+import java.util.ArrayList;
 import java.util.List;
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -39,12 +40,16 @@ public class Article extends AbstractBaseTimeEntity {
 	private Member createdBy;
 
 	@OneToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.LAZY, mappedBy = "article")
-	private List<ArticleImage> articleImages;
+	private List<ArticleImage> articleImages = new ArrayList<>();
 
 	@Builder
 	public Article(String content, Member createdBy, List<ArticleImage> articleImages) {
 		this.content = content;
 		this.createdBy = createdBy;
 		this.articleImages = articleImages;
+
+		for (int i = 0; i < this.articleImages.size(); i++) {
+			this.articleImages.get(i).setArticle(this);
+		}
 	}
 }

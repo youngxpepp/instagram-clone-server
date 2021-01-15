@@ -11,9 +11,9 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
@@ -32,6 +32,7 @@ public class ArticleImage extends AbstractBaseTimeEntity {
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "article_id")
+	@Setter
 	private Article article;
 
 	public ArticleImage(String url) {
