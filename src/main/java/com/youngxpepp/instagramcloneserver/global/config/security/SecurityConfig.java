@@ -19,7 +19,9 @@ import org.springframework.security.oauth2.core.endpoint.OAuth2AuthorizationRequ
 import org.springframework.security.web.AuthenticationEntryPoint;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.security.web.util.matcher.AndRequestMatcher;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+import org.springframework.security.web.util.matcher.NegatedRequestMatcher;
 import org.springframework.security.web.util.matcher.OrRequestMatcher;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.cors.CorsConfiguration;
@@ -43,18 +45,27 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 	@Bean
 	JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
-		List<String> patterns = new ArrayList<>();
-
 		// Jwt 인증 필터가 적용될 경로
-		patterns.add("/api/v1/follows/**");
-		patterns.add("/api/v1/post/**");
-
-		List<RequestMatcher> requestMatchers = patterns
+		List<String> allowedPatterns = new ArrayList<>();
+		allowedPatterns.add("/api/v1/follows/**");
+		allowedPatterns.add("/api/v1/post/**");
+		allowedPatterns.add("/api/v1/articles/**");
+		allowedPatterns.add("/api/v1/members/**");
+		RequestMatcher allowed = new OrRequestMatcher(allowedPatterns
 			.stream()
-			.map(pattern -> new AntPathRequestMatcher(pattern))
-			.collect(Collectors.toList());
+			.map(AntPathRequestMatcher::new)
+			.collect(Collectors.toList()));
 
-		RequestMatcher requestMatcher = new OrRequestMatcher(requestMatchers);
+		// Jwt 인증 필터가 적용되지 않는 경로
+		List<String> deniedPatterns = new ArrayList<>();
+		deniedPatterns.add("/api/v1/members/signup");
+		RequestMatcher denied = new OrRequestMatcher(deniedPatterns
+			.stream()
+			.map(AntPathRequestMatcher::new)
+			.map(NegatedRequestMatcher::new)
+			.collect(Collectors.toList()));
+
+		RequestMatcher requestMatcher = new AndRequestMatcher(allowed, denied);
 
 		JwtAuthenticationFilter filter = new JwtAuthenticationFilter(requestMatcher);
 		filter.setAuthenticationManager(this.authenticationManagerBean());
@@ -96,9 +107,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.authorizeRequests()
 			.antMatchers("/api/v1/follows/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/post/**").hasRole("MEMBER")
-			.antMatchers("/api/v1/members/login").anonymous()
 			.antMatchers("/api/v1/members/signup").authenticated()
-			.antMatchers("/api/v1/members/**").permitAll();
+			.antMatchers("/api/v1/members/**").hasRole("MEMBER")
+			.antMatchers("/api/v1/articles/**").hasRole("MEMBER");
 
 		http
 			.addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);
@@ -119,6 +130,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		CorsConfiguration configuration = new CorsConfiguration();
 		configuration.addAllowedOrigin("*");
 		configuration.addAllowedMethod("*");
+		configuration.addAllowedHeader("*");
 		configuration.setAllowCredentials(true);
 		configuration.setMaxAge(3600L);
 
