@@ -11,6 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -35,7 +36,9 @@ public class ArticleImage extends AbstractBaseTimeEntity {
 	@Setter
 	private Article article;
 
-	public ArticleImage(String url) {
+	@Builder
+	public ArticleImage(String url, Article article) {
 		this.url = url;
+		this.article = article;
 	}
 }

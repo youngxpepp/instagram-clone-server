@@ -8,6 +8,7 @@ import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 
 import lombok.AccessLevel;
 import lombok.Getter;
@@ -17,7 +18,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
 @Entity
-@Table(name = "member_like_article")
+@Table(name = "member_like_article", uniqueConstraints = {@UniqueConstraint(columnNames = {"member_id", "article_id"})})
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class MemberLikeArticle extends AbstractBaseTimeEntity {

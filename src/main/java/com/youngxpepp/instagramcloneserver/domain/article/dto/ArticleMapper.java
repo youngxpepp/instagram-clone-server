@@ -35,4 +35,8 @@ public interface ArticleMapper {
 
 	@Mapping(source = "articleImages", target = "imageUrls")
 	CreateArticleResponseBody toCreateArticleResponseBody(Article article);
+
+	@Mapping(source = "article.articleImages", target = "imageUrls")
+	@Mapping(source = "isLiked", target = "isLiked")
+	GetArticleResponseBody toGetArticleResponseBody(Article article, Boolean isLiked);
 }

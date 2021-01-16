@@ -46,10 +46,12 @@ public class Article extends AbstractBaseTimeEntity {
 	public Article(String content, Member createdBy, List<ArticleImage> articleImages) {
 		this.content = content;
 		this.createdBy = createdBy;
-		this.articleImages = articleImages;
 
-		for (int i = 0; i < this.articleImages.size(); i++) {
-			this.articleImages.get(i).setArticle(this);
+		if (articleImages != null) {
+			this.articleImages = articleImages;
+			for (ArticleImage articleImage : this.articleImages) {
+				articleImage.setArticle(this);
+			}
 		}
 	}
 }
