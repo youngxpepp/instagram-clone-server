@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import com.sun.corba.se.impl.orbutil.DenseIntMapImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
@@ -62,8 +63,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		RequestMatcher denied = new OrRequestMatcher(deniedPatterns
 			.stream()
 			.map(AntPathRequestMatcher::new)
-			.map(NegatedRequestMatcher::new)
 			.collect(Collectors.toList()));
+		denied = new NegatedRequestMatcher(denied);
 
 		RequestMatcher requestMatcher = new AndRequestMatcher(allowed, denied);
 
