@@ -128,7 +128,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 	@Bean
 	public CorsConfigurationSource corsConfigurationSource() {
 		CorsConfiguration configuration = new CorsConfiguration();
-		configuration.addAllowedOrigin("*");
+		configuration.addAllowedOrigin("http://localhost:3000");
+		configuration.addAllowedOrigin("https://instagram-clone-client.herokuapp.com");
 		configuration.addAllowedMethod("*");
 		configuration.addAllowedHeader("*");
 		configuration.setAllowCredentials(true);
