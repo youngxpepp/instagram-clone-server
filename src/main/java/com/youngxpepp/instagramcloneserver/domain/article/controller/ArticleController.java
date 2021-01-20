@@ -8,6 +8,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -39,7 +40,7 @@ public class ArticleController {
 	@GetMapping("/{articleId}")
 	public ResponseEntity<GetArticleResponseBody> getArticle(
 		@AuthenticationPrincipal @ApiIgnore Member principal,
-		@NotNull Long articleId
+		@PathVariable("articleId") @NotNull Long articleId
 	) {
 		GetArticleResponseBody responseBody = articleService.getArticle(principal.getId(), articleId);
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
