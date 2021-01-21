@@ -17,7 +17,7 @@ public interface MemberMapper {
 	@Mapping(target = "id", ignore = true)
 	@Mapping(target = "role", ignore = true)
 	@Mapping(source = "email", target = "email")
-	MemberDto toMemberDto(SignupRequestBody signupRequestBody, String email);
+	MemberDto toMemberDto(SignupRequestParam signupRequestParam, String email);
 
 	Member toMemberEntity(MemberDto memberDto);
 

@@ -1,9 +1,12 @@
 package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -11,8 +14,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
@@ -20,7 +21,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestBody;
+import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestParam;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
 
@@ -38,11 +39,16 @@ public class MemberController {
 		return memberService.getMember(memberId);
 	}
 
-	@PostMapping("/signup")
-	public ResponseEntity<SignupResponseBody> signup(@RequestBody @Valid SignupRequestBody signupRequestBody,
-		@AuthenticationPrincipal @ApiIgnore OAuth2User principal) {
-		MemberDto memberDto = memberMapper.toMemberDto(signupRequestBody, principal.getAttribute("email"));
-		SignupResponseBody signupResponseBody = memberService.signup(memberDto);
-		return new ResponseEntity<SignupResponseBody>(signupResponseBody, HttpStatus.CREATED);
+	@GetMapping("/signup")
+	public ResponseEntity<SignupResponseBody> signup(
+		@Valid SignupRequestParam requestParam,
+		@AuthenticationPrincipal @ApiIgnore OAuth2User principal) throws URISyntaxException {
+		MemberDto memberDto = memberMapper.toMemberDto(requestParam, principal.getAttribute("email"));
+		SignupResponseBody responseBody = memberService.signup(memberDto);
+
+		HttpHeaders httpHeaders = new HttpHeaders();
+		httpHeaders.setLocation(new URI(requestParam.getRedirectUri()));
+
+		return new ResponseEntity<>(responseBody, httpHeaders, HttpStatus.FOUND);
 	}
 }
