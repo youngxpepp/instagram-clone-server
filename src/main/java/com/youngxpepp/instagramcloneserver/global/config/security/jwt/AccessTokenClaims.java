@@ -6,6 +6,7 @@ import java.util.stream.Collectors;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +22,7 @@ public final class AccessTokenClaims {
 	@JsonProperty
 	private List<String> roles;
 
+	@Builder
 	public AccessTokenClaims(Long memberId, List<String> roles) {
 		this.memberId = memberId;
 		this.roles = roles;

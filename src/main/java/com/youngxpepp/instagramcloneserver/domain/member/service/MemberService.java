@@ -9,7 +9,6 @@ import com.youngxpepp.instagramcloneserver.domain.follow.repository.FollowReposi
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
@@ -38,7 +37,7 @@ public class MemberService {
 	}
 
 	@Transactional
-	public SignupResponseBody signup(MemberDto memberDto) {
+	public MemberDto signup(MemberDto memberDto) {
 		memberRepository.findByEmail(memberDto.getEmail())
 			.ifPresent(member -> {
 				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
@@ -51,6 +50,6 @@ public class MemberService {
 		Member member = memberMapper.toMemberEntity(memberDto, MemberRole.MEMBER);
 		memberRepository.save(member);
 
-		return memberMapper.toSignupResponseBody(member);
+		return memberMapper.toMemberDto(member);
 	}
 }

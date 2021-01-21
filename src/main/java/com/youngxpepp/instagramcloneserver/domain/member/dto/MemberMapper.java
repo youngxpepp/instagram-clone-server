@@ -19,12 +19,12 @@ public interface MemberMapper {
 	@Mapping(source = "email", target = "email")
 	MemberDto toMemberDto(SignupRequestParam signupRequestParam, String email);
 
+	MemberDto toMemberDto(Member member);
+
 	Member toMemberEntity(MemberDto memberDto);
 
 	@Mapping(source = "role", target = "role")
 	Member toMemberEntity(MemberDto memberDto, MemberRole role);
-
-	SignupResponseBody toSignupResponseBody(Member member);
 
 	@Mapping(source = "followerCount", target = "followerCount")
 	@Mapping(source = "followingCount", target = "followingCount")

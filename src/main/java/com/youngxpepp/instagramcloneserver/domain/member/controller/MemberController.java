@@ -1,7 +1,7 @@
 package com.youngxpepp.instagramcloneserver.domain.member.controller;
 
-import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Arrays;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
@@ -16,14 +16,16 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.util.UriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.domain.member.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.MemberMapper;
 import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupRequestParam;
-import com.youngxpepp.instagramcloneserver.domain.member.dto.SignupResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.member.service.MemberService;
+import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
+import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -33,6 +35,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 	private final MemberMapper memberMapper;
+	private final JwtUtils jwtUtils;
 
 	@GetMapping("/{memberId}")
 	public GetMemberResponseBody getMember(@PathVariable("memberId") @NotNull Long memberId) {
@@ -40,15 +43,24 @@ public class MemberController {
 	}
 
 	@GetMapping("/signup")
-	public ResponseEntity<SignupResponseBody> signup(
+	public ResponseEntity<?> signup(
 		@Valid SignupRequestParam requestParam,
 		@AuthenticationPrincipal @ApiIgnore OAuth2User principal) throws URISyntaxException {
 		MemberDto memberDto = memberMapper.toMemberDto(requestParam, principal.getAttribute("email"));
-		SignupResponseBody responseBody = memberService.signup(memberDto);
+		MemberDto responseDto = memberService.signup(memberDto);
+
+		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
+			.memberId(responseDto.getId())
+			.roles(Arrays.asList(responseDto.getRole().getValue()))
+			.build();
+		String accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
+
+		UriComponentsBuilder redirectUriBuilder = UriComponentsBuilder.fromUriString(requestParam.getRedirectUri());
+		redirectUriBuilder.queryParam("accessToken", accessToken);
 
 		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setLocation(new URI(requestParam.getRedirectUri()));
+		httpHeaders.setLocation(redirectUriBuilder.build().toUri());
 
-		return new ResponseEntity<>(responseBody, httpHeaders, HttpStatus.FOUND);
+		return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
 	}
 }
