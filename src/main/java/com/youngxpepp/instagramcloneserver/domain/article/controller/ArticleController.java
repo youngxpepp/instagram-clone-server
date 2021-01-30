@@ -17,8 +17,11 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateArticleRequestBody;
 import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateArticleResponseBody;
+import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentRequestBody;
+import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.dto.GetArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.service.ArticleService;
+import com.youngxpepp.instagramcloneserver.domain.comment.service.CommentService;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 
 @RestController
@@ -28,6 +31,7 @@ import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 public class ArticleController {
 
 	private final ArticleService articleService;
+	private final CommentService commentService;
 
 	@PostMapping
 	public ResponseEntity<CreateArticleResponseBody> createArticle(
@@ -39,10 +43,21 @@ public class ArticleController {
 
 	@GetMapping("/{articleId}")
 	public ResponseEntity<GetArticleResponseBody> getArticle(
-		@AuthenticationPrincipal @ApiIgnore Member principal,
-		@PathVariable("articleId") @NotNull Long articleId
+		@PathVariable("articleId") @NotNull Long articleId,
+		@AuthenticationPrincipal @ApiIgnore Member principal
 	) {
 		GetArticleResponseBody responseBody = articleService.getArticle(principal.getId(), articleId);
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
+	}
+
+	@PostMapping("/{articleId}/comments")
+	public ResponseEntity<CreateCommentResponseBody> createComment(
+		@PathVariable("articleId") @NotNull Long articleId,
+		@RequestBody CreateCommentRequestBody requestBody,
+		@AuthenticationPrincipal @ApiIgnore Member principal
+	) {
+		CreateCommentResponseBody responseBody =
+			commentService.createComment(principal.getId(), articleId, requestBody);
+		return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
 	}
 }

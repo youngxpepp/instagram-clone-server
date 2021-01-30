@@ -24,17 +24,6 @@ public class ArticleServiceTest extends IntegrationTest {
 	@Autowired
 	private ArticleService articleService;
 
-	private Member principal;
-
-	@BeforeEach
-	public void beforeEach() {
-		principal = Member.builder()
-			.name("geonhong lee")
-			.nickname("youngxpepp")
-			.role(MemberRole.MEMBER)
-			.build();
-	}
-
 	@Test
 	@DisplayName("When_createArticle_Then_정상 동작")
 	public void testCreateArticle_0() {

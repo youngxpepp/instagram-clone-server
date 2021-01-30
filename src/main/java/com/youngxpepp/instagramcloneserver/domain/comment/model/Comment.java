@@ -7,8 +7,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -16,7 +18,8 @@ import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.global.common.domain.AbstractBaseTimeEntity;
 
-@Entity(name = "comment")
+@Entity
+@Table(name = "comment")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
 public class Comment extends AbstractBaseTimeEntity {
@@ -24,6 +27,9 @@ public class Comment extends AbstractBaseTimeEntity {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
+
+	@Column(name = "content")
+	private String content;
 
 	@ManyToOne
 	@JoinColumn(name = "parent_comment_id")
@@ -37,6 +43,11 @@ public class Comment extends AbstractBaseTimeEntity {
 	@JoinColumn(name = "article_id")
 	private Article article;
 
-	@Column(name = "content")
-	private String content;
+	@Builder
+	public Comment(String content, Comment parentComment, Member member, Article article) {
+		this.content = content;
+		this.parentComment = parentComment;
+		this.member = member;
+		this.article = article;
+	}
 }

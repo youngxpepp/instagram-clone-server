@@ -1,5 +1,6 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -10,6 +11,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -23,9 +25,16 @@ public final class AccessTokenClaims {
 	private List<String> roles;
 
 	@Builder
-	public AccessTokenClaims(Long memberId, List<String> roles) {
+	private AccessTokenClaims(Long memberId, List<String> roles) {
 		this.memberId = memberId;
 		this.roles = roles;
+	}
+
+	public static AccessTokenClaims ofMember(Member member) {
+		return AccessTokenClaims.builder()
+			.memberId(member.getId())
+			.roles(Arrays.asList(member.getRole().getValue()))
+			.build();
 	}
 
 	public static AccessTokenClaims ofMemberRoleList(Long memberId, List<MemberRole> memberRoles) {
