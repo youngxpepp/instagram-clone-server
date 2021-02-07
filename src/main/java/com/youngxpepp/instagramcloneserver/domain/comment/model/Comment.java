@@ -1,5 +1,7 @@
 package com.youngxpepp.instagramcloneserver.domain.comment.model;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -7,6 +9,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 import lombok.AccessLevel;
@@ -35,19 +38,22 @@ public class Comment extends AbstractBaseTimeEntity {
 	@JoinColumn(name = "parent_comment_id")
 	private Comment parentComment;
 
+	@OneToMany(mappedBy = "parentComment")
+	private List<Comment> nestedComments = new ArrayList<>();
+
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "member_id")
-	private Member member;
+	private Member createdBy;
 
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "article_id")
 	private Article article;
 
 	@Builder
-	public Comment(String content, Comment parentComment, Member member, Article article) {
+	public Comment(String content, Comment parentComment, Member createdBy, Article article) {
 		this.content = content;
 		this.parentComment = parentComment;
-		this.member = member;
+		this.createdBy = createdBy;
 		this.article = article;
 	}
 }

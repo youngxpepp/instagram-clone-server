@@ -1,8 +1,10 @@
 package com.youngxpepp.instagramcloneserver.domain.article.controller;
 
+import java.util.List;
 import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -20,7 +22,11 @@ import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateArticleRespo
 import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentRequestBody;
 import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.dto.GetArticleResponseBody;
+import com.youngxpepp.instagramcloneserver.domain.article.dto.GetCommentsResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.service.ArticleService;
+import com.youngxpepp.instagramcloneserver.domain.comment.dto.CommentDto;
+import com.youngxpepp.instagramcloneserver.domain.comment.dto.CommentMapper;
+import com.youngxpepp.instagramcloneserver.domain.comment.model.Comment;
 import com.youngxpepp.instagramcloneserver.domain.comment.service.CommentService;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 
@@ -32,6 +38,7 @@ public class ArticleController {
 
 	private final ArticleService articleService;
 	private final CommentService commentService;
+	private final CommentMapper commentMapper;
 
 	@PostMapping
 	public ResponseEntity<CreateArticleResponseBody> createArticle(
@@ -59,5 +66,16 @@ public class ArticleController {
 		CreateCommentResponseBody responseBody =
 			commentService.createComment(principal.getId(), articleId, requestBody);
 		return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
+	}
+
+	@GetMapping("/{articleId}/comments")
+	public GetCommentsResponseBody getComments(
+		@PathVariable("articleId") Long articleId,
+		Pageable pageable,
+		@AuthenticationPrincipal @ApiIgnore Member principal
+	) {
+		List<Comment> comments = commentService.getAllCommentsByArticleId(articleId, pageable);
+		List<CommentDto> commentDtos = commentMapper.toCommentDtoList(comments);
+		return new GetCommentsResponseBody(commentDtos);
 	}
 }

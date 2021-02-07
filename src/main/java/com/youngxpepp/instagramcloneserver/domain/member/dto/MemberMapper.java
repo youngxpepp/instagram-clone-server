@@ -31,4 +31,6 @@ public interface MemberMapper {
 	@Mapping(source = "articleCount", target = "articleCount")
 	GetMemberResponseBody toGetMemberResponseBody(Member member, Long followerCount, Long followingCount,
 		Long articleCount);
+
+	CreatedByDto toCreatedByDto(Member member);
 }
