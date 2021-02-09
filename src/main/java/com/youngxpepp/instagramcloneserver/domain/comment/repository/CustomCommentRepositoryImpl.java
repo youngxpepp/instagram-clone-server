@@ -25,14 +25,14 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 				.leftJoin(QComment.comment.nestedComments)
 				.fetchJoin()
 				.where(QComment.comment.article.id.eq(articleId))
-				.orderBy(QComment.comment.id.desc())
+				.orderBy(QComment.comment.id.asc())
 				.fetch();
 		}
 
 		List<Long> commentIds = jpaQueryFactory.select(QComment.comment.id)
 			.from(QComment.comment)
 			.where(QComment.comment.article.id.eq(articleId))
-			.orderBy(QComment.comment.id.desc())
+			.orderBy(QComment.comment.id.asc())
 			.offset(pageable.getOffset())
 			.limit(pageable.getPageSize())
 			.fetch();
@@ -47,7 +47,7 @@ public class CustomCommentRepositoryImpl implements CustomCommentRepository {
 			.leftJoin(QComment.comment.nestedComments)
 			.fetchJoin()
 			.where(QComment.comment.id.in(commentIds))
-			.orderBy(QComment.comment.id.desc())
+			.orderBy(QComment.comment.id.asc())
 			.fetch();
 	}
 }

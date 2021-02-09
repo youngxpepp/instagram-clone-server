@@ -56,7 +56,7 @@ public class CommentRepositoryTest extends RepositoryTest {
 		then(resultComments).hasSize(10);
 
 		for (int i = 0; i < 10; i++) {
-			then(resultComments.get(i).getId()).isEqualTo(comments.get(14 - i).getId());
+			then(resultComments.get(i).getId()).isEqualTo(comments.get(i).getId());
 		}
 	}
 }
