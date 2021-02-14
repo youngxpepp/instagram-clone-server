@@ -11,6 +11,7 @@ import javax.persistence.Table;
 import javax.persistence.UniqueConstraint;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -34,4 +35,10 @@ public class MemberLikeArticle extends AbstractBaseTimeEntity {
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "article_id")
 	private Article article;
+
+	@Builder
+	public MemberLikeArticle(Member member, Article article) {
+		this.member = member;
+		this.article = article;
+	}
 }

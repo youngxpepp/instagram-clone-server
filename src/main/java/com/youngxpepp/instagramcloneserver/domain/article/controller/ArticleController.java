@@ -78,4 +78,13 @@ public class ArticleController {
 		List<CommentDto> commentDtos = commentMapper.toCommentDtoList(comments);
 		return new GetCommentsResponseBody(commentDtos);
 	}
+
+	@PostMapping("/{articleId}/likes")
+	public ResponseEntity<?> likeArticle(
+		@PathVariable("articleId") Long articleId,
+		@AuthenticationPrincipal @ApiIgnore Member principal
+	) {
+		articleService.likeArticle(principal.getId(), articleId);
+		return new ResponseEntity<>(HttpStatus.CREATED);
+	}
 }

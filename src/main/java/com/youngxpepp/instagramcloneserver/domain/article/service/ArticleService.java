@@ -9,6 +9,7 @@ import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateArticleReque
 import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.dto.GetArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
+import com.youngxpepp.instagramcloneserver.domain.article.model.MemberLikeArticle;
 import com.youngxpepp.instagramcloneserver.domain.article.repository.ArticleRepository;
 import com.youngxpepp.instagramcloneserver.domain.article.repository.MemberLikeArticleRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
@@ -41,5 +42,20 @@ public class ArticleService {
 		Boolean isLiked = memberLikeArticleRepository.existsByMemberIdAndArticleId(memberId, articleId);
 		GetArticleResponseBody responseBody = articleMapper.toGetArticleResponseBody(article, isLiked);
 		return responseBody;
+	}
+
+	@Transactional
+	public void likeArticle(Long memberId, Long articleId) {
+		boolean isLiked = memberLikeArticleRepository.existsByMemberIdAndArticleId(memberId, articleId);
+
+		if (isLiked) {
+			throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
+		}
+
+		MemberLikeArticle memberLikeArticle = MemberLikeArticle.builder()
+			.member(memberRepository.getOne(memberId))
+			.article(articleRepository.getOne(articleId))
+			.build();
+		memberLikeArticleRepository.save(memberLikeArticle);
 	}
 }
