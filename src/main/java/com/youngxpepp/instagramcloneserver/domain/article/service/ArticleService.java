@@ -58,4 +58,12 @@ public class ArticleService {
 			.build();
 		memberLikeArticleRepository.save(memberLikeArticle);
 	}
+
+	@Transactional
+	public void unlikeArticle(Long memberId, Long articleId) {
+		MemberLikeArticle memberLikeArticle =
+			memberLikeArticleRepository.findByMemberIdAndArticleId(memberId, articleId)
+			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+		memberLikeArticleRepository.delete(memberLikeArticle);
+	}
 }

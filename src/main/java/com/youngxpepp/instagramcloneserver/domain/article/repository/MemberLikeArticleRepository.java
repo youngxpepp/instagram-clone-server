@@ -9,4 +9,6 @@ import com.youngxpepp.instagramcloneserver.domain.article.model.MemberLikeArticl
 public interface MemberLikeArticleRepository extends JpaRepository<MemberLikeArticle, Long> {
 
 	boolean existsByMemberIdAndArticleId(Long memberId, Long articleId);
+
+	Optional<MemberLikeArticle> findByMemberIdAndArticleId(Long memberId, Long articleId);
 }
