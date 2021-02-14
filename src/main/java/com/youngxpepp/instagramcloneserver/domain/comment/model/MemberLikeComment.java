@@ -8,6 +8,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -30,4 +31,10 @@ public class MemberLikeComment extends AbstractBaseTimeEntity {
 	@ManyToOne(optional = false)
 	@JoinColumn(name = "comment_id")
 	private Comment comment;
+
+	@Builder
+	public MemberLikeComment(Member member, Comment comment) {
+		this.member = member;
+		this.comment = comment;
+	}
 }

@@ -8,15 +8,17 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
 import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentRequestBody;
-import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentResponseBody;
-import com.youngxpepp.instagramcloneserver.domain.article.dto.GetCommentsResponseBody;
 import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
 import com.youngxpepp.instagramcloneserver.domain.comment.model.Comment;
+import com.youngxpepp.instagramcloneserver.domain.comment.model.MemberLikeComment;
+import com.youngxpepp.instagramcloneserver.domain.comment.repository.CommentRepository;
+import com.youngxpepp.instagramcloneserver.domain.comment.repository.MemberLikeCommentRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
 
@@ -91,5 +93,71 @@ public class CommentIntegrationTest extends IntegrationTest {
 		// for (int i = 0; i < responseBody.getComments().size(); i++) {
 		// 	then(responseBody.getComments().get(i).getId()).isEqualTo(comments.get(14 - i).getId());
 		// }
+	}
+
+	@Test
+	@DisplayName("When_댓글 좋아요 API 호출_Then_201 Created")
+	public void likeComment_0() throws Exception {
+		// given
+		em.persist(principal);
+
+		Article article = Article.builder()
+			.content("example article")
+			.createdBy(principal)
+			.build();
+		em.persist(article);
+
+		Comment comment = Comment.builder()
+			.content("this is a content")
+			.createdBy(principal)
+			.article(article)
+			.build();
+		em.persist(comment);
+
+		String accessToken = jwtUtils.generateAccessToken(AccessTokenClaims.ofMember(principal));
+
+		// when
+		MvcResult result = mockMvc.perform(post("/api/v1/comments/{commentId}/likes", comment.getId())
+			.header("Authorization", accessToken)
+		).andReturn();
+
+		// then
+		then(result.getResponse().getStatus()).isEqualTo(HttpStatus.CREATED.value());
+	}
+
+	@Test
+	@DisplayName("When_댓글 좋아요 취소 API 호출_Then_200 OK")
+	public void unlikeComment_0() throws Exception {
+		// given
+		em.persist(principal);
+
+		Article article = Article.builder()
+			.content("example article")
+			.createdBy(principal)
+			.build();
+		em.persist(article);
+
+		Comment comment = Comment.builder()
+			.content("this is a content")
+			.createdBy(principal)
+			.article(article)
+			.build();
+		em.persist(comment);
+
+		MemberLikeComment memberLikeComment = MemberLikeComment.builder()
+			.member(principal)
+			.comment(comment)
+			.build();
+		em.persist(memberLikeComment);
+
+		String accessToken = jwtUtils.generateAccessToken(AccessTokenClaims.ofMember(principal));
+
+		// when
+		MvcResult result = mockMvc.perform(delete("/api/v1/comments/{commentId}/likes", comment.getId())
+			.header("Authorization", accessToken)
+		).andReturn();
+
+		// then
+		then(result.getResponse().getStatus()).isEqualTo(HttpStatus.OK.value());
 	}
 }

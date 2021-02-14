@@ -51,6 +51,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 		allowedPatterns.add("/api/v1/post/**");
 		allowedPatterns.add("/api/v1/articles/**");
 		allowedPatterns.add("/api/v1/members/**");
+		allowedPatterns.add("/api/v1/comments/**");
 		RequestMatcher allowed = new OrRequestMatcher(allowedPatterns
 			.stream()
 			.map(AntPathRequestMatcher::new)
@@ -109,7 +110,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 			.antMatchers("/api/v1/post/**").hasRole("MEMBER")
 			.antMatchers("/api/v1/members/signup").authenticated()
 			.antMatchers("/api/v1/members/**").hasRole("MEMBER")
-			.antMatchers("/api/v1/articles/**").hasRole("MEMBER");
+			.antMatchers("/api/v1/articles/**").hasRole("MEMBER")
+			.antMatchers("/api/v1/comments/**").hasRole("MEMBER");
 
 		http
 			.addFilterBefore(this.jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class);

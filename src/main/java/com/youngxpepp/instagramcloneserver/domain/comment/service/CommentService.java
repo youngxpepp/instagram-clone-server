@@ -13,7 +13,9 @@ import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
 import com.youngxpepp.instagramcloneserver.domain.article.repository.ArticleRepository;
 import com.youngxpepp.instagramcloneserver.domain.comment.dto.CommentMapper;
 import com.youngxpepp.instagramcloneserver.domain.comment.model.Comment;
+import com.youngxpepp.instagramcloneserver.domain.comment.model.MemberLikeComment;
 import com.youngxpepp.instagramcloneserver.domain.comment.repository.CommentRepository;
+import com.youngxpepp.instagramcloneserver.domain.comment.repository.MemberLikeCommentRepository;
 import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
 import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
@@ -26,6 +28,7 @@ public class CommentService {
 	private final MemberRepository memberRepository;
 	private final ArticleRepository articleRepository;
 	private final CommentRepository commentRepository;
+	private final MemberLikeCommentRepository memberLikeCommentRepository;
 	private final CommentMapper commentMapper;
 
 	@Transactional
@@ -48,5 +51,26 @@ public class CommentService {
 	@Transactional(readOnly = true)
 	public List<Comment> getAllCommentsByArticleId(Long articleId, Pageable pageable) {
 		return commentRepository.findAllByArticleId(articleId, pageable);
+	}
+
+	@Transactional
+	public void likeComment(Long memberId, Long commentId) {
+		memberLikeCommentRepository.findByMemberIdAndCommentId(memberId, commentId)
+			.ifPresent(t -> {
+				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
+			});
+		MemberLikeComment memberLikeComment = MemberLikeComment.builder()
+			.member(memberRepository.getOne(memberId))
+			.comment(commentRepository.getOne(commentId))
+			.build();
+		memberLikeCommentRepository.save(memberLikeComment);
+	}
+
+	@Transactional
+	public void unlikeComment(Long memberId, Long commentId) {
+		MemberLikeComment memberLikeComment =
+			memberLikeCommentRepository.findByMemberIdAndCommentId(memberId, commentId)
+				.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
+		memberLikeCommentRepository.delete(memberLikeComment);
 	}
 }
