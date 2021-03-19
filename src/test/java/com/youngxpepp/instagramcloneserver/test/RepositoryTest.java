@@ -9,8 +9,8 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.context.annotation.Import;
 import org.springframework.test.context.ActiveProfiles;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.Member;
+import com.youngxpepp.instagramcloneserver.domain.MemberRole;
 import com.youngxpepp.instagramcloneserver.global.config.JpaConfig;
 import com.youngxpepp.instagramcloneserver.global.config.QuerydslConfig;
 

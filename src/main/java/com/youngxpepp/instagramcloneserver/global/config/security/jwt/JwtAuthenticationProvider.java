@@ -1,19 +1,16 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 
-import io.jsonwebtoken.Claims;
-import io.jsonwebtoken.Jws;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.stereotype.Component;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
+import com.youngxpepp.instagramcloneserver.domain.Member;
+import com.youngxpepp.instagramcloneserver.dao.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;

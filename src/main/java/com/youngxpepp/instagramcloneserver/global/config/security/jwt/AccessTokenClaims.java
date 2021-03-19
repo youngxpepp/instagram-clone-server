@@ -4,15 +4,14 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.Member;
+import com.youngxpepp.instagramcloneserver.domain.MemberRole;
 
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter

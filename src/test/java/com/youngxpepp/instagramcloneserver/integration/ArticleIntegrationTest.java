@@ -8,8 +8,8 @@ import org.junit.jupiter.api.Test;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
-import com.youngxpepp.instagramcloneserver.domain.article.model.MemberLikeArticle;
+import com.youngxpepp.instagramcloneserver.domain.Article;
+import com.youngxpepp.instagramcloneserver.domain.MemberLikeArticle;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
 
@@ -17,7 +17,7 @@ public class ArticleIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_게시물 좋아요 API 호출_Then_201 Created")
-	public void likeArticle_0() throws Exception {
+	public void likeArticleThen201Created() throws Exception {
 		// given
 		em.persist(principal);
 
@@ -40,7 +40,7 @@ public class ArticleIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_게시물 좋아요 취소 API 호출_Then_200 OK")
-	public void unlikeArticle_0() throws Exception {
+	public void unlikeArticleThen200Ok() throws Exception {
 		// given
 		em.persist(principal);
 

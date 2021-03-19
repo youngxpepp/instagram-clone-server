@@ -8,17 +8,14 @@ import java.util.List;
 
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MvcResult;
 
-import com.youngxpepp.instagramcloneserver.domain.article.dto.CreateCommentRequestBody;
-import com.youngxpepp.instagramcloneserver.domain.article.model.Article;
-import com.youngxpepp.instagramcloneserver.domain.comment.model.Comment;
-import com.youngxpepp.instagramcloneserver.domain.comment.model.MemberLikeComment;
-import com.youngxpepp.instagramcloneserver.domain.comment.repository.CommentRepository;
-import com.youngxpepp.instagramcloneserver.domain.comment.repository.MemberLikeCommentRepository;
+import com.youngxpepp.instagramcloneserver.dto.CreateCommentRequestBody;
+import com.youngxpepp.instagramcloneserver.domain.Article;
+import com.youngxpepp.instagramcloneserver.domain.Comment;
+import com.youngxpepp.instagramcloneserver.domain.MemberLikeComment;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
 
@@ -26,7 +23,7 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_댓글 생성 API 호출_Then_201 Created")
-	public void testCreateComment_0() throws Exception {
+	public void createCommentThen201Created() throws Exception {
 		// given
 		em.persist(principal);
 
@@ -56,7 +53,7 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_게시글 댓글 조회 API_Then_200 ok 10개 댓글 반환")
-	public void testGetComments() throws Exception {
+	public void getCommentsThen10Comments() throws Exception {
 		// given
 		em.persist(principal);
 
@@ -97,7 +94,7 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_댓글 좋아요 API 호출_Then_201 Created")
-	public void likeComment_0() throws Exception {
+	public void likeCommentThen201Created() throws Exception {
 		// given
 		em.persist(principal);
 
@@ -127,7 +124,7 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_댓글 좋아요 취소 API 호출_Then_200 OK")
-	public void unlikeComment_0() throws Exception {
+	public void unlikeCommentThen200Ok() throws Exception {
 		// given
 		em.persist(principal);
 

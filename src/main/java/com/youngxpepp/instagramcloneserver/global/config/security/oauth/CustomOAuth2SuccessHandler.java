@@ -19,9 +19,9 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.util.UriComponentsBuilder;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
-import com.youngxpepp.instagramcloneserver.domain.member.repository.MemberRepository;
+import com.youngxpepp.instagramcloneserver.domain.Member;
+import com.youngxpepp.instagramcloneserver.domain.MemberRole;
+import com.youngxpepp.instagramcloneserver.dao.MemberRepository;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 

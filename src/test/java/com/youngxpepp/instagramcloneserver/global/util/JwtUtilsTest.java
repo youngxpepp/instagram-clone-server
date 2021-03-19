@@ -14,7 +14,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mock;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.MemberRole;
 import com.youngxpepp.instagramcloneserver.global.config.JsonConfig;
 import com.youngxpepp.instagramcloneserver.global.config.property.JwtProperties;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
@@ -29,7 +29,7 @@ public class JwtUtilsTest extends MockTest {
 
 	@Test
 	@DisplayName("When_generateAccessToken_Then_Access Token의 prefix가 Bearer이어야 함")
-	public void testGenerateAccessToken_0() {
+	public void generateAccessTokenThenPrefixBearer() {
 		// given
 		given(jwtProperties.getIssuer()).willReturn("instagram-clone");
 		given(jwtProperties.getSecret()).willReturn("123123123123123123123fhaskjhfadshfas");
@@ -49,7 +49,7 @@ public class JwtUtilsTest extends MockTest {
 
 	@Test
 	@DisplayName("When_generateAccessToken_Then_Claims가 일치해야 함")
-	public void testGenerateAccessToken_1() {
+	public void generateAccessTokenThenEqualsClaims() {
 		// given
 		given(jwtProperties.getIssuer()).willReturn("instagram-clone");
 		given(jwtProperties.getSecret()).willReturn("123123123123123123123fhaskjhfadshfas");
@@ -71,7 +71,7 @@ public class JwtUtilsTest extends MockTest {
 
 	@Test
 	@DisplayName("Given_잘못된 issuer_When_verifyAccessToken_Then_throw IncorrectClaimException")
-	public void testVerifyAccessToken_0() {
+	public void verifyAccessTokenThenThrowsInCorrectClaimException() {
 		// given
 		given(jwtProperties.getIssuer()).willReturn("instagram-clone", "wrong issuer");
 		given(jwtProperties.getSecret()).willReturn("123123123123123123123fhaskjhfadshfas");
@@ -94,7 +94,7 @@ public class JwtUtilsTest extends MockTest {
 
 	@Test
 	@DisplayName("Given_유효기간이 만료된 Access Token_When_verifyAccessToken_Then_throw ExpiredJwtException")
-	public void testVerifyAccessToken_1() {
+	public void verifyAccessTokenThenThrowsExpiredJwtException() {
 		// given
 		given(jwtProperties.getIssuer()).willReturn("instagram-clone");
 		given(jwtProperties.getSecret()).willReturn("123123123123123123123fhaskjhfadshfas");

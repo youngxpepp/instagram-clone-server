@@ -2,11 +2,10 @@ package com.youngxpepp.instagramcloneserver.global.config.security.jwt;
 
 import java.util.List;
 
-import lombok.Getter;
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
+import com.youngxpepp.instagramcloneserver.domain.Member;
 
 public class PostJwtAuthenticationToken extends AbstractAuthenticationToken {
 

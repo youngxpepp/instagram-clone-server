@@ -15,9 +15,8 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.Application;
-import com.youngxpepp.instagramcloneserver.domain.comment.dto.CommentMapper;
-import com.youngxpepp.instagramcloneserver.domain.member.model.Member;
-import com.youngxpepp.instagramcloneserver.domain.member.model.MemberRole;
+import com.youngxpepp.instagramcloneserver.domain.Member;
+import com.youngxpepp.instagramcloneserver.domain.MemberRole;
 import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
 @SpringBootTest(classes = {Application.class})
