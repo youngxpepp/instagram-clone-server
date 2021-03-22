@@ -1,10 +1,21 @@
 package com.youngxpepp.instagramcloneserver.test;
 
+import static com.youngxpepp.instagramcloneserver.domain.QArticle.*;
+import static com.youngxpepp.instagramcloneserver.domain.QArticleCreated.*;
+import static com.youngxpepp.instagramcloneserver.domain.QArticleImage.*;
+import static com.youngxpepp.instagramcloneserver.domain.QComment.*;
+import static com.youngxpepp.instagramcloneserver.domain.QFeed.*;
+import static com.youngxpepp.instagramcloneserver.domain.QFollow.*;
+import static com.youngxpepp.instagramcloneserver.domain.QMember.*;
+import static com.youngxpepp.instagramcloneserver.domain.QMemberLikeArticle.*;
+import static com.youngxpepp.instagramcloneserver.domain.QMemberLikeComment.*;
+
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
 import javax.persistence.EntityTransaction;
-import javax.persistence.Query;
 
+import com.querydsl.core.types.EntityPath;
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.test.context.TestComponent;
 
@@ -13,6 +24,7 @@ public class JpaTestSupport implements InitializingBean {
 
 	private final EntityManagerFactory emf;
 	private EntityManager em;
+	private JPAQueryFactory jpaQueryFactory;
 
 	public JpaTestSupport(EntityManagerFactory emf) {
 		this.emf = emf;
@@ -20,7 +32,8 @@ public class JpaTestSupport implements InitializingBean {
 
 	@Override
 	public void afterPropertiesSet() throws Exception {
-		this.em = emf.createEntityManager();
+		em = emf.createEntityManager();
+		jpaQueryFactory = new JPAQueryFactory(em);
 	}
 
 	public <T> T save(T entity) {
@@ -53,11 +66,13 @@ public class JpaTestSupport implements InitializingBean {
 		return null;
 	}
 
-	public void deleteAllInOneTable(String tableName) {
+	public void deleteAllInOneTable(EntityPath<?> path) {
 		EntityTransaction trx = em.getTransaction();
 		try {
 			trx.begin();
-			deleteQuery(tableName).executeUpdate();
+
+			jpaQueryFactory.delete(path).execute();
+
 			trx.commit();
 			em.clear();
 		} catch (Exception e) {
@@ -69,30 +84,21 @@ public class JpaTestSupport implements InitializingBean {
 		EntityTransaction trx = em.getTransaction();
 		try {
 			trx.begin();
-			String[] tables = new String[]{
-				"feed",
-				"member_like_comment",
-				"comment",
-				"member_like_article",
-				"article_created",
-				"article_image",
-				"article",
-				"follow",
-				"member"
-			};
-			for (String t : tables) {
-				deleteQuery(t).executeUpdate();
-			}
+
+			jpaQueryFactory.delete(feed).execute();
+			jpaQueryFactory.delete(memberLikeComment).execute();
+			jpaQueryFactory.delete(comment).execute();
+			jpaQueryFactory.delete(memberLikeArticle).execute();
+			jpaQueryFactory.delete(articleCreated).execute();
+			jpaQueryFactory.delete(articleImage).execute();
+			jpaQueryFactory.delete(article).execute();
+			jpaQueryFactory.delete(follow).execute();
+			jpaQueryFactory.delete(member).execute();
+
 			trx.commit();
 			em.clear();
 		} catch (Exception e) {
 			trx.rollback();
 		}
-	}
-
-	private Query deleteQuery(String tableName) {
-		return em
-			.createNativeQuery("DELETE FROM ?1;")
-			.setParameter(1, tableName);
 	}
 }
