@@ -1,5 +1,7 @@
 package com.youngxpepp.instagramcloneserver.domain;
 
+import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -16,26 +18,38 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"following_member_id", "followed_member_id"})})
+@Table(
+	name = "feed",
+	uniqueConstraints = {
+		@UniqueConstraint(
+			name = "UNIQUE_INDEX_MEMBER_ID_ARTICLE_ID",
+			columnNames = {"member_id", "article_id"}
+		)
+	}
+)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Follow extends AbstractBaseTimeEntity {
+public class Feed {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	private Long id;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "following_member_id")
-	private Member followingMember;
+	@Column(name = "created_at")
+	private LocalDateTime createdAt;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "followed_member_id")
-	private Member followedMember;
+	@JoinColumn(name = "member_id")
+	private Member member;
+
+	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@JoinColumn(name = "article_id")
+	private Article article;
 
 	@Builder
-	public Follow(Member followingMember, Member followedMember) {
-		this.followingMember = followingMember;
-		this.followedMember = followedMember;
+	public Feed(LocalDateTime createdAt, Member member, Article article) {
+		this.createdAt = createdAt;
+		this.member = member;
+		this.article = article;
 	}
 }

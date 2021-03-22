@@ -4,10 +4,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.youngxpepp.instagramcloneserver.dao.ArticleCreatedRepository;
 import com.youngxpepp.instagramcloneserver.dao.ArticleRepository;
 import com.youngxpepp.instagramcloneserver.dao.MemberLikeArticleRepository;
 import com.youngxpepp.instagramcloneserver.dao.MemberRepository;
 import com.youngxpepp.instagramcloneserver.domain.Article;
+import com.youngxpepp.instagramcloneserver.domain.ArticleCreated;
 import com.youngxpepp.instagramcloneserver.domain.Member;
 import com.youngxpepp.instagramcloneserver.domain.MemberLikeArticle;
 import com.youngxpepp.instagramcloneserver.mapper.ArticleMapper;
@@ -16,21 +18,31 @@ import com.youngxpepp.instagramcloneserver.dto.CreateArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.GetArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
+import com.youngxpepp.instagramcloneserver.runnable.ArticleCreatedRelay;
 
 @Service
 @RequiredArgsConstructor
 public class ArticleService {
 
 	private final ArticleRepository articleRepository;
+	private final ArticleCreatedRepository articleCreatedRepository;
 	private final MemberRepository memberRepository;
 	private final MemberLikeArticleRepository memberLikeArticleRepository;
 	private final ArticleMapper articleMapper;
+	private final ArticleCreatedRelay articleCreatedRelay;
 
 	@Transactional
 	public CreateArticleResponseBody createArticle(Long memberId, CreateArticleRequestBody createArticleRequestBody) {
 		Member member = memberRepository.getOne(memberId);
 		Article article = articleMapper.toArticle(createArticleRequestBody, member);
 		articleRepository.save(article);
+
+		ArticleCreated articleCreated = ArticleCreated.builder()
+			.article(article)
+			.build();
+		articleCreatedRepository.save(articleCreated);
+
+		articleCreatedRelay.notifyEmptyCondition();
 
 		return articleMapper.toCreateArticleResponseBody(article);
 	}

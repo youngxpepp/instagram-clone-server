@@ -5,9 +5,11 @@ import static org.assertj.core.api.BDDAssertions.*;
 import java.util.Arrays;
 import java.util.List;
 
+import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.MockBean;
 
 import com.youngxpepp.instagramcloneserver.domain.Article;
 import com.youngxpepp.instagramcloneserver.domain.ArticleImage;
@@ -16,12 +18,19 @@ import com.youngxpepp.instagramcloneserver.domain.MemberRole;
 import com.youngxpepp.instagramcloneserver.dto.CreateArticleRequestBody;
 import com.youngxpepp.instagramcloneserver.dto.CreateArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.GetArticleResponseBody;
+import com.youngxpepp.instagramcloneserver.runnable.ArticleCreatedRelay;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
 
 public class ArticleServiceTest extends IntegrationTest {
 
 	@Autowired
+	private JPAQueryFactory jpaQueryFactory;
+
+	@Autowired
 	private ArticleService articleService;
+
+	@MockBean
+	private ArticleCreatedRelay articleCreatedRelay;
 
 	@Test
 	@DisplayName("When_createArticle_Then_정상 동작")
