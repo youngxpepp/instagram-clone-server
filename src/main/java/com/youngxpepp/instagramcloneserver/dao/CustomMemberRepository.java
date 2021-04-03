@@ -6,5 +6,8 @@ import com.youngxpepp.instagramcloneserver.domain.Member;
 
 public interface CustomMemberRepository {
 
-	Optional<Member> findByOAuth2NameAttributeAndOAuth2RegistrationId(String oauth2NameAttribute, String oauth2RegistrationId);
+	Optional<Member> findByOAuth2NameAttributeAndOAuth2RegistrationId(
+		String oauth2NameAttribute,
+		String oauth2RegistrationId
+	);
 }
