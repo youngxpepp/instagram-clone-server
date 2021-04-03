@@ -4,12 +4,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.FactoryBean;
 import org.springframework.core.env.Environment;
 import org.springframework.core.env.Profiles;
-import org.springframework.stereotype.Component;
 
 import com.youngxpepp.instagramcloneserver.dao.ArticleCreatedRepository;
 import com.youngxpepp.instagramcloneserver.service.FeedService;
 
-@Component
 @RequiredArgsConstructor
 public class ArticleCreatedRelayFactoryBean implements FactoryBean<ArticleCreatedRelay> {
 

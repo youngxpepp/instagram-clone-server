@@ -28,8 +28,6 @@ public class FeedServiceImplTest extends IntegrationTest {
 	@Transactional(propagation = Propagation.NOT_SUPPORTED)
 	public void createFeedThenSuccess() {
 		// given
-		jpaTestSupport.save(principal);
-
 		Member follower = Member.builder()
 			.name("kangyeop")
 			.nickname("lky")

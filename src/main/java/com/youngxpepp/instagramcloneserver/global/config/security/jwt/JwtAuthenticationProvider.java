@@ -15,7 +15,6 @@ import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
-@Component
 @RequiredArgsConstructor
 public class JwtAuthenticationProvider implements AuthenticationProvider {
 

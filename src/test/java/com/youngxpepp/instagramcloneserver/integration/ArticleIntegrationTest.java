@@ -12,26 +12,22 @@ import com.youngxpepp.instagramcloneserver.domain.Article;
 import com.youngxpepp.instagramcloneserver.domain.MemberLikeArticle;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
+import com.youngxpepp.instagramcloneserver.test.WithCustomSecurityContext;
 
 public class ArticleIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_게시물 좋아요 API 호출_Then_201 Created")
+	@WithCustomSecurityContext(nickname = "youngxpepp")
 	public void likeArticleThen201Created() throws Exception {
-		// given
-		em.persist(principal);
-
 		Article article = Article.builder()
 			.content("this is a content")
 			.createdBy(principal)
 			.build();
 		em.persist(article);
 
-		String accessToken = jwtUtils.generateAccessToken(AccessTokenClaims.ofMember(principal));
-
 		// when
 		MvcResult mvcResult = mockMvc.perform(post("/api/v1/articles/{articleId}/likes", article.getId())
-			.header("Authorization", accessToken)
 		).andReturn();
 
 		// then
@@ -40,10 +36,9 @@ public class ArticleIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_게시물 좋아요 취소 API 호출_Then_200 OK")
+	@WithCustomSecurityContext(nickname = "youngxpepp")
 	public void unlikeArticleThen200Ok() throws Exception {
 		// given
-		em.persist(principal);
-
 		Article article = Article.builder()
 			.content("this is a content")
 			.createdBy(principal)

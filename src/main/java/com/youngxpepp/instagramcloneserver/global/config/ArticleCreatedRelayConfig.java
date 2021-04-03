@@ -5,8 +5,6 @@ import org.springframework.beans.factory.FactoryBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 
 import com.youngxpepp.instagramcloneserver.dao.ArticleCreatedRepository;
 import com.youngxpepp.instagramcloneserver.runnable.ArticleCreatedRelay;
@@ -15,20 +13,18 @@ import com.youngxpepp.instagramcloneserver.service.FeedService;
 
 @Configuration
 @RequiredArgsConstructor
-public class ExecutorConfig {
+public class ArticleCreatedRelayConfig {
 
-	private final ArticleCreatedRelay articleCreatedRelay;
+	private final ArticleCreatedRepository articleCreatedRepository;
+	private final FeedService feedService;
+	private final Environment environment;
 
-	@Bean
-	public TaskExecutor articleCreatedExecutor() throws Exception {
-		ThreadPoolTaskExecutor taskExecutor = new ThreadPoolTaskExecutor();
-		taskExecutor.setCorePoolSize(10);
-		taskExecutor.setMaxPoolSize(10);
-		taskExecutor.setWaitForTasksToCompleteOnShutdown(true);
-		taskExecutor.initialize();
-
-		taskExecutor.execute(articleCreatedRelay);
-
-		return taskExecutor;
+	@Bean(name = "articleCreatedRelay")
+	public FactoryBean<ArticleCreatedRelay> articleCreatedRelayFactory() {
+		return new ArticleCreatedRelayFactoryBean(
+			articleCreatedRepository,
+			feedService,
+			environment
+		);
 	}
 }

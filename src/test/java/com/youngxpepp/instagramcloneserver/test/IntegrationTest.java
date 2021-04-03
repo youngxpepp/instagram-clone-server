@@ -55,6 +55,7 @@ public abstract class IntegrationTest {
 			.nickname("youngxpepp")
 			.role(MemberRole.MEMBER)
 			.build();
+		jpaTestSupport.save(principal);
 	}
 
 	@AfterEach

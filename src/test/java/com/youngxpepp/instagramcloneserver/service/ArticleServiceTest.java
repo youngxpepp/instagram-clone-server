@@ -36,8 +36,6 @@ public class ArticleServiceTest extends IntegrationTest {
 	@DisplayName("When_createArticle_Then_정상 동작")
 	public void createArticleThenSuccess() {
 		// given
-		em.persist(principal);
-
 		List<String> imageUrls = Arrays.asList(
 			"https://imgur.com/gallery/3jDDE0O",
 			"https://imgur.com/gallery/c6mY4Zo");
@@ -59,7 +57,6 @@ public class ArticleServiceTest extends IntegrationTest {
 	@DisplayName("When_getArticle_Then_정상 동작")
 	public void getArticleThenSuccess() {
 		// given
-		em.persist(principal);
 		Member createdBy = Member.builder()
 			.name("kangyeop.lee")
 			.nickname("kangyeop")

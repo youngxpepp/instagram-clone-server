@@ -1,13 +1,21 @@
 package com.youngxpepp.instagramcloneserver.service;
 
+import java.util.Arrays;
+
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.dao.ArticleRepository;
 import com.youngxpepp.instagramcloneserver.dao.FollowRepository;
+import com.youngxpepp.instagramcloneserver.domain.MemberOAuth2Info;
 import com.youngxpepp.instagramcloneserver.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.MemberDto;
+import com.youngxpepp.instagramcloneserver.dto.SignupDto;
+import com.youngxpepp.instagramcloneserver.global.config.security.oauth.AuthenticatedAuthenticationToken;
 import com.youngxpepp.instagramcloneserver.mapper.MemberMapper;
 import com.youngxpepp.instagramcloneserver.domain.Member;
 import com.youngxpepp.instagramcloneserver.domain.MemberRole;
@@ -37,18 +45,22 @@ public class MemberService {
 	}
 
 	@Transactional
-	public MemberDto signup(MemberDto memberDto) {
-		memberRepository.findByEmail(memberDto.getEmail())
-			.ifPresent(member -> {
-				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
-			});
-		memberRepository.findByNickname(memberDto.getNickname())
-			.ifPresent(member -> {
-				throw new BusinessException(ErrorCode.ENTITY_ALREADY_EXIST);
-			});
+	public MemberDto signup(SignupDto dto) {
+		Member member = memberMapper.toMember(dto, MemberRole.MEMBER);
+		MemberOAuth2Info oauth2Info = MemberOAuth2Info.builder()
+			.name(dto.getOauth2NameAttribute())
+			.registrationId(dto.getOauth2RegistrationId())
+			.member(member)
+			.build();
+		member.setOauth2Info(oauth2Info);
 
-		Member member = memberMapper.toMemberEntity(memberDto, MemberRole.MEMBER);
 		memberRepository.save(member);
+
+		SecurityContextHolder
+			.getContext()
+			.setAuthentication(
+				AuthenticatedAuthenticationToken.from(member)
+			);
 
 		return memberMapper.toMemberDto(member);
 	}

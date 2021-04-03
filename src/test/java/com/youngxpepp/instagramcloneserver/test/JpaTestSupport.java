@@ -9,6 +9,7 @@ import static com.youngxpepp.instagramcloneserver.domain.QFollow.*;
 import static com.youngxpepp.instagramcloneserver.domain.QMember.*;
 import static com.youngxpepp.instagramcloneserver.domain.QMemberLikeArticle.*;
 import static com.youngxpepp.instagramcloneserver.domain.QMemberLikeComment.*;
+import static com.youngxpepp.instagramcloneserver.domain.QMemberOAuth2Info.*;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -18,6 +19,8 @@ import com.querydsl.core.types.EntityPath;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.beans.factory.InitializingBean;
 import org.springframework.boot.test.context.TestComponent;
+
+import com.youngxpepp.instagramcloneserver.domain.QMemberOAuth2Info;
 
 @TestComponent
 public class JpaTestSupport implements InitializingBean {
@@ -93,6 +96,7 @@ public class JpaTestSupport implements InitializingBean {
 			jpaQueryFactory.delete(articleImage).execute();
 			jpaQueryFactory.delete(article).execute();
 			jpaQueryFactory.delete(follow).execute();
+			jpaQueryFactory.delete(memberOAuth2Info).execute();
 			jpaQueryFactory.delete(member).execute();
 
 			trx.commit();

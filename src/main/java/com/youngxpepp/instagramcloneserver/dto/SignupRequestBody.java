@@ -4,13 +4,11 @@ import javax.validation.constraints.NotBlank;
 
 import com.fasterxml.jackson.annotation.JsonAutoDetect;
 import lombok.Getter;
-import lombok.Setter;
 import org.hibernate.validator.constraints.URL;
 
 @Getter
-@Setter
 @JsonAutoDetect(fieldVisibility = JsonAutoDetect.Visibility.ANY, getterVisibility = JsonAutoDetect.Visibility.NONE)
-public class SignupRequestParam {
+public class SignupRequestBody {
 
 	@NotBlank
 	private String nickname;
@@ -23,7 +21,4 @@ public class SignupRequestParam {
 
 	@NotBlank
 	private String description;
-
-	@URL
-	private String redirectUri;
 }

@@ -18,15 +18,15 @@ import com.youngxpepp.instagramcloneserver.domain.Comment;
 import com.youngxpepp.instagramcloneserver.domain.MemberLikeComment;
 import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
 import com.youngxpepp.instagramcloneserver.test.IntegrationTest;
+import com.youngxpepp.instagramcloneserver.test.WithCustomSecurityContext;
 
 public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_댓글 생성 API 호출_Then_201 Created")
+	@WithCustomSecurityContext(nickname = "youngxpepp")
 	public void createCommentThen201Created() throws Exception {
 		// given
-		em.persist(principal);
-
 		Article article = Article.builder()
 			.content("this is an article")
 			.createdBy(principal)
@@ -53,10 +53,9 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_게시글 댓글 조회 API_Then_200 ok 10개 댓글 반환")
+	@WithCustomSecurityContext(nickname = "youngxpepp")
 	public void getCommentsThen10Comments() throws Exception {
 		// given
-		em.persist(principal);
-
 		Article article = Article.builder()
 			.content("example article")
 			.createdBy(principal)
@@ -94,10 +93,9 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_댓글 좋아요 API 호출_Then_201 Created")
+	@WithCustomSecurityContext(nickname = "youngxpepp")
 	public void likeCommentThen201Created() throws Exception {
 		// given
-		em.persist(principal);
-
 		Article article = Article.builder()
 			.content("example article")
 			.createdBy(principal)
@@ -124,10 +122,9 @@ public class CommentIntegrationTest extends IntegrationTest {
 
 	@Test
 	@DisplayName("When_댓글 좋아요 취소 API 호출_Then_200 OK")
+	@WithCustomSecurityContext(nickname = "youngxpepp")
 	public void unlikeCommentThen200Ok() throws Exception {
 		// given
-		em.persist(principal);
-
 		Article article = Article.builder()
 			.content("example article")
 			.createdBy(principal)

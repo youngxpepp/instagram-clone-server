@@ -1,8 +1,8 @@
 package com.youngxpepp.instagramcloneserver.global.config.security.oauth;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Optional;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
@@ -10,51 +10,62 @@ import javax.servlet.http.HttpServletResponse;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
+import org.springframework.security.web.DefaultRedirectStrategy;
+import org.springframework.security.web.RedirectStrategy;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.context.HttpSessionSecurityContextRepository;
 import org.springframework.security.web.context.SecurityContextRepository;
+import org.springframework.security.web.util.UrlUtils;
 import org.springframework.stereotype.Component;
-import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.util.UriComponentsBuilder;
 
-import com.youngxpepp.instagramcloneserver.domain.Member;
-import com.youngxpepp.instagramcloneserver.domain.MemberRole;
 import com.youngxpepp.instagramcloneserver.dao.MemberRepository;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
+import com.youngxpepp.instagramcloneserver.domain.Member;
 import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
 @Component
 @RequiredArgsConstructor
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
+	private static final String DEFAULT_FINAL_REDIRECT_URI = "/";
+	private static final String SIGNUP_REDIRECT_URI = "/signup";
+
 	private final OAuth2FinalRedirectUriRepository finalRedirectUriRepository;
 	private final MemberRepository memberRepository;
-	private final JwtUtils jwtUtils;
-	private final SecurityContextRepository repo = new HttpSessionSecurityContextRepository();
+	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	@Override
-	@Transactional
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
-		String finalRedirectUriString = finalRedirectUriRepository.removeFinalRedirectUri(request);
-		UriComponentsBuilder uriBuilder = UriComponentsBuilder.fromUriString(finalRedirectUriString);
-		OAuth2AuthenticationToken oAuth2AuthenticationToken = (OAuth2AuthenticationToken)authentication;
-		String email = oAuth2AuthenticationToken.getPrincipal().getAttribute("email");
+		String finalRedirectUri = finalRedirectUriRepository.removeFinalRedirectUri(request);
 
-		Member member = memberRepository.findByEmail(email).orElse(null);
-
-		if (member == null) {
-			repo.saveContext(SecurityContextHolder.getContext(), request, response);
-		} else {
-			List<MemberRole> roles = new ArrayList<>();
-			Optional.ofNullable(member.getRole()).ifPresent(roles::add);
-			AccessTokenClaims claims = AccessTokenClaims.ofMemberRoleList(member.getId(), roles);
-			String accessToken = jwtUtils.generateAccessToken(claims);
-			uriBuilder.queryParam("accessToken", accessToken);
+		if (finalRedirectUri == null) {
+			finalRedirectUri = DEFAULT_FINAL_REDIRECT_URI;
 		}
 
-		response.sendRedirect(uriBuilder.build().toUriString());
+		if (!UrlUtils.isValidRedirectUrl(finalRedirectUri)) {
+			finalRedirectUri = DEFAULT_FINAL_REDIRECT_URI;
+		}
+
+		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken)authentication;
+		String registrationId = oAuth2Authentication.getAuthorizedClientRegistrationId();
+		String nameAttribute = oAuth2Authentication.getName();
+
+		Member member = memberRepository
+			.findByOAuth2NameAttributeAndOAuth2RegistrationId(nameAttribute, registrationId)
+			.orElse(null);
+
+		if (member != null) {
+			Authentication auth = new AuthenticatedAuthenticationToken(
+				Collections.singletonList(new SimpleGrantedAuthority(member.getRole().getValue())),
+				member
+			);
+			SecurityContextHolder.getContext().setAuthentication(auth);
+			redirectStrategy.sendRedirect(request, response, finalRedirectUri);
+		} else {
+			redirectStrategy.sendRedirect(request, response, SIGNUP_REDIRECT_URI);
+		}
 	}
 }

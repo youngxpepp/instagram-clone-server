@@ -1,31 +1,25 @@
 package com.youngxpepp.instagramcloneserver.controller;
 
-import java.net.URISyntaxException;
-import java.util.Arrays;
-import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.oauth2.core.user.OAuth2User;
+import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.util.UriComponentsBuilder;
 import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.dto.GetMemberResponseBody;
-import com.youngxpepp.instagramcloneserver.dto.MemberDto;
+import com.youngxpepp.instagramcloneserver.dto.SignupDto;
+import com.youngxpepp.instagramcloneserver.dto.SignupRequestBody;
 import com.youngxpepp.instagramcloneserver.mapper.MemberMapper;
-import com.youngxpepp.instagramcloneserver.dto.SignupRequestParam;
 import com.youngxpepp.instagramcloneserver.service.MemberService;
-import com.youngxpepp.instagramcloneserver.global.config.security.jwt.AccessTokenClaims;
-import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 
 @RestController
 @RequestMapping("/api/v1/members")
@@ -35,32 +29,24 @@ public class MemberController {
 
 	private final MemberService memberService;
 	private final MemberMapper memberMapper;
-	private final JwtUtils jwtUtils;
 
 	@GetMapping("/{memberId}")
 	public GetMemberResponseBody getMember(@PathVariable("memberId") @NotNull Long memberId) {
 		return memberService.getMember(memberId);
 	}
 
-	@GetMapping("/signup")
+	@PostMapping("/signup")
 	public ResponseEntity<?> signup(
-		@Valid SignupRequestParam requestParam,
-		@AuthenticationPrincipal @ApiIgnore OAuth2User principal) throws URISyntaxException {
-		MemberDto memberDto = memberMapper.toMemberDto(requestParam, principal.getAttribute("email"));
-		MemberDto responseDto = memberService.signup(memberDto);
-
-		AccessTokenClaims accessTokenClaims = AccessTokenClaims.builder()
-			.memberId(responseDto.getId())
-			.roles(Arrays.asList(responseDto.getRole().getValue()))
-			.build();
-		String accessToken = jwtUtils.generateAccessToken(accessTokenClaims);
-
-		UriComponentsBuilder redirectUriBuilder = UriComponentsBuilder.fromUriString(requestParam.getRedirectUri());
-		redirectUriBuilder.queryParam("accessToken", accessToken);
-
-		HttpHeaders httpHeaders = new HttpHeaders();
-		httpHeaders.setLocation(redirectUriBuilder.build().toUri());
-
-		return new ResponseEntity<>(httpHeaders, HttpStatus.FOUND);
+		@RequestBody @Validated SignupRequestBody body,
+		@NotNull @ApiIgnore OAuth2AuthenticationToken authentication
+	) {
+		SignupDto signupDto = memberMapper.toSignupDto(
+			body,
+			authentication.getPrincipal().getAttribute("email"),
+			authentication.getPrincipal().getName(),
+			authentication.getAuthorizedClientRegistrationId()
+		);
+		memberService.signup(signupDto);
+		return new ResponseEntity<>(HttpStatus.CREATED);
 	}
 }

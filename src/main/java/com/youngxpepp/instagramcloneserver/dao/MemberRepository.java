@@ -6,7 +6,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.youngxpepp.instagramcloneserver.domain.Member;
 
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, CustomMemberRepository {
 
 	Optional<Member> findByNickname(String nickname);
 
