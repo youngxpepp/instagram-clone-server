@@ -35,9 +35,9 @@ public class CustomArticleCreatedRepositoryImplTest extends RepositoryTest {
 		List<ArticleCreated> acs = new ArrayList<>();
 		for (int i = 0; i < size; i++) {
 			ArticleCreated ac = ArticleCreated.builder().build();
-			jpaTestSupport.save(ac);
 			acs.add(ac);
 		}
+		jpaTestSupport.saveAll(acs);
 
 		// when
 		long result = articleCreatedRepository.deleteAllInIds(
