@@ -4,7 +4,7 @@ import java.util.concurrent.Future;
 
 public interface FeedService {
 
-	void createFeed(long articleCreatedId);
+	void createFeeds(long articleCreatedId);
 
-	Future<?> createFeedAsync(long articleCreatedId);
+	Future<?> createFeedsAsync(long articleCreatedId);
 }

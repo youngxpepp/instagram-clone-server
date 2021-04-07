@@ -12,12 +12,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.youngxpepp.instagramcloneserver.dao.ArticleCreatedRepository;
 import com.youngxpepp.instagramcloneserver.dao.FeedRepository;
-import com.youngxpepp.instagramcloneserver.dao.MemberRepository;
 import com.youngxpepp.instagramcloneserver.domain.Article;
 import com.youngxpepp.instagramcloneserver.domain.ArticleCreated;
 import com.youngxpepp.instagramcloneserver.domain.Feed;
 import com.youngxpepp.instagramcloneserver.domain.Follow;
-import com.youngxpepp.instagramcloneserver.domain.Member;
 import com.youngxpepp.instagramcloneserver.global.error.ErrorCode;
 import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessException;
 
@@ -26,12 +24,11 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 public class FeedServiceImpl implements FeedService {
 
 	private final ArticleCreatedRepository articleCreatedRepository;
-	private final MemberRepository memberRepository;
 	private final FeedRepository feedRepository;
 
 	@Override
 	@Transactional
-	public void createFeed(long articleCreatedId) {
+	public void createFeeds(long articleCreatedId) {
 		ArticleCreated ac = articleCreatedRepository.findByIdWithFollowers(articleCreatedId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 		Article article = ac.getArticle();
@@ -43,10 +40,9 @@ public class FeedServiceImpl implements FeedService {
 
 		List<Feed> feeds = new ArrayList<>();
 		for (Follow follow : follows) {
-			Member follower = memberRepository.getOne(follow.getFollowingMember().getId());
 			Feed feed = Feed.builder()
 				.createdAt(article.getCreatedAt())
-				.member(follower)
+				.member(follow.getFollowingMember())
 				.article(article)
 				.build();
 			feeds.add(feed);
@@ -58,8 +54,8 @@ public class FeedServiceImpl implements FeedService {
 	@Override
 	@Async("articleCreatedExecutor")
 	@Transactional
-	public Future<?> createFeedAsync(long articleCreatedId) {
-		createFeed(articleCreatedId);
+	public Future<?> createFeedsAsync(long articleCreatedId) {
+		createFeeds(articleCreatedId);
 		return new CompletableFuture<>();
 	}
 }

@@ -129,7 +129,7 @@ public class ArticleCreatedRelay implements Runnable {
 				List<Long> producedIds = new ArrayList<>();
 				for (ArticleCreated ac : articleCreateds) {
 					try {
-						feedService.createFeedAsync(ac.getId());
+						feedService.createFeedsAsync(ac.getId());
 						producedIds.add(ac.getId());
 					} catch (TaskRejectedException ignored) {
 					}
