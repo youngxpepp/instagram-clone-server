@@ -29,25 +29,16 @@ import com.youngxpepp.instagramcloneserver.global.util.JwtUtils;
 @RequiredArgsConstructor
 public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
-	private static final String DEFAULT_FINAL_REDIRECT_URI = "/";
-	private static final String SIGNUP_REDIRECT_URI = "/signup";
-
-	private final OAuth2FinalRedirectUriRepository finalRedirectUriRepository;
+	private final OAuth2AdditionalStateRepository<OAuth2StateInfo> oAuth2StateInfoRepository;
 	private final MemberRepository memberRepository;
 	private final RedirectStrategy redirectStrategy = new DefaultRedirectStrategy();
 
 	@Override
 	public void onAuthenticationSuccess(HttpServletRequest request, HttpServletResponse response,
 		Authentication authentication) throws IOException, ServletException {
-		String finalRedirectUri = finalRedirectUriRepository.removeFinalRedirectUri(request);
-
-		if (finalRedirectUri == null) {
-			finalRedirectUri = DEFAULT_FINAL_REDIRECT_URI;
-		}
-
-		if (!UrlUtils.isValidRedirectUrl(finalRedirectUri)) {
-			finalRedirectUri = DEFAULT_FINAL_REDIRECT_URI;
-		}
+		OAuth2StateInfo oAuth2StateInfo = oAuth2StateInfoRepository.removeOAuth2State(request);
+		String successRedirectUri = oAuth2StateInfo.getSuccessRedirectUri();
+		String signupRedirectUri = oAuth2StateInfo.getSignupRedirectUri();
 
 		OAuth2AuthenticationToken oAuth2Authentication = (OAuth2AuthenticationToken)authentication;
 		String registrationId = oAuth2Authentication.getAuthorizedClientRegistrationId();
@@ -63,9 +54,9 @@ public class CustomOAuth2SuccessHandler implements AuthenticationSuccessHandler 
 				member
 			);
 			SecurityContextHolder.getContext().setAuthentication(auth);
-			redirectStrategy.sendRedirect(request, response, finalRedirectUri);
+			redirectStrategy.sendRedirect(request, response, successRedirectUri);
 		} else {
-			redirectStrategy.sendRedirect(request, response, SIGNUP_REDIRECT_URI);
+			redirectStrategy.sendRedirect(request, response, signupRedirectUri);
 		}
 	}
 }

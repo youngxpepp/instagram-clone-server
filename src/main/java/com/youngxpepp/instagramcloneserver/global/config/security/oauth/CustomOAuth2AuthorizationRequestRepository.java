@@ -14,10 +14,12 @@ public class CustomOAuth2AuthorizationRequestRepository
 
 	private final AuthorizationRequestRepository<OAuth2AuthorizationRequest> delegate
 		= new HttpSessionOAuth2AuthorizationRequestRepository();
-	private final OAuth2FinalRedirectUriRepository finalRedirectUriRepository;
+	private final OAuth2AdditionalStateRepository<OAuth2StateInfo> oAuth2StateInfoRepository;
 
-	public CustomOAuth2AuthorizationRequestRepository(OAuth2FinalRedirectUriRepository finalRedirectUriRepository) {
-		this.finalRedirectUriRepository = finalRedirectUriRepository;
+	public CustomOAuth2AuthorizationRequestRepository(
+		OAuth2AdditionalStateRepository<OAuth2StateInfo> oAuth2StateInfoRepository
+	) {
+		this.oAuth2StateInfoRepository = oAuth2StateInfoRepository;
 	}
 
 	@Override
@@ -29,7 +31,7 @@ public class CustomOAuth2AuthorizationRequestRepository
 	public void saveAuthorizationRequest(OAuth2AuthorizationRequest authorizationRequest, HttpServletRequest request,
 		HttpServletResponse response) {
 		delegate.saveAuthorizationRequest(authorizationRequest, request, response);
-		finalRedirectUriRepository.saveFinalRedirectUri(authorizationRequest, request);
+		oAuth2StateInfoRepository.saveOAuth2State(authorizationRequest, request);
 	}
 
 	@Override
