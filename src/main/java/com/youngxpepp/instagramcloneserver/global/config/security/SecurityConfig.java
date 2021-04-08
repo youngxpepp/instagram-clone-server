@@ -37,7 +37,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.headers().frameOptions().disable();
 
-		// http.sessionManagement().sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+		http.sessionManagement()
+			.sessionFixation().none();
 
 		http.cors(Customizer.withDefaults());
 
@@ -60,8 +61,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
 		http.oauth2Login()
 			.successHandler(customOAuth2SuccessHandler)
-			.authorizationEndpoint()
-			.authorizationRequestRepository(customOAuth2AuthorizationRequestRepository);
+			.authorizationEndpoint(authorization -> {
+				authorization.authorizationRequestRepository(customOAuth2AuthorizationRequestRepository);
+			});
 	}
 
 	@Bean
