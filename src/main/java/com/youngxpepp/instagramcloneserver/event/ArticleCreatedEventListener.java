@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.context.ApplicationListener;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,16 +20,15 @@ import com.youngxpepp.instagramcloneserver.global.error.exception.BusinessExcept
 
 @Component
 @RequiredArgsConstructor
-public class ArticleCreatedEventListener implements ApplicationListener<ArticleCreatedEvent> {
+public class ArticleCreatedEventListener {
 
 	private final ArticleRepository articleRepository;
 	private final FeedRepository feedRepository;
 
-	@Override
 	@Async("articleCreatedExecutor")
-	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT)
+	@TransactionalEventListener(phase = TransactionPhase.AFTER_COMMIT, classes = {ArticleCreatedEvent.class})
 	@Transactional
-	public void onApplicationEvent(ArticleCreatedEvent event) {
+	public void onArticleCreatedEvent(ArticleCreatedEvent event) {
 		Article article = articleRepository.findByIdWithFollowers(event.getArticleId())
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
 		List<Follow> follows = article.getCreatedBy().getFollowers();
