@@ -1,5 +1,7 @@
 package com.youngxpepp.instagramcloneserver.test;
 
+import javax.persistence.EntityManager;
+
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
@@ -27,6 +29,9 @@ public class RepositoryTest {
 
 	@Autowired
 	protected JpaTestSupport jpaTestSupport;
+
+	@Autowired
+	protected EntityManager em;
 
 	protected Member principal;
 
