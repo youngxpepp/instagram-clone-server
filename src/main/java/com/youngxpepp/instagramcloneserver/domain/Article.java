@@ -32,7 +32,7 @@ public class Article extends AbstractBaseTimeEntity {
 	@Column(name = "content")
 	private String content;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member createdBy;
 

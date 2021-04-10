@@ -28,61 +28,45 @@ configurations {
 
 repositories {
     mavenCentral()
-    google()
 }
 
 dependencies {
-    // spring
+    implementation 'com.querydsl:querydsl-core:4.2.2'
+    implementation 'com.querydsl:querydsl-jpa:4.2.2'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
-    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
     implementation 'org.springframework.boot:spring-boot-starter-oauth2-client'
-    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
-//    implementation 'org.springframework.boot:spring-boot-starter-data-redis'
-//    implementation 'org.springframework.session:spring-session-data-redis'
-    developmentOnly 'org.springframework.boot:spring-boot-devtools'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.mapstruct:mapstruct:1.4.1.Final'
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
+    implementation 'io.sentry:sentry-logback:3.2.0'
+    implementation 'io.sentry:sentry-spring-boot-starter:3.2.0'
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+
+    runtimeOnly 'com.h2database:h2'
+    runtimeOnly 'mysql:mysql-connector-java'
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
+            'io.jsonwebtoken:jjwt-jackson:0.11.2'
+
+    compileOnly 'org.projectlombok:lombok:1.18.16'
+
+    annotationProcessor 'org.projectlombok:lombok:1.18.16'
+    annotationProcessor 'com.querydsl:querydsl-apt:4.2.2:jpa'
+    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
+    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
+
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
+
+    testCompileOnly 'org.projectlombok:lombok:1.18.16'
+
     testImplementation('org.springframework.boot:spring-boot-starter-test') {
         exclude group: 'org.junit.vintage', module: 'junit-vintage-engine'
     }
     testImplementation 'org.springframework.security:spring-security-test'
-
-    // database
-//    implementation 'it.ozimov:embedded-redis:0.7.2'
-    runtimeOnly 'com.h2database:h2'
-    runtimeOnly 'mysql:mysql-connector-java'
-
-    // querydsl
-    implementation 'com.querydsl:querydsl-core:4.2.2'
-    implementation 'com.querydsl:querydsl-jpa:4.2.2'
-    annotationProcessor 'com.querydsl:querydsl-apt:4.2.2:jpa'
-    annotationProcessor 'jakarta.persistence:jakarta.persistence-api'
-    annotationProcessor 'jakarta.annotation:jakarta.annotation-api'
-
-    // jjwt
-    implementation 'io.jsonwebtoken:jjwt-api:0.11.2'
-    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.11.2',
-            'io.jsonwebtoken:jjwt-jackson:0.11.2'
-
-    // lombok
-    compileOnly 'org.projectlombok:lombok:1.18.16'
-    annotationProcessor 'org.projectlombok:lombok:1.18.16'
-    testCompileOnly 'org.projectlombok:lombok:1.18.16'
-    testAnnotationProcessor 'org.projectlombok:lombok:1.18.16'
-
-    // swagger
-    implementation 'io.springfox:springfox-boot-starter:3.0.0'
-
-    // google people api
-    implementation 'com.google.apis:google-api-services-people:v1-rev20200813-1.30.10'
-
-    // sentry
-    implementation 'io.sentry:sentry-logback:3.2.0'
-    implementation 'io.sentry:sentry-spring-boot-starter:3.2.0'
-
-    // mapstruct
-    implementation 'org.mapstruct:mapstruct:1.4.1.Final'
-    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.1.Final'
 }
 
 test {

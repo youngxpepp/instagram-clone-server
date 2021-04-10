@@ -38,11 +38,11 @@ public class Feed {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "member_id")
 	private Member member;
 
-	@ManyToOne(fetch = FetchType.LAZY, optional = false)
+	@ManyToOne(fetch = FetchType.LAZY)
 	@JoinColumn(name = "article_id")
 	private Article article;
 
