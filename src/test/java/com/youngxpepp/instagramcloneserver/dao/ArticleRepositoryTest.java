@@ -44,7 +44,7 @@ public class ArticleRepositoryTest extends RepositoryTest {
 		em.clear();
 
 		// when
-		Article result = articleRepository.findByIdWithFollowers(principal.getId())
+		Article result = articleRepository.findByIdWithFollowers(article0.getId())
 			.orElse(null);
 
 		// then
@@ -83,7 +83,7 @@ public class ArticleRepositoryTest extends RepositoryTest {
 		em.clear();
 
 		// when
-		Article result = articleRepository.findByIdWithFollowers(principal.getId())
+		Article result = articleRepository.findByIdWithFollowers(article0.getId())
 			.orElse(null);
 
 		// then
