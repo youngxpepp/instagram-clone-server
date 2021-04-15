@@ -5,6 +5,7 @@ import javax.validation.constraints.NotNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.client.authentication.OAuth2AuthenticationToken;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -18,6 +19,7 @@ import springfox.documentation.annotations.ApiIgnore;
 import com.youngxpepp.instagramcloneserver.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.SignupDto;
 import com.youngxpepp.instagramcloneserver.dto.SignupRequestBody;
+import com.youngxpepp.instagramcloneserver.global.config.security.login.MemberDetails;
 import com.youngxpepp.instagramcloneserver.mapper.MemberMapper;
 import com.youngxpepp.instagramcloneserver.service.MemberService;
 
@@ -29,6 +31,11 @@ public class MemberController {
 
 	private final MemberService memberService;
 	private final MemberMapper memberMapper;
+
+	@GetMapping("/me")
+	public GetMemberResponseBody getMe(@AuthenticationPrincipal @NotNull MemberDetails principal) {
+		return memberService.getMember(principal.getId());
+	}
 
 	@GetMapping("/{memberId}")
 	public GetMemberResponseBody getMember(@PathVariable("memberId") @NotNull Long memberId) {

@@ -30,7 +30,7 @@ public class MemberService {
 	private final ArticleRepository articleRepository;
 	private final MemberMapper memberMapper;
 
-	@Transactional
+	@Transactional(readOnly = true)
 	public GetMemberResponseBody getMember(Long memberId) {
 		Member member = memberRepository.findById(memberId)
 			.orElseThrow(() -> new BusinessException(ErrorCode.ENTITY_NOT_FOUND));
