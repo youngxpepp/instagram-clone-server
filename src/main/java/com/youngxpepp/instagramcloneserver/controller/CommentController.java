@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import com.youngxpepp.instagramcloneserver.global.config.security.login.MemberDetails;
 import com.youngxpepp.instagramcloneserver.service.CommentService;
 import com.youngxpepp.instagramcloneserver.domain.Member;
 
@@ -28,7 +29,7 @@ public class CommentController {
 	@PostMapping("/{commentId}/likes")
 	public ResponseEntity<?> likeComment(
 		@PathVariable("commentId") @NotNull Long commentId,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		commentService.likeComment(principal.getId(), commentId);
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -37,7 +38,7 @@ public class CommentController {
 	@DeleteMapping("/{commentId}/likes")
 	public ResponseEntity<?> unlikeComment(
 		@PathVariable("commentId") @NotNull Long commentId,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		commentService.unlikeComment(principal.getId(), commentId);
 		return new ResponseEntity<>(HttpStatus.OK);

@@ -18,6 +18,7 @@ import springfox.documentation.annotations.ApiIgnore;
 
 import com.youngxpepp.instagramcloneserver.dto.FollowDto;
 import com.youngxpepp.instagramcloneserver.dto.FollowRequestBody;
+import com.youngxpepp.instagramcloneserver.global.config.security.login.MemberDetails;
 import com.youngxpepp.instagramcloneserver.service.FollowService;
 import com.youngxpepp.instagramcloneserver.domain.Member;
 
@@ -32,7 +33,7 @@ public class FollowController {
 	@PostMapping
 	public ResponseEntity<FollowDto> follow(
 		@RequestBody @Valid FollowRequestBody requestDto,
-		@AuthenticationPrincipal @ApiIgnore Member principal) {
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal) {
 		FollowDto followDto = followService.follow(principal.getId(), requestDto.getMemberId());
 		return new ResponseEntity<FollowDto>(followDto, HttpStatus.CREATED);
 	}
@@ -40,7 +41,7 @@ public class FollowController {
 	@DeleteMapping("/{followId}")
 	public ResponseEntity unfollow(
 		@PathVariable("followId") @NotNull Long followId,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		followService.unfollow(principal.getId(), followId);
 		return new ResponseEntity(HttpStatus.NO_CONTENT);

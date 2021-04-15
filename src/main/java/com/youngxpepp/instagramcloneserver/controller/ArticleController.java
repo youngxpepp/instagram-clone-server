@@ -18,18 +18,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import springfox.documentation.annotations.ApiIgnore;
 
+import com.youngxpepp.instagramcloneserver.domain.Comment;
+import com.youngxpepp.instagramcloneserver.dto.CommentDto;
 import com.youngxpepp.instagramcloneserver.dto.CreateArticleRequestBody;
 import com.youngxpepp.instagramcloneserver.dto.CreateArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.CreateCommentRequestBody;
 import com.youngxpepp.instagramcloneserver.dto.CreateCommentResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.GetArticleResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.GetCommentsResponseBody;
-import com.youngxpepp.instagramcloneserver.service.ArticleService;
-import com.youngxpepp.instagramcloneserver.dto.CommentDto;
+import com.youngxpepp.instagramcloneserver.global.config.security.login.MemberDetails;
 import com.youngxpepp.instagramcloneserver.mapper.CommentMapper;
-import com.youngxpepp.instagramcloneserver.domain.Comment;
+import com.youngxpepp.instagramcloneserver.service.ArticleService;
 import com.youngxpepp.instagramcloneserver.service.CommentService;
-import com.youngxpepp.instagramcloneserver.domain.Member;
 
 @RestController
 @RequestMapping("/api/v1/articles")
@@ -43,7 +43,7 @@ public class ArticleController {
 
 	@PostMapping
 	public ResponseEntity<CreateArticleResponseBody> createArticle(
-		@AuthenticationPrincipal @ApiIgnore Member principal,
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal,
 		@RequestBody CreateArticleRequestBody requestBody) {
 		CreateArticleResponseBody responseBody = articleService.createArticle(principal.getId(), requestBody);
 		return new ResponseEntity<>(responseBody, HttpStatus.CREATED);
@@ -52,7 +52,7 @@ public class ArticleController {
 	@GetMapping("/{articleId}")
 	public ResponseEntity<GetArticleResponseBody> getArticle(
 		@PathVariable("articleId") @NotNull Long articleId,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		GetArticleResponseBody responseBody = articleService.getArticle(principal.getId(), articleId);
 		return new ResponseEntity<>(responseBody, HttpStatus.OK);
@@ -62,7 +62,7 @@ public class ArticleController {
 	public ResponseEntity<CreateCommentResponseBody> createComment(
 		@PathVariable("articleId") @NotNull Long articleId,
 		@RequestBody CreateCommentRequestBody requestBody,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		CreateCommentResponseBody responseBody =
 			commentService.createComment(principal.getId(), articleId, requestBody);
@@ -72,8 +72,7 @@ public class ArticleController {
 	@GetMapping("/{articleId}/comments")
 	public GetCommentsResponseBody getComments(
 		@PathVariable("articleId") Long articleId,
-		Pageable pageable,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		Pageable pageable
 	) {
 		List<Comment> comments = commentService.getAllCommentsByArticleId(articleId, pageable);
 		List<CommentDto> commentDtos = commentMapper.toCommentDtoList(comments);
@@ -83,7 +82,7 @@ public class ArticleController {
 	@PostMapping("/{articleId}/likes")
 	public ResponseEntity<?> likeArticle(
 		@PathVariable("articleId") Long articleId,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		articleService.likeArticle(principal.getId(), articleId);
 		return new ResponseEntity<>(HttpStatus.CREATED);
@@ -92,7 +91,7 @@ public class ArticleController {
 	@DeleteMapping("/{articleId}/likes")
 	public ResponseEntity<?> unlikeArticle(
 		@PathVariable("articleId") Long articleId,
-		@AuthenticationPrincipal @ApiIgnore Member principal
+		@AuthenticationPrincipal @ApiIgnore MemberDetails principal
 	) {
 		articleService.unlikeArticle(principal.getId(), articleId);
 		return new ResponseEntity<>(HttpStatus.OK);

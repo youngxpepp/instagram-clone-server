@@ -2,6 +2,7 @@ package com.youngxpepp.instagramcloneserver.test;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -9,7 +10,7 @@ import org.springframework.security.test.context.support.WithSecurityContextFact
 
 import com.youngxpepp.instagramcloneserver.dao.MemberRepository;
 import com.youngxpepp.instagramcloneserver.domain.Member;
-import com.youngxpepp.instagramcloneserver.global.config.security.oauth.AuthenticatedAuthenticationToken;
+import com.youngxpepp.instagramcloneserver.global.config.security.login.MemberDetails;
 
 @RequiredArgsConstructor
 @Slf4j
@@ -24,7 +25,12 @@ public class WithCustomSecurityContextFactory implements WithSecurityContextFact
 		SecurityContext context = SecurityContextHolder.createEmptyContext();
 		Authentication authentication = null;
 		if (member != null) {
-			authentication = AuthenticatedAuthenticationToken.from(member);
+			MemberDetails memberDetails = MemberDetails.from(member);
+			authentication = new UsernamePasswordAuthenticationToken(
+				memberDetails,
+				memberDetails.getPassword(),
+				memberDetails.getAuthorities()
+			);
 		}
 		context.setAuthentication(authentication);
 		return context;

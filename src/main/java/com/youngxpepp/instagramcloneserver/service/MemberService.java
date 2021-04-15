@@ -1,11 +1,9 @@
 package com.youngxpepp.instagramcloneserver.service;
 
-import java.util.Arrays;
-
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -15,7 +13,7 @@ import com.youngxpepp.instagramcloneserver.domain.MemberOAuth2Info;
 import com.youngxpepp.instagramcloneserver.dto.GetMemberResponseBody;
 import com.youngxpepp.instagramcloneserver.dto.MemberDto;
 import com.youngxpepp.instagramcloneserver.dto.SignupDto;
-import com.youngxpepp.instagramcloneserver.global.config.security.oauth.AuthenticatedAuthenticationToken;
+import com.youngxpepp.instagramcloneserver.global.config.security.login.MemberDetails;
 import com.youngxpepp.instagramcloneserver.mapper.MemberMapper;
 import com.youngxpepp.instagramcloneserver.domain.Member;
 import com.youngxpepp.instagramcloneserver.domain.MemberRole;
@@ -56,11 +54,14 @@ public class MemberService {
 
 		memberRepository.save(member);
 
-		SecurityContextHolder
-			.getContext()
-			.setAuthentication(
-				AuthenticatedAuthenticationToken.from(member)
-			);
+		MemberDetails memberDetails = MemberDetails.from(member);
+		memberDetails.eraseCredentials();
+		Authentication auth = new UsernamePasswordAuthenticationToken(
+			memberDetails,
+			memberDetails.getPassword(),
+			memberDetails.getAuthorities()
+		);
+		SecurityContextHolder.getContext().setAuthentication(auth);
 
 		return memberMapper.toMemberDto(member);
 	}
